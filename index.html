@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philosophical Snake</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #2c3e50;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #gameContainer {
+            width: 400px;
+            height: 400px;
+            margin: 20px;
+            border: 3px solid #34495e;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            width: 400px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #34495e;
+            border-radius: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            width: 400px;
+            margin: 10px 0;
+        }
+
+        button, select {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        #countdown, #autoStartCountdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            color: white;
+            z-index: 2;
+        }
+
+        .hearts span {
+            color: #e74c3c;
+            margin: 0 2px;
+        }
+
+        .speed-controls {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .active-mode {
+            background: #2ecc71 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-header">
+        <div>Score: <span id="score">0</span></div>
+        <div>Lives: <span class="hearts" id="hearts">❤❤❤</span></div>
+        <div>Time: <span id="timer">0</span>s</div>
+    </div>
+
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <div id="countdown">
+            <div id="quote"></div>
+            <div>Restarting in <span id="countdownNumber">5</span></div>
+        </div>
+        <div id="autoStartCountdown">
+            <div id="autoStartQuote"></div>
+            <div>Starting game in <span id="autoStartNumber">5</span></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="startBtn">▶ Start Game</button>
+        <select id="colorMode">
+            <option value="rainbow">🌈 Rainbow</option>
+            <option value="pastel">🎨 Pastel</option>
+            <option value="neon">🌆 Neon</option>
+            <option value="grayscale">⚫ Grayscale</option>
+        </select>
+        <button id="autoBtn">🤖 Auto: OFF</button>
+        <button id="speedBtn" data-speeds="200,150,100,70" data-current="0">🐢 Speed: Slow</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const TILE_SIZE = 20;
+        const TILE_COUNT = 20;
+        
+        let snake = [], food, direction;
+        let score = 0, hearts = 3, gameOver = false, gameStarted = false;
+        let colorCycle = 0, currentColorMode = 'rainbow';
+        let lastUpdate = 0, updateInterval = 200, startTime, inactivityTimer;
+        let isAuto = false, autoStartCountdown;
+        
+        const quotes = [
+            "Walls: nature's way of saying try again!",
+            "Reset. Reboot. Resnake!",
+            "Wisdom grows with each collision!",
+            "Snakes don't make mistakes, just unexpected turns!",
+            "This too shall pass... after 5 seconds!",
+            "Life begins at the end of your comfort zone!",
+            "The only way out is through!",
+            "Every new beginning comes from some other beginning's end!"
+        ];
+
+        const colorSchemes = {
+            rainbow: ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082'],
+            pastel: ['#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF', '#D0BAFF'],
+            neon: ['#FF00FF', '#00FFFF', '#FF0000', '#00FF00', '#FFFF00'],
+            grayscale: ['#999', '#777', '#555', '#333']
+        };
+
+        function initGame() {
+            snake = [{x: 10, y: 10}];
+            direction = {x: 1, y: 0};
+            score = 0;
+            hearts = 3;
+            gameOver = false;
+            gameStarted = true;
+            startTime = Date.now();
+            placeFood();
+            updateHeartsDisplay();
+            document.getElementById('score').textContent = '0';
+            document.getElementById('timer').textContent = '0';
+            draw();
+        }
+
+        function placeFood() {
+            const spawnHeart = hearts < 3 && Math.random() < 0.3;
+            
+            do {
+                food = {
+                    x: Math.floor(Math.random() * TILE_COUNT),
+                    y: Math.floor(Math.random() * TILE_COUNT),
+                    type: spawnHeart ? 'heart' : 'apple'
+                };
+            } while(snake.some(segment => segment.x === food.x && segment.y === food.y));
+        }
+
+        function updateHeartsDisplay() {
+            document.getElementById('hearts').innerHTML = 
+                '❤'.repeat(hearts) + '♡'.repeat(3 - hearts);
+        }
+
+        function draw() {
+            ctx.fillStyle = '#2c3e50';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Snake
+            snake.forEach((segment, index) => {
+                ctx.beginPath();
+                ctx.fillStyle = getSegmentColor(index);
+                ctx.roundRect(
+                    segment.x * TILE_SIZE,
+                    segment.y * TILE_SIZE,
+                    TILE_SIZE - 1,
+                    TILE_SIZE - 1,
+                    5
+                );
+                ctx.fill();
+            });
+
+            // Draw Food
+            const foodX = food.x * TILE_SIZE + TILE_SIZE/2;
+            const foodY = food.y * TILE_SIZE + TILE_SIZE/2;
+            
+            if(food.type === 'apple') {
+                ctx.font = '24px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#ff4757';
+                ctx.fillText('🍎', foodX, foodY);
+            } else {
+                ctx.fillStyle = '#e91e63';
+                ctx.beginPath();
+                ctx.moveTo(foodX, foodY - 8);
+                ctx.bezierCurveTo(foodX, foodY - 15, foodX + 15, foodY - 5, foodX, foodY + 10);
+                ctx.bezierCurveTo(foodX - 15, foodY - 5, foodX, foodY - 15, foodX, foodY - 8);
+                ctx.fill();
+            }
+        }
+
+        function getSegmentColor(index) {
+            const scheme = colorSchemes[currentColorMode];
+            const color = scheme[index % scheme.length];
+            
+            if(currentColorMode === 'rainbow') {
+                const hue = (colorCycle + index * 30) % 360;
+                return `hsl(${hue}, 70%, ${index === 0 ? '65%' : '50%'})`;
+            }
+            return color;
+        }
+
+        function gameLoop(timestamp) {
+            if(gameOver) return;
+
+            if(timestamp - lastUpdate > updateInterval) {
+                if(isAuto) autoMove();
+
+                const newHead = {
+                    x: (snake[0].x + direction.x + TILE_COUNT) % TILE_COUNT,
+                    y: (snake[0].y + direction.y + TILE_COUNT) % TILE_COUNT
+                };
+
+                if(snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
+                    handleCollision();
+                    return;
+                }
+
+                snake.unshift(newHead);
+
+                if(newHead.x === food.x && newHead.y === food.y) {
+                    score += 10;
+                    if(food.type === 'heart') hearts = Math.min(hearts + 1, 3);
+                    document.getElementById('score').textContent = score;
+                    updateHeartsDisplay();
+                    placeFood();
+                } else {
+                    snake.pop();
+                }
+
+                document.getElementById('timer').textContent = 
+                    Math.floor((Date.now() - startTime) / 1000);
+
+                colorCycle = (colorCycle + 2) % 360;
+                lastUpdate = timestamp;
+                draw();
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        function autoMove() {
+            const head = snake[0];
+            const obstacles = new Set(snake.slice(1).map(s => `${s.x},${s.y}`));
+            
+            const directions = [
+                {x: 1, y: 0}, {x: -1, y: 0},
+                {x: 0, y: 1}, {x: 0, y: -1}
+            ].filter(dir => {
+                const newX = (head.x + dir.x + TILE_COUNT) % TILE_COUNT;
+                const newY = (head.y + dir.y + TILE_COUNT) % TILE_COUNT;
+                return !obstacles.has(`${newX},${newY}`);
+            });
+
+            if(directions.length > 0) {
+                const foodDir = {
+                    x: food.x - head.x,
+                    y: food.y - head.y
+                };
+                
+                const bestDir = directions.reduce((a, b) => {
+                    const aScore = Math.abs(foodDir.x - a.x) + Math.abs(foodDir.y - a.y);
+                    const bScore = Math.abs(foodDir.x - b.x) + Math.abs(foodDir.y - b.y);
+                    return aScore < bScore ? a : b;
+                });
+
+                if(bestDir.x !== -direction.x || bestDir.y !== -direction.y) {
+                    direction = bestDir;
+                }
+            }
+        }
+
+        function handleCollision() {
+            if(--hearts <= 0) {
+                gameOver = true;
+                showGameOver();
+                return;
+            }
+            
+            updateHeartsDisplay();
+            showCountdown();
+            snake = [snake[0]];
+        }
+
+        function showCountdown() {
+            document.getElementById('quote').textContent = 
+                quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('countdown').style.display = 'block';
+            let seconds = 5;
+            
+            const countdown = setInterval(() => {
+                document.getElementById('countdownNumber').textContent = seconds;
+                if(seconds-- <= 0) {
+                    clearInterval(countdown);
+                    document.getElementById('countdown').style.display = 'none';
+                    isAuto = true;
+                    document.getElementById('autoBtn').textContent = '🤖 Auto: ON';
+                    document.getElementById('autoBtn').classList.add('active-mode');
+                    gameLoop(0);
+                }
+            }, 1000);
+        }
+
+        function showGameOver() {
+            alert(`Game Over! Final Score: ${score}`);
+            document.getElementById('startBtn').disabled = false;
+            gameStarted = false;
+            resetInactivityTimer();
+        }
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            if(!gameStarted) {
+                document.getElementById('autoStartCountdown').style.display = 'block';
+                document.getElementById('autoStartQuote').textContent = 
+                    quotes[Math.floor(Math.random() * quotes.length)];
+                let seconds = 5;
+                
+                autoStartCountdown = setInterval(() => {
+                    document.getElementById('autoStartNumber').textContent = seconds;
+                    if(seconds-- <= 0) {
+                        clearInterval(autoStartCountdown);
+                        document.getElementById('autoStartCountdown').style.display = 'none';
+                        isAuto = true;
+                        document.getElementById('autoBtn').textContent = '🤖 Auto: ON';
+                        document.getElementById('autoBtn').classList.add('active-mode');
+                        document.getElementById('startBtn').click();
+                    }
+                }, 1000);
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if(!gameStarted) {
+                clearInterval(autoStartCountdown);
+                document.getElementById('autoStartCountdown').style.display = 'none';
+                gameStarted = true;
+                document.getElementById('startBtn').disabled = true;
+                initGame();
+                startTime = Date.now();
+                requestAnimationFrame(gameLoop);
+            }
+        });
+
+        document.getElementById('colorMode').addEventListener('change', (e) => {
+            currentColorMode = e.target.value;
+        });
+
+        document.getElementById('autoBtn').addEventListener('click', () => {
+            isAuto = !isAuto;
+            document.getElementById('autoBtn').textContent = 
+                `🤖 Auto: ${isAuto ? 'ON' : 'OFF'}`;
+            document.getElementById('autoBtn').classList.toggle('active-mode', isAuto);
+        });
+
+        document.getElementById('speedBtn').addEventListener('click', () => {
+            const speeds = document.getElementById('speedBtn').dataset.speeds.split(',');
+            let current = parseInt(document.getElementById('speedBtn').dataset.current);
+            current = (current + 1) % speeds.length;
+            
+            updateInterval = parseInt(speeds[current]);
+            document.getElementById('speedBtn').dataset.current = current;
+            
+            const labels = ['Slow', 'Normal', 'Fast', 'Hyper'];
+            document.getElementById('speedBtn').textContent = 
+                `${['🐢', '🐇', '🚀', '🚄'][current]} Speed: ${labels[current]}`;
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if(!gameStarted) return;
+            resetInactivityTimer();
+            
+            switch(e.key) {
+                case 'ArrowUp': if(direction.y !== 1) direction = {x: 0, y: -1}; break;
+                case 'ArrowDown': if(direction.y !== -1) direction = {x: 0, y: 1}; break;
+                case 'ArrowLeft': if(direction.x !== 1) direction = {x: -1, y: 0}; break;
+                case 'ArrowRight': if(direction.x !== -1) direction = {x: 1, y: 0}; break;
+            }
+        });
+
+        resetInactivityTimer();
+        draw();
+    </script>
+</body>
+</html>
