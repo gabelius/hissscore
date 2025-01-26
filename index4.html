@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Riddle Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #fffbeb;
+            --secondary-bg: #ffffff;
+            --primary-accent: #FF6B6B;
+            --secondary-accent: #4ECDC4;
+            --text-color: #2d3436;
+            --danger-accent: #FF7675;
+        }
+
+        .night-mode {
+            --primary-bg: #2d3436;
+            --secondary-bg: #3b4345;
+            --text-color: #f0f9ff;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--primary-bg);
+            color: var(--text-color);
+            font-family: 'Comic Neue', cursive;
+            margin: 0;
+            padding: 12px;
+            min-height: 100dvh;
+            transition: background 0.3s ease;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            width: min(95vw, 400px);
+            margin: 8px 0;
+            padding: 12px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: var(--text-color);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .night-mode .game-header {
+            background: rgba(40,40,40,0.95);
+        }
+
+        #gameContainer {
+            width: min(95vw, 400px);
+            aspect-ratio: 1;
+            margin: 8px 0;
+            border: 3px solid var(--primary-accent);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(255, 107, 107, 0.2);
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        #touchLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+            z-index: 1;
+        }
+
+        .riddle-container {
+            width: min(95vw, 400px);
+            margin: 16px 0;
+            padding: 16px;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            width: min(95vw, 400px);
+            margin: 8px 0;
+        }
+
+        button, select {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--secondary-accent);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        #themeToggle {
+            grid-column: span 2;
+            background: var(--primary-accent);
+        }
+
+        .hearts span {
+            color: var(--danger-accent);
+            font-size: 1.1rem;
+        }
+
+        #countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            display: none;
+            color: white;
+            z-index: 2;
+            border: 1px solid var(--primary-accent);
+            box-shadow: 0 0 32px rgba(46, 204, 113, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-header">
+        <div>🏆 <span id="score">0</span></div>
+        <div class="hearts" id="hearts">❤❤❤</div>
+        <div>⏳ <span id="timer">0</span>s</div>
+    </div>
+
+    <div id="gameContainer">
+        <div id="touchLayer"></div>
+        <canvas id="gameCanvas"></canvas>
+        <div id="countdown">
+            <div id="quote"></div>
+            <div>Restarting in <span id="countdownNumber">5</span></div>
+        </div>
+    </div>
+
+    <div class="riddle-container">
+        <div id="riddleTimer">Next answer in: <span id="riddleCountdown">15</span>s</div>
+        <div id="riddleText"></div>
+    </div>
+
+    <div class="controls">
+        <button id="startBtn">▶ Start</button>
+        <select id="colorMode">
+            <option value="rainbow">🌈 Colors</option>
+            <option value="pastel">🎨 Pastel</option>
+            <option value="neon">🌆 Neon</option>
+            <option value="grayscale">⚫ Grayscale</option>
+        </select>
+        <button id="autoBtn">🤖 Auto</button>
+        <button id="speedBtn">🚀 Speed</button>
+        <button id="themeToggle">🌙 Night Mode</button>
+    </div>
+
+    <script>
+        // Game Constants
+        const TILE_SIZE = 20;
+        const TILE_COUNT = 20;
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game State
+        let snake = [], food, direction;
+        let score = 0, hearts = 3, gameOver = false, gameStarted = false;
+        let colorCycle = 0, currentColorMode = 'rainbow';
+        let lastUpdate = 0, updateInterval = 150, startTime, inactivityTimer;
+        let isAuto = false, autoStartCountdown;
+        let touchStartX = 0, touchStartY = 0;
+        const minSwipeDistance = 30;
+
+        // Riddle System
+        const riddles = [
+            {question: "What do you call a snake that's 3.14 meters long?", answer: "A π-thon! 🐍"},
+            {question: "Why don't snakes play cards?", answer: "They prefer hiss-terical games 😹"},
+            {question: "What's a snake's favorite dance?", answer: "The mamba! 💃🐍"},
+            {question: "Why did the viper go to the bank?", answer: "To check its nest egg! 🥚💰"},
+            {question: "What do snakes use to write letters?", answer: "Viper ink! ✍️🐍"},
+            {question: "Why don't snakes drink coffee?", answer: "It makes them viper-active! ☕🐍"},
+            {question: "What's a snake's favorite plant?", answer: "A snake plant! 🌱🐍"},
+            {question: "Why did the cobra start a band?", answer: "It had perfect scales! 🎵🐍"},
+            {question: "What do you call a snake chef?", answer: "A sss-sous chef! 👨🍳🐍"},
+            {question: "Why did the snake become a detective?", answer: "To solve hiss-teries! 🔍🐍"}
+        ];
+        let usedIndices = [];
+        let riddleInterval;
+
+        // Game Initialization
+        function initGame() {
+            canvas.width = 400;
+            canvas.height = 400;
+            snake = [{x: 10, y: 10}];
+            direction = {x: 1, y: 0};
+            score = 0;
+            hearts = 3;
+            gameOver = false;
+            gameStarted = true;
+            startTime = Date.now();
+            placeFood();
+            updateHeartsDisplay();
+            document.getElementById('score').textContent = '0';
+            document.getElementById('timer').textContent = '0';
+            startRiddleCycle();
+            draw();
+        }
+
+        function placeFood() {
+            const spawnHeart = hearts < 3 && Math.random() < 0.3;
+            do {
+                food = {
+                    x: Math.floor(Math.random() * TILE_COUNT),
+                    y: Math.floor(Math.random() * TILE_COUNT),
+                    type: spawnHeart ? 'heart' : 'apple'
+                };
+            } while(snake.some(segment => segment.x === food.x && segment.y === food.y));
+        }
+
+        function updateHeartsDisplay() {
+            document.getElementById('hearts').innerHTML = 
+                '❤'.repeat(hearts) + '♡'.repeat(3 - hearts);
+        }
+
+        function draw() {
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-bg');
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            snake.forEach((segment, index) => {
+                ctx.beginPath();
+                ctx.fillStyle = getSegmentColor(index);
+                ctx.roundRect(
+                    segment.x * TILE_SIZE,
+                    segment.y * TILE_SIZE,
+                    TILE_SIZE - 1,
+                    TILE_SIZE - 1,
+                    5
+                );
+                ctx.fill();
+            });
+
+            const foodX = food.x * TILE_SIZE + TILE_SIZE/2;
+            const foodY = food.y * TILE_SIZE + TILE_SIZE/2;
+            ctx.font = '24px system-ui';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = food.type === 'apple' ? '#ff4757' : '#e91e63';
+            ctx.fillText(food.type === 'apple' ? '🍎' : '❤️', foodX, foodY);
+        }
+
+        function getSegmentColor(index) {
+            const schemes = {
+                rainbow: ['#FF6B6B', '#FFD93D', '#6BFF6B', '#4ECDC4', '#9B59B6'],
+                pastel: ['#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF'],
+                neon: ['#FF00FF', '#00FFFF', '#FF0000', '#00FF00', '#FFFF00'],
+                grayscale: ['#999', '#777', '#555', '#333']
+            };
+            return schemes[currentColorMode][index % schemes[currentColorMode].length];
+        }
+
+        function gameLoop(timestamp) {
+            if(gameOver) return;
+            if(timestamp - lastUpdate > updateInterval) {
+                if(isAuto) autoMove();
+                const newHead = {
+                    x: (snake[0].x + direction.x + TILE_COUNT) % TILE_COUNT,
+                    y: (snake[0].y + direction.y + TILE_COUNT) % TILE_COUNT
+                };
+
+                if(snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
+                    handleCollision();
+                    return;
+                }
+
+                snake.unshift(newHead);
+                if(newHead.x === food.x && newHead.y === food.y) {
+                    score += 10;
+                    if(food.type === 'heart') hearts = Math.min(hearts + 1, 3);
+                    document.getElementById('score').textContent = score;
+                    updateHeartsDisplay();
+                    placeFood();
+                } else {
+                    snake.pop();
+                }
+
+                document.getElementById('timer').textContent = 
+                    Math.floor((Date.now() - startTime) / 1000);
+                colorCycle = (colorCycle + 2) % 360;
+                lastUpdate = timestamp;
+                draw();
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        function autoMove() {
+            const head = snake[0];
+            const obstacles = new Set(snake.slice(1).map(s => `${s.x},${s.y}`));
+            const directions = [
+                {x: 1, y: 0}, {x: -1, y: 0},
+                {x: 0, y: 1}, {x: 0, y: -1}
+            ].filter(dir => {
+                const newX = (head.x + dir.x + TILE_COUNT) % TILE_COUNT;
+                const newY = (head.y + dir.y + TILE_COUNT) % TILE_COUNT;
+                return !obstacles.has(`${newX},${newY}`);
+            });
+
+            if(directions.length > 0) {
+                const foodDir = {x: food.x - head.x, y: food.y - head.y};
+                const bestDir = directions.reduce((a, b) => {
+                    const aScore = Math.abs(foodDir.x - a.x) + Math.abs(foodDir.y - a.y);
+                    const bScore = Math.abs(foodDir.x - b.x) + Math.abs(foodDir.y - b.y);
+                    return aScore < bScore ? a : b;
+                });
+                if(bestDir.x !== -direction.x || bestDir.y !== -direction.y) direction = bestDir;
+            }
+        }
+
+        function handleCollision() {
+            if(--hearts <= 0) {
+                gameOver = true;
+                showGameOver();
+                return;
+            }
+            updateHeartsDisplay();
+            showCountdown();
+            snake = [snake[0]];
+        }
+
+        function showCountdown() {
+            document.getElementById('countdown').style.display = 'block';
+            let seconds = 5;
+            const countdown = setInterval(() => {
+                document.getElementById('countdownNumber').textContent = seconds;
+                if(seconds-- <= 0) {
+                    clearInterval(countdown);
+                    document.getElementById('countdown').style.display = 'none';
+                    isAuto = true;
+                    gameLoop(0);
+                }
+            }, 1000);
+        }
+
+        function showGameOver() {
+            alert(`Game Over! Final Score: ${score}`);
+            document.getElementById('startBtn').disabled = false;
+            gameStarted = false;
+            clearInterval(riddleInterval);
+        }
+
+        // Riddle System
+        function getRandomRiddle() {
+            if(usedIndices.length === riddles.length) usedIndices = [];
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * riddles.length);
+            } while(usedIndices.includes(randomIndex));
+            usedIndices.push(randomIndex);
+            return riddles[randomIndex];
+        }
+
+        function startRiddleCycle() {
+            let countdown = 15;
+            showRiddleQuestion();
+            riddleInterval = setInterval(() => {
+                countdown--;
+                document.getElementById('riddleCountdown').textContent = countdown;
+                
+                if(countdown === 5) showRiddleAnswer();
+                
+                if(countdown <= 0) {
+                    countdown = 15;
+                    showRiddleQuestion();
+                }
+            }, 1000);
+        }
+
+        function showRiddleQuestion() {
+            const riddle = getRandomRiddle();
+            document.getElementById('riddleText').textContent = riddle.question;
+        }
+
+        function showRiddleAnswer() {
+            const currentRiddle = riddles[usedIndices[usedIndices.length - 1]];
+            document.getElementById('riddleText').innerHTML = 
+                `${currentRiddle.question}<br><span style="color: var(--primary-accent)">${currentRiddle.answer}</span>`;
+        }
+
+        // Event Listeners
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if(!gameStarted) {
+                initGame();
+                gameLoop(0);
+                document.getElementById('startBtn').disabled = true;
+            }
+        });
+
+        document.getElementById('colorMode').addEventListener('change', (e) => {
+            currentColorMode = e.target.value;
+        });
+
+        document.getElementById('autoBtn').addEventListener('click', () => {
+            isAuto = !isAuto;
+            document.getElementById('autoBtn').classList.toggle('active-mode', isAuto);
+        });
+
+        document.getElementById('speedBtn').addEventListener('click', () => {
+            const speeds = [200, 150, 100, 70];
+            const labels = ['🐢 Slow', '🐇 Normal', '🚀 Fast', '🚄 Hyper'];
+            const current = speeds.indexOf(updateInterval);
+            const newIndex = (current + 1) % speeds.length;
+            updateInterval = speeds[newIndex];
+            document.getElementById('speedBtn').textContent = labels[newIndex];
+        });
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            document.body.classList.toggle('night-mode');
+            document.getElementById('themeToggle').textContent = 
+                document.body.classList.contains('night-mode') ? "☀️ Day Mode" : "🌙 Night Mode";
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if(!gameStarted) return;
+            switch(e.key) {
+                case 'ArrowUp': if(direction.y !== 1) direction = {x: 0, y: -1}; break;
+                case 'ArrowDown': if(direction.y !== -1) direction = {x: 0, y: 1}; break;
+                case 'ArrowLeft': if(direction.x !== 1) direction = {x: -1, y: 0}; break;
+                case 'ArrowRight': if(direction.x !== -1) direction = {x: 1, y: 0}; break;
+            }
+        });
+
+        // Touch Controls
+        const touchLayer = document.getElementById('touchLayer');
+        touchLayer.addEventListener('touchstart', (e) => {
+            if(!gameStarted) return;
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+        });
+
+        touchLayer.addEventListener('touchend', (e) => {
+            if(!gameStarted) return;
+            const touch = e.changedTouches[0];
+            const deltaX = touch.clientX - touchStartX;
+            const deltaY = touch.clientY - touchStartY;
+            
+            if(Math.abs(deltaX) > Math.abs(deltaY)) {
+                if(Math.abs(deltaX) < minSwipeDistance) return;
+                if(deltaX > 0 && direction.x !== -1) direction = {x: 1, y: 0};
+                else if(deltaX < 0 && direction.x !== 1) direction = {x: -1, y: 0};
+            } else {
+                if(Math.abs(deltaY) < minSwipeDistance) return;
+                if(deltaY > 0 && direction.y !== -1) direction = {x: 0, y: 1};
+                else if(deltaY < 0 && direction.y !== 1) direction = {x: 0, y: -1};
+            }
+        });
+
+        // Initial Setup
+        canvas.width = 400;
+        canvas.height = 400;
+        draw();
+    </script>
+</body>
+</html>
