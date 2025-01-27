@@ -135,6 +135,7 @@ function updateLevelBackground() {
     const levelNameElement = document.getElementById('levelName');
     levelNameElement.textContent = `Level ${currentLevel}: ${level.name}`;
     levelNameElement.classList.remove('fade-out');
+    void levelNameElement.offsetWidth; // Trigger reflow to restart the animation
     setTimeout(() => {
         levelNameElement.classList.add('fade-out');
     }, 5000);
@@ -276,6 +277,25 @@ document.getElementById('themeToggle').addEventListener('click', () => {
     document.getElementById('themeToggle').textContent =
         document.body.classList.contains('night-mode') ? "☀️ Day" : "🌙 Night";
 });
+
+document.getElementById('autoStart').addEventListener('click', showAutoStart);
+
+document.getElementById('colorMode').addEventListener('change', (e) => {
+    currentColorMode = e.target.value;
+    document.body.className = `${currentColorMode}-mode`;
+});
+
+// Draw Rounded Rectangle
+CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+    const r = Math.min(radius, width/2, height/2);
+    this.beginPath();
+    this.moveTo(x+r, y);
+    this.arcTo(x+width, y, x+width, y+height, r);
+    this.arcTo(x+width, y+height, x, y+height, r);
+    this.arcTo(x, y+height, x, y, r);
+    this.arcTo(x, y, x+width, y, r);
+    this.closePath();
+};
 
 // Initialize Game
 canvas.width = canvas.height = 400;
