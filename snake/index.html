@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Snake Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+</head>
+<body>
+    <div class="game-header">
+        <div>🏆 <span id="score">0</span></div>
+        <div class="hearts" id="hearts">❤❤❤</div>
+        <div>⏳ <span id="timer">0</span>s</div>
+    </div>
+
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        <div id="autoCountdown" class="countdown">
+            <div id="snakeFact"></div>
+            <div>Starting in <span id="countdown">5</span></div>
+        </div>
+    </div>
+
+    <div class="riddle-container">
+        <div id="riddleTimer">Next answer in: <span id="riddleCountdown">15</span>s</div>
+        <div id="riddleText"></div>
+    </div>
+
+    <div class="controls">
+        <button id="startBtn">▶ Start</button>
+        <select id="colorMode">
+            <option value="rainbow">🌈 Colors</option>
+            <option value="pastel">🎨 Pastel</option>
+            <option value="neon">🌆 Neon</option>
+            <option value="grayscale">⚫ Grayscale</option>
+        </select>
+        <button id="autoBtn">🤖 Auto</button>
+        <button id="speedBtn">🚀 Speed</button>
+        <button id="themeToggle">🌙 Night Mode</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
