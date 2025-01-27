@@ -7,8 +7,8 @@ game:
     autoStartDelay: 5
     riddleCycleTime: 15
   
-  # Color Schemes
-  colorSchemes:
+# Color Schemes
+colorSchemes:
     rainbow:
       - "#FF6B6B"
       - "#FFD93D"
@@ -32,9 +32,42 @@ game:
       - "#777"
       - "#555"
       - "#333"
+
+# Level Themes
+levels:
+    - name: "The Green Meadow"
+      snakeColor: "green"
+      backgroundImage: "1.webp"
+    - name: "The Desert Mirage"
+      snakeColor: "sandybrown"
+      backgroundImage: "2.webp"
+    - name: "The Mystic Forest"
+      snakeColor: "darkgreen"
+      backgroundImage: "3.webp"
+    - name: "The Arctic Tundra"
+      snakeColor: "iceblue"
+      backgroundImage: "4.webp"
+    - name: "The Molten Core"
+      snakeColor: "lavared"
+      backgroundImage: "5.webp"
+    - name: "The Starry Night"
+      snakeColor: "neonblue"
+      backgroundImage: "6.webp"
+    - name: "The Ocean Depths"
+      snakeColor: "deepseateal"
+      backgroundImage: "7.webp"
+    - name: "The Golden Sands"
+      snakeColor: "goldenyellow"
+      backgroundImage: "8.webp"
+    - name: "The Thunder Plains"
+      snakeColor: "electricpurple"
+      backgroundImage: "9.webp"
+    - name: "The Cosmic Void"
+      snakeColor: "cosmicblack"
+      backgroundImage: "10.webp"
   
-  # Riddles
-  riddles:
+# Riddles
+riddles:
     - question: "I slither through time, always moving forward but never backward. What am I?"
       answer: "Time! ⏳ (Like a snake, it moves in one direction)"
     - question: "I coil around your thoughts, always present but never seen. I can be broken but never touched. What am I?"
@@ -44,8 +77,8 @@ game:
     - question: "I shed my skin every day, yet I am not a snake. I grow taller but never older. What am I?"
       answer: "A tree! 🌳 (Bark sheds like snake skin)"
   
-  # Snake Facts (if needed)
-  snakeFacts:
+# Snake Facts (if needed)
+snakeFacts:
     - "Snakes can smell with their tongues! 👅"
     - "Some snakes can glide over 100 meters! ✈️"
     - "Snakes have 5 ways to move! 🕺"

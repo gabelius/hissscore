@@ -40,11 +40,11 @@
 ## Outstanding Issues
 
 1. **Night Mode**:
-   - Not fully integrated with color definitions from `config.yaml`.
-   - Requires dynamic color adjustments based on the toggle state.
+   - Fully integrated with color definitions from `config.yaml`.
+   - Night mode button not working as intended.
 
 2. **Color Modes**:
-   - Functionality for switching color modes (Rainbow, Pastel, Neon, Grayscale) is incomplete.
+   - Functionality for switching color modes (Rainbow, Pastel, Neon, Grayscale) is now complete.
 
 3. **Level Story**:
    - A narrative connecting each level theme and its progression is a **future topic**.
@@ -60,8 +60,6 @@
 
 ## Pending Fixes
 
-- Implement dynamic color changes for night mode and color themes.
-- Fully integrate color modes (e.g., Rainbow, Pastel) into the game rendering logic.
 - Add level-based themes and dynamically load snake colors and background images.
 - Update HUD to display the current level and level name.
 - Verify and refine UI elements for consistency and usability.

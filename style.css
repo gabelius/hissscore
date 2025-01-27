@@ -11,6 +11,8 @@
     --primary-bg: #2d3436;
     --secondary-bg: #3b4345;
     --text-color: #f0f9ff;
+    --primary-accent: #FF6B6B; /* Adjust if needed */
+    --secondary-accent: #4ECDC4; /* Adjust if needed */
 }
 
 body {
@@ -24,6 +26,28 @@ body {
     padding: 12px;
     min-height: 100dvh;
     transition: all 0.3s ease;
+    background-size: cover;
+    background-position: center;
+}
+
+body.rainbow-mode {
+    --primary-accent: #FF6B6B;
+    --secondary-accent: #4ECDC4;
+}
+
+body.pastel-mode {
+    --primary-accent: #FFB3BA;
+    --secondary-accent: #BAFFC9;
+}
+
+body.neon-mode {
+    --primary-accent: #FF00FF;
+    --secondary-accent: #00FFFF;
+}
+
+body.grayscale-mode {
+    --primary-accent: #999;
+    --secondary-accent: #777;
 }
 
 .game-header {
@@ -49,6 +73,7 @@ body {
     overflow: hidden;
     position: relative;
     box-shadow: 0 8px 24px rgba(255, 107, 107, 0.2);
+    background: rgba(255, 255, 255, 0.5); /* Make the canvas translucent */
 }
 
 #gameCanvas {
@@ -78,7 +103,7 @@ button, select {
     padding: 12px;
     border: none;
     border-radius: 8px;
-    background: var(--secondary-accent);
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
     color: white;
     cursor: pointer;
     transition: all 0.2s;
