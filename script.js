@@ -132,7 +132,12 @@ function draw() {
 function updateLevelBackground() {
     const level = config.levels[currentLevel - 1];
     document.body.style.backgroundImage = `url('images/${level.background}')`;
-    document.getElementById('levelName').textContent = `Level ${currentLevel}: ${level.name}`;
+    const levelNameElement = document.getElementById('levelName');
+    levelNameElement.textContent = `Level ${currentLevel}: ${level.name}`;
+    levelNameElement.classList.remove('fade-out');
+    setTimeout(() => {
+        levelNameElement.classList.add('fade-out');
+    }, 5000);
 }
 
 function getColor(index) {
