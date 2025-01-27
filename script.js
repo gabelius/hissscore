@@ -128,6 +128,45 @@ function draw() {
         food.y*TILE_SIZE + TILE_SIZE/2);
 }
 
+function updateLevelBackground() {
+    const level = config.levels[currentLevel - 1];
+    document.body.style.backgroundImage = `url('images/${level.background}')`;
+    document.getElementById('levelName').textContent = `Level ${currentLevel}: ${level.name}`;
+}
+
+function getColor(index) {
+    const level = config.levels[currentLevel - 1];
+    return level.snakeColors[index % level.snakeColors.length];
+}
+
+function handleCollision() {
+    hearts--;
+    updateHearts();
+    if (hearts <= 0) {
+        gameOver = true;
+        alert('Game Over!');
+    } else {
+        snake = [{ x: 10, y: 10 }];
+        direction = { x: 1, y: 0 };
+    }
+}
+
+function updateHearts() {
+    const heartsElement = document.getElementById('hearts');
+    heartsElement.innerHTML = '❤'.repeat(hearts);
+}
+
+function nextLevel() {
+    currentLevel++;
+    if (currentLevel > config.levels.length) {
+        alert('You have completed all levels!');
+        gameOver = true;
+    } else {
+        updateLevelBackground();
+        initGame();
+    }
+}
+
 // Game Loop
 function gameLoop(timestamp) {
     if(gameOver) return;
@@ -148,6 +187,9 @@ function gameLoop(timestamp) {
             score += 10;
             if(food.type === 'heart') hearts++;
             placeFood();
+            if (score >= config.levels[currentLevel - 1].scoreThreshold) {
+                nextLevel();
+            }
         } else {
             snake.pop();
         }

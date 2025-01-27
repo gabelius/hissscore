@@ -53,13 +53,43 @@ game:
 
 # Level Names
 levels:
-    - name: "Slithering Start"
-    - name: "Serpent's Path"
-    - name: "Coiling Challenge"
-    - name: "Venomous Valley"
-    - name: "Scale Summit"
-    - name: "Fang Frontier"
-    - name: "Hiss Highlands"
-    - name: "Rattle Ridge"
-    - name: "Constrictor's Peak"
-    - name: "Python Plateau"
+    - name: "The Green Meadow"
+      background: "meadow.jpg"
+      snakeColors: ["#00FF00"]
+      scoreThreshold: 100
+    - name: "The Desert Mirage"
+      background: "desert.jpg"
+      snakeColors: ["#C2B280"]
+      scoreThreshold: 200
+    - name: "The Mystic Forest"
+      background: "forest.jpg"
+      snakeColors: ["#228B22"]
+      scoreThreshold: 300
+    - name: "The Arctic Tundra"
+      background: "tundra.jpg"
+      snakeColors: ["#00FFFF"]
+      scoreThreshold: 400
+    - name: "The Molten Core"
+      background: "lava.jpg"
+      snakeColors: ["#FF4500"]
+      scoreThreshold: 500
+    - name: "The Starry Night"
+      background: "stars.jpg"
+      snakeColors: ["#1E90FF"]
+      scoreThreshold: 600
+    - name: "The Ocean Depths"
+      background: "ocean.jpg"
+      snakeColors: ["#008080"]
+      scoreThreshold: 700
+    - name: "The Golden Sands"
+      background: "beach.jpg"
+      snakeColors: ["#FFD700"]
+      scoreThreshold: 800
+    - name: "The Thunder Plains"
+      background: "storm.jpg"
+      snakeColors: ["#800080"]
+      scoreThreshold: 900
+    - name: "The Cosmic Void"
+      background: "cosmos.jpg"
+      snakeColors: ["#000000"]
+      scoreThreshold: 1000
