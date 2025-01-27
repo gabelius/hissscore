@@ -64,5 +64,19 @@
 - Update HUD to display the current level and level name.
 - Verify and refine UI elements for consistency and usability.
 
+## Known Issues
+
+1. **UI**:
+   - The level name "Level 1: Slithering Start" appears behind the game canvas, overlapping with the border of the canvas. It should be moved down or shown as a translucent overlay at the center of the game canvas.
+
+2. **Buttons**:
+   - None of the buttons (Start, Auto, Speed, Color Themes, Day/Night toggle) are functioning.
+
+3. **Auto-Start**:
+   - The game does not auto-start after 5 seconds of inactivity.
+
+4. **Game Start**:
+   - Pressing the Start button does not start the game.
+
 
 
