@@ -85,10 +85,12 @@ body.grayscale-mode {
     color: white;
     z-index: 2; /* Ensure it is above the game canvas */
     text-align: center;
+    opacity: 1; /* Ensure initial opacity is set */
+    transition: opacity 5s ease-out; /* Add transition for smooth fade-out */
 }
 
 .level-name.fade-out {
-    animation: fadeOut 5s forwards;
+    opacity: 0; /* Set opacity to 0 for fade-out effect */
 }
 
 @keyframes fadeOut {
