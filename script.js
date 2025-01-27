@@ -24,7 +24,6 @@ let score = 0, hearts = 3, gameOver = false, gameStarted = false;
 let colorCycle = 0, currentColorMode = 'rainbow';
 let lastUpdate = 0, updateInterval = config.game.updateInterval, startTime;
 let isAuto = false, inactivityTimer;
-let currentLevel = 0;
 
 function setupEventListeners() {
     // Touch/Mouse controls
@@ -37,7 +36,7 @@ function setupEventListeners() {
     }, { passive: false });
 
     canvas.addEventListener('touchmove', handleSwipe, { passive: false });
-    canvas.addEvsentListener('mousedown', e => {
+    canvas.addEventListener('mousedown', e => {
         touchStartX = e.clientX;
         touchStartY = e.clientY;
     });
@@ -80,7 +79,8 @@ function initGame() {
     canvas.width = canvas.height = 400;
     snake = [{x: 10, y: 10}];
     direction = {x: 1, y: 0};
-    score = hearts = 0;
+    score = 0;
+    hearts = 3;
     gameOver = false;
     gameStarted = true;
     startTime = Date.now();
@@ -201,14 +201,6 @@ function startRiddles() {
     setInterval(showRiddle, config.game.riddleCycleTime * 1000);
 }
 
-function showRiddle() {
-    const riddle = config.riddles[riddleIndex % config.riddles.length];
-    document.getElementById('riddleText').innerHTML = 
-        `${riddle.question}<br><span style="color: var(--primary-accent)">${riddle.answer}</span>`;
-    riddleIndex++;
-    setTimeout(showRiddle, 15000);
-}
-
 // Auto-Start System
 function showAutoStart() {
     const countdown = document.getElementById('autoCountdown');
@@ -231,13 +223,6 @@ function showAutoStart() {
 }
 
 // Event Listeners
-document.getElementById('startBtn').addEventListener('click', () => {
-    if(!gameStarted) {
-        initGame();
-        gameLoop(0);
-    }
-});
-
 document.getElementById('themeToggle').addEventListener('click', () => {
     document.body.classList.toggle('night-mode');
     document.getElementById('themeToggle').textContent = 
