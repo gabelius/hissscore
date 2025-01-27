@@ -131,7 +131,7 @@ function draw() {
 
 function updateLevelBackground() {
     const level = config.levels[currentLevel - 1];
-    document.body.style.backgroundImage = `url('images/${level.background}')`;
+    document.body.style.backgroundImage = `url('${level.background}')`;
     const levelNameElement = document.getElementById('levelName');
     levelNameElement.textContent = `Level ${currentLevel}: ${level.name}`;
     levelNameElement.classList.remove('fade-out');
