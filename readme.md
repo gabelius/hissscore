@@ -164,24 +164,201 @@
 1. ~~Start Button~~ (FIXED)
    - ~~Clicking the Start button does not start the game.~~
 
-2. **Auto Mode** (PARTIALLY FIXED):
-   - A* pathfinding implemented for auto mode.
-   - Automatic activation after inactivity now working.
+2. ~~Auto Mode~~ (FIXED)
+   - ~~A* pathfinding implemented for auto mode.~~
+   - ~~Automatic activation after inactivity now working.~~
+   - ~~Mode switching during gameplay prevented.~~
 
-3. **Buttons**:
-   - Some buttons (Speed, Color Themes, Day/Night toggle) need refinement.
+3. ~~Visual Issues~~ (FIXED)
+   - ~~Snake visibility in different levels~~
+   - ~~Game canvas transparency~~
+   - ~~Background visibility~~
 
-4. **Auto-Start**:
-   - The game does not auto-start after 5 seconds of inactivity.
+4. **Riddle System** (🟡 IMPORTANT):
+   - Timer synchronization needs improvement
+   - Animation transitions can be smoother
+   - Question/Answer positioning needs refinement
 
 ## Change History
 
-### 2024-01-xx
-- Fixed riddle system timing
-- Added transition animations
-- Updated auto-mode pathfinding
-- Improved start/auto functionality
-- Added proper game state management
+### 2024-01-24 15:45 UTC
+- **Fix**: Game Mode Switching
+  - Prevented mode switching during gameplay
+  - Added mode lock during active game
+  - Updated control system logic
+  - Improved mode selection UI
+  - Added mode switching documentation
+
+### 2024-01-24 15:30 UTC
+- **Enhancement**: Visual Improvements
+  - Added snake outline for better visibility
+  - Made game canvas semi-transparent
+  - Added highlight effect to snake segments
+  - Improved contrast against backgrounds
+  - Fixed snake visibility in all levels
+
+### 2024-01-24 15:15 UTC
+- **Fix**: Auto Mode Behavior
+  - Simplified pathfinding algorithm
+  - Improved directional decision making
+  - Fixed stuck movement patterns
+  - Added immediate food collection
+  - Removed unnecessary delays
+
+### 2024-01-24 15:00 UTC
+- **Bug Fix**: Multiple System Issues
+  - Fixed missing nextLevel function
+  - Added LevelSystem module
+  - Fixed game initialization sequence
+  - Improved state management
+  - Added proper error handling
+
+### 2024-01-24 14:45 UTC
+- **Feature**: AI Improvements
+  - Added basic A* pathfinding
+  - Implemented fallback movement
+  - Added safe move detection
+  - Fixed auto mode activation
+
+### 2024-01-24 14:30 UTC
+- **Bug Fix**: Game start and auto mode not working
+  - Fixed game initialization
+  - Added proper event handlers
+  - Fixed state management
+  - Added WASD controls
+
+### 2024-01-24 14:15 UTC
+- **Feature**: Enhanced Riddle System
+  - Added 10s question timer
+  - Implemented 5s answer display
+  - Added fade transitions
+  - Fixed timer synchronization
+  - Added proper cleanup
+
+### 2024-01-24 14:00 UTC
+- **Refactor**: Code Organization
+  - Separated game systems
+  - Added modular architecture
+  - Improved state management
+  - Added documentation
+
+### 2024-01-24 13:45 UTC
+- **Bug Fix**: Collision and Level Issues
+  - Fixed snake collision handling
+  - Fixed level progression
+  - Added heart collection system
+  - Fixed game over state
+
+### 2024-01-24 13:30 UTC
+- **Initial Commit**
+  - Basic game functionality
+  - Snake movement system
+  - Food spawning
+  - Score tracking
+  - Level system
+
+## Debug Guide
+
+### Common Issues and Solutions
+
+1. **Game Not Starting**
+   - Check GameState.isGameStarted flag
+   - Verify event listener setup
+   - Check console for YAML loading errors
+
+2. **Auto Mode Issues**
+   - Check MovementSystem.findPathToFood implementation
+   - Verify path calculation
+   - Monitor snake collision avoidance
+
+3. **Level Progression**
+   - Verify score thresholds in config.yaml
+   - Check LevelSystem.nextLevel function
+   - Monitor level state transitions
+
+4. **Performance Issues**
+   - Watch RequestAnimationFrame timing
+   - Check render optimization
+   - Monitor memory usage with long sessions
+
+### Testing Checklist
+
+1. **Core Functionality**
+   - [ ] Manual movement (arrow keys + WASD)
+   - [ ] Auto mode pathfinding
+   - [ ] Collision detection
+   - [ ] Score tracking
+   - [ ] Level progression
+
+2. **UI Elements**
+   - [ ] Score display updates
+   - [ ] Heart system works
+   - [ ] Level transitions
+   - [ ] Theme switching
+   - [ ] Riddle system timing
+
+3. **Mobile Support**
+   - [ ] Touch controls responsive
+   - [ ] UI scales correctly
+   - [ ] Gestures working
+   - [ ] Performance acceptable
+
+## Issue Tracking
+
+Each issue is now tracked with timestamps for better debugging and feature implementation tracking. When adding new issues or fixes, please include:
+
+1. Timestamp (UTC)
+2. Issue/Feature Category
+3. Detailed Description
+4. Related Systems
+5. Status (🔴 Critical, 🟡 Important, 🟢 Minor)
+
+## Technical Documentation
+
+### Rendering System
+- Canvas uses semi-transparent background (rgba(255, 255, 255, 0.15))
+- Snake segments have:
+  - Main color fill from level theme
+  - Black outline (2px) for contrast
+  - White highlight (30% opacity) for depth
+  - Rounded corners (5px radius)
+
+### Visual Effects
+1. **Snake Visibility**:
+   - Outline stroke: 2px black
+   - Highlight: 30% white
+   - Segments: Level-based colors
+   - Shape: Rounded rectangles
+
+2. **Canvas Effects**:
+   - Background: 15% white
+   - Backdrop filter: blur(2px)
+   - Border: Level-based accent color
+
+3. **UI Elements**:
+   - Backdrop blur for overlays
+   - Semi-transparent backgrounds
+   - Consistent color schemes
+   - Smooth transitions
+
+## Game Modes
+
+1. **Manual Mode**:
+   - Started by clicking "Start" button
+   - Uses keyboard (arrows/WASD) or touch controls
+   - Cannot switch to auto mode while running
+   - Must end game to change modes
+
+2. **Auto Mode**:
+   - Started by clicking "Auto" button
+   - Uses A* pathfinding with fallback logic
+   - Cannot switch to manual mode while running
+   - Must end game to change modes
+
+3. **Auto-Start Feature**:
+   - Activates after 5 seconds of inactivity
+   - Automatically starts in auto mode
+   - Can be interrupted by manual interaction
 
 
 
