@@ -74,9 +74,9 @@ body.grayscale-mode {
 
 .level-name {
     position: absolute;
-    top: 50%;
+    top: 10px; /* Adjusted position */
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.7);
     padding: 4px 12px;
     border-radius: 20px;
@@ -129,6 +129,44 @@ body.grayscale-mode {
     text-align: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     backdrop-filter: blur(4px);
+    position: relative;
+    overflow: hidden;
+}
+
+.riddle-text, .riddle-answer {
+    transition: opacity 0.5s ease-in-out;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.riddle-text {
+    opacity: 1;
+}
+
+.riddle-text.fade-out {
+    opacity: 0;
+}
+
+.riddle-answer {
+    opacity: 0;
+    font-weight: bold;
+    color: var(--primary-accent);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+}
+
+.riddle-answer.fade-in {
+    opacity: 1;
+}
+
+#riddleTimer {
+    color: var(--secondary-accent);
+    margin-bottom: 10px;
 }
 
 .controls {

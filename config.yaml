@@ -6,9 +6,9 @@ game:
     minSwipeDistance: 30
     autoStartDelay: 5
     riddleCycleTime: 15
-  
-  # Color Schemes
-  colorSchemes:
+
+# Color Schemes
+colorSchemes:
     rainbow:
         - "#FF6B6B"
         - "#FFD93D"
@@ -28,13 +28,13 @@ game:
         - "#00FF00"
         - "#FFFF00"
     grayscale:
-      - "#999"
-      - "#777"
-      - "#555"
-      - "#333"
-  
-  # Riddles
-  riddles:
+        - "#999"
+        - "#777"
+        - "#555"
+        - "#333"
+
+# Riddles
+riddles:
     - question: "I slither through time, always moving forward but never backward. What am I?"
       answer: "Time! ⏳ (Like a snake, it moves in one direction)"
     - question: "I coil around your thoughts, always present but never seen. I can be broken but never touched. What am I?"
@@ -43,9 +43,9 @@ game:
       answer: "A storm! 🌪️ (The wind 'hisses' like a snake)"
     - question: "I shed my skin every day, yet I am not a snake. I grow taller but never older. What am I?"
       answer: "A tree! 🌳 (Bark sheds like snake skin)"
-  
-  # Snake Facts (if needed)
-  snakeFacts:
+
+# Snake Facts (if needed)
+snakeFacts:
     - "Snakes can smell with their tongues! 👅"
     - "Some snakes can glide over 100 meters! ✈️"
     - "Snakes have 5 ways to move! 🕺"

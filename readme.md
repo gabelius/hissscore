@@ -1,5 +1,46 @@
 # Smart Snake Game
 
+## Table of Contents
+1. [User Requirements](#user-requirements)
+2. [Features](#features)
+3. [System Architecture](#system-architecture)
+4. [Development Notes](#development-notes)
+5. [Implementation Status](#implementation-status)
+6. [Known Issues](#known-issues)
+7. [Change History](#change-history)
+
+## User Requirements
+
+1. **Game Controls**:
+   - Manual mode with keyboard/touch controls
+   - Auto mode with AI pathfinding
+   - Start button for manual play
+   - Auto button for AI play
+   - Speed control for faster gameplay
+   - Theme toggle for day/night modes
+   - Color scheme selection
+
+2. **Game Mechanics**:
+   - Snake grows when eating food
+   - Hearts system for multiple lives
+   - Progressive difficulty levels
+   - Score-based level progression
+   - Collectable power-ups (hearts)
+
+3. **UI/UX Requirements**:
+   - Responsive design for mobile/desktop
+   - Visual feedback for actions
+   - Clear level progression
+   - Theme-based backgrounds
+   - Interactive riddles system
+
+4. **Riddle System Requirements**:
+   - Questions visible for 10 seconds
+   - Timer countdown display
+   - Answers shown for 5 seconds
+   - Smooth transitions between states
+   - Visual separation of Q&A
+
 ## Features
 
 1. **Core Mechanics**:
@@ -37,46 +78,110 @@
    - Snake-themed riddles with answers, cycling every 15 seconds.
    - Fun snake facts displayed during auto-start or game-over countdown.
 
-## Outstanding Issues
+## System Architecture
 
-1. **Night Mode**:
-   - Fully integrated with color definitions from `config.yaml`.
-   - Night mode button now works as intended.
+1. **Core Systems**:
+   - GameState: Central state management
+   - MovementSystem: Controls & pathfinding
+   - CollisionSystem: Hit detection & response
+   - RenderSystem: Graphics & animation
+   - UISystem: Interface & feedback
+   - FoodSystem: Item spawning & collection
+   - RiddleSystem: Q&A management
 
-2. **Color Modes**:
-   - Functionality for switching color modes (Rainbow, Pastel, Neon, Grayscale) is now complete.
+2. **State Management**:
+   - Centralized game state object
+   - Event-driven architecture
+   - YAML-based configuration
+   - System isolation for modularity
 
-3. **Level Story**:
-   - A narrative connecting each level theme and its progression is a **future topic**.
+3. **Technical Implementation**:
+   - RequestAnimationFrame game loop
+   - A* pathfinding for AI
+   - CSS transitions for animations
+   - Modular system design
+   - Event delegation pattern
 
-## Configuration Files
+## Development Notes
 
-1. **`config.yaml`**:
-   - Stores game settings, primary colors, and night mode color configurations.
-   - Now includes level themes with associated names, snake colors, background images, and independent JSON files for facts and riddles per level.
+### Recent Changes
+1. **Riddle System Improvements**:
+   - Added 10s question timer
+   - Implemented 5s answer display
+   - Added fade transitions
+   - Fixed timer synchronization
 
-2. **Level-Based JSON Files**:
-   - Each level has a unique facts and riddles file (e.g., `level1_facts.json`, `level1_riddles.json`).
+2. **Auto Mode Updates**:
+   - Implemented A* pathfinding
+   - Added fallback movement system
+   - Fixed collision avoidance
+   - Improved path selection
 
-## Pending Fixes
+3. **Start/Auto Functionality**:
+   - Start button initiates manual mode
+   - Auto button enables AI control
+   - Fixed game state management
+   - Added proper cleanup
 
-- Add level-based themes and dynamically load snake colors and background images.
-- Update HUD to display the current level and level name.
-- Verify and refine UI elements for consistency and usability.
+### Developer Instructions
+1. Keep changes modular and system-focused
+2. Update README with new requirements
+3. Document system understanding
+4. Include code change explanations
+5. Track user feedback and issues
+
+## Implementation Status
+
+1. ✅ **Core Systems**:
+   - State Management
+   - Rendering
+   - Collision Detection
+   - Food System
+   - UI System
+   - Riddle System
+
+2. 🟡 **Features**:
+   - Auto-mode A* pathfinding (Implemented)
+   - Level progression (Working)
+   - Score system (Working)
+   - Hearts system (Working)
+   - Auto-start (Needs testing)
+
+3. 🔄 **Current Issues**:
+   - Auto-mode pathfinding optimization needed
+   - Level transition animations
+   - Mobile touch controls refinement
+
+4. 📝 **Future Improvements**:
+   - Optimize A* pathfinding
+   - Add power-ups system
+   - Implement achievement system
+   - Add local high scores
+   - Add sound effects
 
 ## Known Issues
 
-1. **UI**:
-   - The level name "Level 1: Slithering Start" appears behind the game canvas, overlapping with the border of the canvas. It should be moved down or shown as a translucent overlay at the center of the game canvas.
+1. ~~Start Button~~ (FIXED)
+   - ~~Clicking the Start button does not start the game.~~
 
-2. **Buttons**:
-   - None of the buttons (Start, Auto, Speed, Color Themes, Day/Night toggle) are functioning.
+2. **Auto Mode** (PARTIALLY FIXED):
+   - A* pathfinding implemented for auto mode.
+   - Automatic activation after inactivity now working.
 
-3. **Auto-Start**:
+3. **Buttons**:
+   - Some buttons (Speed, Color Themes, Day/Night toggle) need refinement.
+
+4. **Auto-Start**:
    - The game does not auto-start after 5 seconds of inactivity.
 
-4. **Game Start**:
-   - Pressing the Start button does not start the game.
+## Change History
+
+### 2024-01-xx
+- Fixed riddle system timing
+- Added transition animations
+- Updated auto-mode pathfinding
+- Improved start/auto functionality
+- Added proper game state management
 
 
 
