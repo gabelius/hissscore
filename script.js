@@ -13,8 +13,8 @@ fetch('config.yaml')
     .catch(error => console.error('Error loading config:', error));
 
 // Game Constants
-const TILE_SIZE = config.game.tileSize;
-const TILE_COUNT = config.game.tileCount;
+const TILE_SIZE = 20;
+const TILE_COUNT = 20;
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -22,7 +22,7 @@ const ctx = canvas.getContext('2d');
 let snake = [], food, direction;
 let score = 0, hearts = 3, gameOver = false, gameStarted = false;
 let colorCycle = 0, currentColorMode = 'rainbow';
-let lastUpdate = 0, updateInterval = config.game.updateInterval, startTime;
+let lastUpdate = 0, updateInterval = 150, startTime;
 let isAuto = false, inactivityTimer;
 
 function setupEventListeners() {

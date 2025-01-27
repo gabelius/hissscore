@@ -54,42 +54,42 @@ game:
 # Level Names
 levels:
     - name: "The Green Meadow"
-      background: "img/meadow.jpg"
+      background: "img/1.webp"
       snakeColors: ["#00FF00"]
       scoreThreshold: 100
     - name: "The Desert Mirage"
-      background: "img/desert.jpg"
+      background: "img/2.webp"
       snakeColors: ["#C2B280"]
       scoreThreshold: 200
     - name: "The Mystic Forest"
-      background: "img/forest.jpg"
+      background: "img/3.webp"
       snakeColors: ["#228B22"]
       scoreThreshold: 300
     - name: "The Arctic Tundra"
-      background: "img/tundra.jpg"
+      background: "img/4.webp"
       snakeColors: ["#00FFFF"]
       scoreThreshold: 400
     - name: "The Molten Core"
-      background: "img/lava.jpg"
+      background: "img/5.webp"
       snakeColors: ["#FF4500"]
       scoreThreshold: 500
     - name: "The Starry Night"
-      background: "img/stars.jpg"
+      background: "img/6.webp"
       snakeColors: ["#1E90FF"]
       scoreThreshold: 600
     - name: "The Ocean Depths"
-      background: "img/ocean.jpg"
+      background: "img/7.webp"
       snakeColors: ["#008080"]
       scoreThreshold: 700
     - name: "The Golden Sands"
-      background: "img/beach.jpg"
+      background: "img/8.webp"
       snakeColors: ["#FFD700"]
       scoreThreshold: 800
     - name: "The Thunder Plains"
-      background: "img/storm.jpg"
+      background: "img/9.webp"
       snakeColors: ["#800080"]
       scoreThreshold: 900
     - name: "The Cosmic Void"
-      background: "img/cosmos.jpg"
+      background: "img/10.webp"
       snakeColors: ["#000000"]
       scoreThreshold: 1000
