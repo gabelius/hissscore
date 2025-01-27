@@ -17,13 +17,20 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: var(--primary-bg);
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), var(--primary-bg);
     color: var(--text-color);
     font-family: 'Comic Neue', cursive;
     margin: 0;
     padding: 12px;
     min-height: 100dvh;
     transition: all 0.3s ease;
+}
+
+.level-background {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    transition: background-image 0.5s ease-in-out;
 }
 
 .game-header {
@@ -38,6 +45,26 @@ body {
     font-size: 0.9rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     color: var(--text-color);
+    position: relative;
+}
+
+.level-name {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    color: white;
+    z-index: 1;
+}
+
+#hearts {
+    color: var(--danger-accent);
+    font-size: 1.1rem;
 }
 
 #gameContainer {
@@ -49,11 +76,13 @@ body {
     overflow: hidden;
     position: relative;
     box-shadow: 0 8px 24px rgba(255, 107, 107, 0.2);
+    background: rgba(255,255,255,0.9);
 }
 
 #gameCanvas {
     width: 100%;
     height: 100%;
+    touch-action: none;
 }
 
 .riddle-container {
@@ -64,6 +93,7 @@ body {
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    backdrop-filter: blur(4px);
 }
 
 .controls {
@@ -83,11 +113,26 @@ button, select {
     cursor: pointer;
     transition: all 0.2s;
     font-weight: bold;
+    backdrop-filter: blur(4px);
+}
+
+button:hover, select:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+button:active, select:active {
+    transform: scale(0.95);
 }
 
 #themeToggle {
     grid-column: span 2;
     background: var(--primary-accent);
+}
+
+.active-mode {
+    background: var(--primary-accent) !important;
+    box-shadow: 0 0 8px rgba(255,107,107,0.5);
 }
 
 .countdown {
@@ -106,7 +151,19 @@ button, select {
     display: none;
 }
 
-.hearts span {
-    color: var(--danger-accent);
-    font-size: 1.1rem;
+@media (max-width: 480px) {
+    .game-header {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+    
+    .level-name {
+        font-size: 0.75rem;
+        top: 50px;
+    }
+    
+    button, select {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
 }

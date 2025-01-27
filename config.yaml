@@ -6,35 +6,35 @@ game:
     minSwipeDistance: 30
     autoStartDelay: 5
     riddleCycleTime: 15
-  
-  # Color Schemes
-  colorSchemes:
+
+# Color Schemes
+colorSchemes:
     rainbow:
-      - "#FF6B6B"
-      - "#FFD93D"
-      - "#6BFF6B"
-      - "#4ECDC4"
-      - "#9B59B6"
+        - "#FF6B6B"
+        - "#FFD93D"
+        - "#6BFF6B"
+        - "#4ECDC4"
+        - "#9B59B6"
     pastel:
-      - "#FFB3BA"
-      - "#FFDFBA"
-      - "#FFFFBA"
-      - "#BAFFC9"
-      - "#BAE1FF"
+        - "#FFB3BA"
+        - "#FFDFBA"
+        - "#FFFFBA"
+        - "#BAFFC9"
+        - "#BAE1FF"
     neon:
-      - "#FF00FF"
-      - "#00FFFF"
-      - "#FF0000"
-      - "#00FF00"
-      - "#FFFF00"
+        - "#FF00FF"
+        - "#00FFFF"
+        - "#FF0000"
+        - "#00FF00"
+        - "#FFFF00"
     grayscale:
-      - "#999"
-      - "#777"
-      - "#555"
-      - "#333"
-  
-  # Riddles
-  riddles:
+        - "#999"
+        - "#777"
+        - "#555"
+        - "#333"
+
+# Riddles
+riddles:
     - question: "I slither through time, always moving forward but never backward. What am I?"
       answer: "Time! ⏳ (Like a snake, it moves in one direction)"
     - question: "I coil around your thoughts, always present but never seen. I can be broken but never touched. What am I?"
@@ -43,10 +43,23 @@ game:
       answer: "A storm! 🌪️ (The wind 'hisses' like a snake)"
     - question: "I shed my skin every day, yet I am not a snake. I grow taller but never older. What am I?"
       answer: "A tree! 🌳 (Bark sheds like snake skin)"
-  
-  # Snake Facts (if needed)
-  snakeFacts:
+
+# Snake Facts
+snakeFacts:
     - "Snakes can smell with their tongues! 👅"
     - "Some snakes can glide over 100 meters! ✈️"
     - "Snakes have 5 ways to move! 🕺"
     - "The fastest snake moves at 12 mph! 🏎️"
+
+# Level Names
+levels:
+    - name: "Slithering Start"
+    - name: "Serpent's Path"
+    - name: "Coiling Challenge"
+    - name: "Venomous Valley"
+    - name: "Scale Summit"
+    - name: "Fang Frontier"
+    - name: "Hiss Highlands"
+    - name: "Rattle Ridge"
+    - name: "Constrictor's Peak"
+    - name: "Python Plateau"

@@ -1,44 +1,113 @@
 let config;
+let currentLevel = 1;
+let gameAnimationFrame;
 
 // Load YAML configuration
 fetch('config.yaml')
     .then(response => response.text())
     .then(yamlText => {
-        config = jsyaml.load(yamlText); // Parse YAML
-        initGame(); // Start the game after loading config
+        config = jsyaml.load(yamlText);
+        initGame();
+        setupEventListeners();
     })
     .catch(error => console.error('Error loading config:', error));
 
 // Game Constants
-const TILE_SIZE = config.game.tileSize;
-const TILE_COUNT = config.game.tileCount;
+let TILE_SIZE, TILE_COUNT, BASE_UPDATE_INTERVAL;
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // Game State
 let snake = [], food, direction;
 let score = 0, hearts = 3, gameOver = false, gameStarted = false;
-let colorCycle = 0, currentColorMode = 'rainbow';
-let lastUpdate = 0, updateInterval = config.game.updateInterval, startTime;
+let currentColorMode = 'rainbow';
+let lastUpdate = 0, startTime;
 let isAuto = false, inactivityTimer;
 
-// Initialize Game
+function setupEventListeners() {
+    // Touch/Mouse controls
+    let touchStartX = 0, touchStartY = 0;
+    
+    canvas.addEventListener('touchstart', e => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', handleSwipe, { passive: false });
+    canvas.addEventListener('mousedown', e => {
+        touchStartX = e.clientX;
+        touchStartY = e.clientY;
+    });
+    canvas.addEventListener('mouseup', handleSwipe);
+
+    // Button controls
+    document.getElementById('startBtn').addEventListener('click', () => {
+        if (!gameStarted) {
+            gameStarted = true;
+            initGame();
+            gameLoop(performance.now());
+        }
+    });
+
+    document.getElementById('autoBtn').addEventListener('click', function() {
+        isAuto = !isAuto;
+        this.classList.toggle('active-mode');
+    });
+
+    document.getElementById('speedBtn').addEventListener('click', () => {
+        BASE_UPDATE_INTERVAL = Math.max(50, BASE_UPDATE_INTERVAL * 0.7);
+    });
+
+    document.getElementById('colorMode').addEventListener('change', (e) => {
+        currentColorMode = e.target.value;
+    });
+
+    // Keyboard controls
+    window.addEventListener('keydown', e => {
+        switch(e.key) {
+            case 'ArrowUp': if(direction.y !== 1) direction = {x: 0, y: -1}; break;
+            case 'ArrowDown': if(direction.y !== -1) direction = {x: 0, y: 1}; break;
+            case 'ArrowLeft': if(direction.x !== 1) direction = {x: -1, y: 0}; break;
+            case 'ArrowRight': if(direction.x !== -1) direction = {x: 1, y: 0}; break;
+        }
+    });
+}
+
 function initGame() {
-    canvas.width = canvas.height = 400;
+    TILE_SIZE = config.game.tileSize;
+    TILE_COUNT = config.game.tileCount;
+    BASE_UPDATE_INTERVAL = config.game.updateInterval;
+    
+    canvas.width = canvas.height = TILE_SIZE * TILE_COUNT;
     snake = [{x: 10, y: 10}];
     direction = {x: 1, y: 0};
-    score = hearts = 0;
+    score = 0;
+    hearts = 3;
+    currentLevel = 1;
     gameOver = false;
-    gameStarted = true;
     startTime = Date.now();
+    
     placeFood();
     updateHearts();
     startRiddles();
+    updateLevelBackground();
+    document.getElementById('levelName').textContent = `Level 1: ${config.levels[0].name}`;
     draw();
-    resetInactivityTimer();
+    
+    if(gameAnimationFrame) cancelAnimationFrame(gameAnimationFrame);
+    gameAnimationFrame = requestAnimationFrame(gameLoop);
 }
 
-// Core Game Functions
+function updateHearts() {
+    document.getElementById('hearts').textContent = '❤'.repeat(hearts);
+}
+
+function updateLevelBackground() {
+    document.body.style.backgroundImage = `url(img/${currentLevel}.webp)`;
+    document.body.classList.add('level-background');
+}
+
 function placeFood() {
     const spawnHeart = hearts < 3 && Math.random() < 0.3;
     do {
@@ -51,10 +120,9 @@ function placeFood() {
 }
 
 function draw() {
-    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--primary-bg');
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-bg');
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw Snake
     snake.forEach((seg, i) => {
         ctx.fillStyle = getColor(i);
         ctx.beginPath();
@@ -62,7 +130,6 @@ function draw() {
         ctx.fill();
     });
 
-    // Draw Food
     ctx.font = '24px system-ui';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -74,7 +141,7 @@ function draw() {
 
 function gameLoop(timestamp) {
     if(gameOver) return;
-    if(timestamp - lastUpdate > updateInterval) {
+    if(timestamp - lastUpdate > BASE_UPDATE_INTERVAL) {
         if(isAuto) autoMove();
         const head = {
             x: (snake[0].x + direction.x + TILE_COUNT) % TILE_COUNT,
@@ -89,7 +156,11 @@ function gameLoop(timestamp) {
         snake.unshift(head);
         if(head.x === food.x && head.y === food.y) {
             score += 10;
-            if(food.type === 'heart') hearts++;
+            checkLevel();
+            if(food.type === 'heart') {
+                hearts = Math.min(3, hearts + 1);
+                updateHearts();
+            }
             placeFood();
         } else {
             snake.pop();
@@ -100,10 +171,22 @@ function gameLoop(timestamp) {
         lastUpdate = timestamp;
         draw();
     }
-    requestAnimationFrame(gameLoop);
+    gameAnimationFrame = requestAnimationFrame(gameLoop);
 }
 
-// Auto Mode Logic
+function checkLevel() {
+    const thresholds = [0, 100, 300, 700, 1500, 3100, 6300, 12700, 25500, 51100];
+    const newLevel = thresholds.findIndex(t => score < t) - 1;
+    
+    if (newLevel !== currentLevel && newLevel >= 1 && newLevel <= 10) {
+        currentLevel = newLevel;
+        updateLevelBackground();
+        document.getElementById('levelName').textContent = 
+            `Level ${currentLevel}: ${config.levels[currentLevel-1].name}`;
+        BASE_UPDATE_INTERVAL = Math.max(50, config.game.updateInterval * (0.5 ** (currentLevel-1)));
+    }
+}
+
 function autoMove() {
     const head = snake[0];
     const body = new Set(snake.slice(1).map(s => `${s.x},${s.y}`));
@@ -121,10 +204,22 @@ function autoMove() {
     const candidates = safeDirs.length ? safeDirs : dirs;
     const foodDir = {x: food.x - head.x, y: food.y - head.y};
     
-    direction = candidates.reduce((a,b) => 
-        (Math.sign(foodDir.x) === b.x + Math.sign(foodDir.y) === b.y) > 
-        (Math.sign(foodDir.x) === a.x + Math.sign(foodDir.y) === a.y) ? b : a
-    );
+    direction = candidates.reduce((a, b) => {
+        const aScore = (Math.sign(foodDir.x) === a.x) + (Math.sign(foodDir.y) === a.y);
+        const bScore = (Math.sign(foodDir.x) === b.x) + (Math.sign(foodDir.y) === b.y);
+        return bScore > aScore ? b : a;
+    }, candidates[0]);
+}
+
+function handleCollision() {
+    if(--hearts <= 0) {
+        gameOver = true;
+        alert(`Game Over! Score: ${score}`);
+        initGame();
+    } else {
+        updateHearts();
+        snake = [snake[0]];
+    }
 }
 
 // Riddle System
@@ -145,41 +240,34 @@ function showRiddle() {
     setTimeout(showRiddle, 15000);
 }
 
-// Auto-Start System
-function showAutoStart() {
-    const countdown = document.getElementById('autoCountdown');
-    countdown.style.display = 'block';
-    document.getElementById('snakeFact').textContent = 
-        config.snakeFacts[Math.floor(Math.random() * config.snakeFacts.length)];
+function handleSwipe(e) {
+    if (!gameStarted || gameOver) return;
+
+    const touchEndX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+    const touchEndY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
     
-    let seconds = 5;
-    const timer = setInterval(() => {
-        document.getElementById('countdown').textContent = seconds;
-        if(seconds-- <= 0) {
-            clearInterval(timer);
-            countdown.style.display = 'none';
-            isAuto = true;
-            document.getElementById('autoBtn').classList.add('active-mode');
-            initGame();
-            gameLoop(0);
+    const dx = touchEndX - touchStartX;
+    const dy = touchEndY - touchStartY;
+    
+    if (Math.abs(dx) > config.game.minSwipeDistance || Math.abs(dy) > config.game.minSwipeDistance) {
+        if (Math.abs(dx) > Math.abs(dy)) {
+            // Horizontal swipe
+            if (dx > 0 && direction.x !== -1) direction = {x: 1, y: 0};
+            else if (dx < 0 && direction.x !== 1) direction = {x: -1, y: 0};
+        } else {
+            // Vertical swipe
+            if (dy > 0 && direction.y !== -1) direction = {x: 0, y: 1};
+            else if (dy < 0 && direction.y !== 1) direction = {x: 0, y: -1};
         }
-    }, 1000);
+    }
 }
 
-// Event Listeners
-document.getElementById('startBtn').addEventListener('click', () => {
-    if(!gameStarted) {
-        initGame();
-        gameLoop(0);
-    }
-});
+function getColor(index) {
+    const scheme = config.colorSchemes[currentColorMode];
+    return scheme[index % scheme.length];
+}
 
-document.getElementById('themeToggle').addEventListener('click', () => {
-    document.body.classList.toggle('night-mode');
-    document.getElementById('themeToggle').textContent = 
-        document.body.classList.contains('night-mode') ? "☀️ Day" : "🌙 Night";
-});
-
-// Initialize Game
-canvas.width = canvas.height = 400;
-draw();
+function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(showAutoStart, config.game.autoStartDelay * 1000);
+}
