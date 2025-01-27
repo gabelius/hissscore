@@ -137,6 +137,7 @@ function updateLevelBackground() {
     levelNameElement.classList.remove('fade-out');
     void levelNameElement.offsetWidth; // Trigger reflow to restart the animation
     setTimeout(() => {
+        console.log('Adding fade-out class'); // Debugging line
         levelNameElement.classList.add('fade-out');
     }, 5000);
 }
