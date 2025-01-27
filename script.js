@@ -37,7 +37,7 @@ function setupEventListeners() {
     }, { passive: false });
 
     canvas.addEventListener('touchmove', handleSwipe, { passive: false });
-    canvas.addEventListener('mousedown', e => {
+    canvas.addEvsentListener('mousedown', e => {
         touchStartX = e.clientX;
         touchStartY = e.clientY;
     });
