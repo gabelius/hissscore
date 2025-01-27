@@ -57,11 +57,12 @@ function setupEventListeners() {
     });
 
     document.getElementById('speedBtn').addEventListener('click', () => {
-        BASE_UPDATE_INTERVAL = Math.max(50, BASE_UPDATE_INTERVAL * 0.7);
+        updateInterval = Math.max(50, updateInterval * 0.7);
     });
 
     document.getElementById('colorMode').addEventListener('change', (e) => {
         currentColorMode = e.target.value;
+        document.body.className = `${currentColorMode}-mode`;
     });
 
     // Keyboard controls
@@ -267,7 +268,7 @@ function showAutoStart() {
 // Event Listeners
 document.getElementById('themeToggle').addEventListener('click', () => {
     document.body.classList.toggle('night-mode');
-    document.getElementById('themeToggle').textContent = 
+    document.getElementById('themeToggle').textContent =
         document.body.classList.contains('night-mode') ? "☀️ Day" : "🌙 Night";
 });
 
