@@ -579,23 +579,18 @@ function setupEventListeners() {
 
 // Add new function to handle game start
 function startGame() {
-    if (!GameState.isGameStarted || GameState.isGameOver) {
-        resetGameState();
-        GameState.isGameStarted = true;
-        GameState.isGameOver = false;
-        GameState.lastUpdate = performance.now();
-        GameState.startTime = Date.now();
-        GameState.lastAutoMove = Date.now();
-        
-        // Clear any pending auto-start timer
-        clearTimeout(GameState.inactivityTimer);
-        
-        // Ensure proper mode is set
-        document.getElementById('autoBtn').classList.toggle('active-mode', GameState.isAutoMode);
-        
-        RenderSystem.draw();
-        gameLoop(performance.now());
-    }
+    resetGameState();
+    GameState.isGameStarted = true;
+    GameState.isGameOver = false;
+    GameState.lastUpdate = performance.now();
+    GameState.startTime = Date.now();
+    GameState.lastAutoMove = Date.now();
+    
+    // Ensure proper mode is set
+    document.getElementById('autoBtn').classList.toggle('active-mode', GameState.isAutoMode);
+    
+    RenderSystem.draw();
+    gameLoop(performance.now());
 }
 
 // Update autoMove function with simpler, more direct pathfinding
@@ -648,15 +643,12 @@ function handleGameOver() {
 // Add auto-start functionality
 function resetInactivityTimer() {
     clearTimeout(GameState.inactivityTimer);
-    // Only allow auto-start when game hasn't started and isn't in auto mode
-    if (!GameState.isGameStarted && !GameState.isAutoMode) {
+    if (!GameState.isGameStarted) {
         GameState.inactivityTimer = setTimeout(() => {
-            if (!GameState.isGameStarted) {  // Double check game hasn't started
-                GameState.isAutoMode = true;
-                document.getElementById('autoBtn').classList.add('active-mode');
-                startGame();
-            }
-        }, 5000);
+            GameState.isAutoMode = true;
+            document.getElementById('autoBtn').classList.add('active-mode');
+            startGame();
+        }, 5000); // 5 seconds
     }
 }
 
