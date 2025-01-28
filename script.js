@@ -66,11 +66,8 @@ const UISystem = {
         if (!level) return;
 
         document.body.style.backgroundImage = `url('${level.background}')`;
-        const levelNameElement = document.getElementById('levelName');
-        levelNameElement.textContent = `Level ${GameState.currentLevel}: ${level.name}`;
-        levelNameElement.classList.remove('fade-out');
-        void levelNameElement.offsetWidth;
-        setTimeout(() => levelNameElement.classList.add('fade-out'), 5000);
+        document.getElementById('levelNumber').textContent = GameState.currentLevel;
+        document.getElementById('levelName').textContent = level.name;
     }
 };
 
@@ -122,6 +119,13 @@ const MovementSystem = {
 
     handleKeyboardInput(key) {
         if (!GameState.isGameStarted || GameState.isGameOver) return;
+        
+        // If we're in auto mode, pressing any key switches to manual mode
+        if (GameState.isAutoMode) {
+            GameState.isAutoMode = false;
+            document.getElementById('autoBtn').classList.remove('active-mode');
+            return;
+        }
         
         const directions = {
             ArrowUp: {x: 0, y: -1},
@@ -221,6 +225,7 @@ const CollisionSystem = {
 const RenderSystem = {
     draw() {
         this.clearCanvas();
+        this.drawRiddleBackground();  // Add this line
         this.drawSnake();
         this.drawFood();
     },
@@ -230,6 +235,69 @@ const RenderSystem = {
         GAME.ctx.clearRect(0, 0, GAME.canvas.width, GAME.canvas.height);
         GAME.ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
         GAME.ctx.fillRect(0, 0, GAME.canvas.width, GAME.canvas.height);
+    },
+
+    drawRiddleBackground() {
+        if (!GameState.config?.riddles) return;
+        const riddle = GameState.config.riddles[RiddleSystem.riddleIndex];
+        if (!riddle) return;
+
+        GAME.ctx.save();
+        
+        // Draw the countdown first
+        GAME.ctx.font = 'bold 24px Comic Neue';
+        GAME.ctx.textAlign = 'center';
+        GAME.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        GAME.ctx.fillText(
+            `${RiddleSystem.isShowingAnswer ? 'Answer' : 'Question'}: ${RiddleSystem.timeLeft}s`,
+            GAME.canvas.width / 2,
+            30
+        );
+
+        // Set up the text style
+        GAME.ctx.font = 'bold 18px Comic Neue';
+        GAME.ctx.textBaseline = 'middle';
+        
+        // Get the text to display based on current state
+        const text = RiddleSystem.isShowingAnswer ? riddle.answer : riddle.question;
+        
+        // Split text into multiple lines
+        const words = text.split(' ');
+        const lines = [];
+        let currentLine = '';
+        
+        words.forEach(word => {
+            const testLine = currentLine + word + ' ';
+            if (GAME.ctx.measureText(testLine).width > GAME.canvas.width - 40) {
+                lines.push(currentLine);
+                currentLine = word + ' ';
+            } else {
+                currentLine = testLine;
+            }
+        });
+        lines.push(currentLine);
+
+        // Draw each line with stroke
+        const lineHeight = 28;
+        const startY = (GAME.canvas.height - (lines.length * lineHeight)) / 2;
+        
+        lines.forEach((line, index) => {
+            const x = GAME.canvas.width / 2;
+            const y = startY + (index * lineHeight);
+            
+            // Draw stroke
+            GAME.ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+            GAME.ctx.lineWidth = 3;
+            GAME.ctx.strokeText(line, x, y);
+            
+            // Draw text with different colors for question and answer
+            GAME.ctx.fillStyle = RiddleSystem.isShowingAnswer ? 
+                'rgba(255, 107, 107, 0.3)' : // Red tint for answer
+                'rgba(255, 255, 255, 0.2)';  // White for question
+            GAME.ctx.fillText(line, x, y);
+        });
+
+        GAME.ctx.restore();
     },
 
     drawSnake() {
@@ -284,21 +352,22 @@ const RenderSystem = {
     },
 
     getSnakeColor(index) {
-        // Add outline to snake segments for better visibility
         const defaultColors = ['#4CAF50', '#81C784', '#A5D6A7'];
-        let color;
+        let colors;
         
-        if (!GameState.config?.levels?.[GameState.currentLevel - 1]?.snakeColors) {
-            color = defaultColors[index % defaultColors.length];
+        // Get color scheme based on selected mode
+        const colorMode = document.getElementById('colorMode').value;
+        if (colorMode && GameState.config?.colorSchemes?.[colorMode.replace('-mode', '')]) {
+            colors = GameState.config.colorSchemes[colorMode.replace('-mode', '')];
+        } else if (GameState.config?.levels?.[GameState.currentLevel - 1]?.snakeColors) {
+            colors = GameState.config.levels[GameState.currentLevel - 1].snakeColors;
         } else {
-            const colors = GameState.config.levels[GameState.currentLevel - 1].snakeColors;
-            color = colors[index % colors.length];
+            colors = defaultColors;
         }
 
-        // Return both fill and outline colors
         return {
-            fill: color,
-            outline: '#000000'  // Black outline
+            fill: colors[index % colors.length],
+            outline: '#000000'
         };
     }
 };
@@ -306,80 +375,67 @@ const RenderSystem = {
 // Riddle System
 const RiddleSystem = {
     riddleIndex: 0,
-    intervalId: null,
-    QUESTION_DURATION: 10000, // 10 seconds
-    ANSWER_DURATION: 5000,    // 5 seconds
+    animationFrame: null,
+    startTime: null,
+    lastUpdateTime: 0,
+    QUESTION_DURATION: 10000,
+    ANSWER_DURATION: 5000,
     isShowingAnswer: false,
+    timeLeft: 10,
 
     startRiddles() {
-        const container = document.getElementById('riddleText');
-        const timerElement = document.getElementById('riddleCountdown');
-        
-        // Create permanent DOM elements
-        container.innerHTML = `
-            <div class="riddle-text"></div>
-            <div class="riddle-answer"></div>
-        `;
-        
-        const textElement = container.querySelector('.riddle-text');
-        const answerElement = container.querySelector('.riddle-answer');
-
-        const showRiddle = () => {
-            if (!GameState.config?.riddles) return;
+        // Simplified to only handle state updates and animation frame
+        const updateRiddle = (timestamp) => {
+            if (!this.startTime) {
+                this.startTime = timestamp;
+                this.lastUpdateTime = timestamp;
+            }
             
-            const riddle = GameState.config.riddles[this.riddleIndex];
-            this.isShowingAnswer = false;
+            const elapsed = timestamp - this.startTime;
             
-            // Show question
-            textElement.textContent = riddle.question;
-            textElement.classList.remove('fade-out');
-            answerElement.classList.remove('fade-in');
-            
-            // Start question timer
-            let timeLeft = this.QUESTION_DURATION / 1000;
-            const updateTimer = () => {
-                if (timeLeft > 0) {
-                    timerElement.textContent = timeLeft;
-                    timeLeft--;
-                    setTimeout(updateTimer, 1000);
-                }
-            };
-            updateTimer();
-
-            // Show answer after question duration
-            setTimeout(() => {
-                this.isShowingAnswer = true;
-                textElement.classList.add('fade-out');
-                answerElement.textContent = riddle.answer;
-                answerElement.classList.add('fade-in');
+            // Update state and force redraw every second
+            if (timestamp - this.lastUpdateTime >= 1000) {
+                this.lastUpdateTime = timestamp;
                 
-                // Update timer for answer duration
-                timeLeft = this.ANSWER_DURATION / 1000;
-                const updateAnswerTimer = () => {
-                    if (timeLeft > 0) {
-                        timerElement.textContent = timeLeft;
-                        timeLeft--;
-                        setTimeout(updateAnswerTimer, 1000);
-                    }
-                };
-                updateAnswerTimer();
-            }, this.QUESTION_DURATION);
+                if (!GameState.config?.riddles) return;
 
-            // Schedule next riddle
-            setTimeout(() => {
-                this.riddleIndex = (this.riddleIndex + 1) % GameState.config.riddles.length;
-                showRiddle();
-            }, this.QUESTION_DURATION + this.ANSWER_DURATION);
+                if (elapsed < this.QUESTION_DURATION) {
+                    this.timeLeft = Math.ceil((this.QUESTION_DURATION - elapsed) / 1000);
+                    this.isShowingAnswer = false;
+                } else if (elapsed < this.QUESTION_DURATION + this.ANSWER_DURATION) {
+                    this.timeLeft = Math.ceil((this.QUESTION_DURATION + this.ANSWER_DURATION - elapsed) / 1000);
+                    this.isShowingAnswer = true;
+                } else {
+                    this.startTime = timestamp;
+                    this.riddleIndex = (this.riddleIndex + 1) % GameState.config.riddles.length;
+                    this.isShowingAnswer = false;
+                    this.timeLeft = 10;
+                }
+                
+                RenderSystem.draw(); // Force canvas redraw
+            }
+
+            if (!GameState.isGameOver) {
+                this.animationFrame = requestAnimationFrame(updateRiddle);
+            }
         };
 
-        showRiddle();
+        this.startTime = null;
+        this.lastUpdateTime = 0;
+        this.timeLeft = 10;
+        this.animationFrame = requestAnimationFrame(updateRiddle);
     },
 
     stopRiddles() {
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-            this.intervalId = null;
+        if (this.animationFrame) {
+            cancelAnimationFrame(this.animationFrame);
+            this.animationFrame = null;
         }
+        this.startTime = null;
+        this.lastUpdateTime = 0;
+        this.riddleIndex = 0;
+        this.isShowingAnswer = false;
+        this.timeLeft = 10;
     }
 };
 
@@ -552,7 +608,32 @@ function setupEventListeners() {
         MovementSystem.handleKeyboardInput(e.key);
     });
 
-    // Button controls
+    // Auto mode toggle with proper state handling and visual feedback
+    document.getElementById('autoBtn').addEventListener('click', () => {
+        const autoBtn = document.getElementById('autoBtn');
+        
+        // Always toggle the mode state
+        GameState.isAutoMode = !GameState.isAutoMode;
+        
+        // Update button appearance
+        autoBtn.classList.toggle('active-mode', GameState.isAutoMode);
+        
+        if (!GameState.isGameStarted) {
+            // If game hasn't started, start it
+            startGame();
+        } else {
+            // If game is running, handle mode switch
+            if (!GameState.isAutoMode) {
+                // Store current direction when switching to manual
+                const currentDir = { ...GameState.direction };
+                setTimeout(() => {
+                    GameState.direction = currentDir;
+                }, 50);
+            }
+        }
+    });
+
+    // Start button
     document.getElementById('startBtn').addEventListener('click', () => {
         if (!GameState.isGameStarted) {
             GameState.isAutoMode = false;
@@ -561,20 +642,27 @@ function setupEventListeners() {
         }
     });
 
-    document.getElementById('autoBtn').addEventListener('click', () => {
-        if (!GameState.isGameStarted) {
-            GameState.isAutoMode = true;
-            document.getElementById('autoBtn').classList.add('active-mode');
-            startGame();
-        }
-    });
-
+    // Speed button
     document.getElementById('speedBtn').addEventListener('click', () => {
         GameState.updateInterval = Math.max(50, GameState.updateInterval * 0.7);
     });
 
-    // Add color and theme listeners
-    // ...existing event listeners...
+    // Theme toggle with proper state management
+    document.getElementById('themeToggle').addEventListener('click', () => {
+        const isNightMode = document.body.classList.toggle('night-mode');
+        document.getElementById('themeToggle').classList.toggle('active-mode', isNightMode);
+        localStorage.setItem('nightMode', isNightMode); // Remember user preference
+    });
+
+    // Color mode with immediate update
+    document.getElementById('colorMode').addEventListener('change', (e) => {
+        document.body.className = ''; // Clear all modes
+        document.body.classList.add(e.target.value);
+        if (document.body.classList.contains('night-mode')) {
+            document.body.classList.add('night-mode');
+        }
+        RenderSystem.draw(); // Redraw snake with new colors
+    });
 }
 
 // Add new function to handle game start
@@ -584,9 +672,8 @@ function startGame() {
     GameState.isGameOver = false;
     GameState.lastUpdate = performance.now();
     GameState.startTime = Date.now();
-    GameState.lastAutoMove = Date.now();
     
-    // Ensure proper mode is set
+    // Update auto button visual state
     document.getElementById('autoBtn').classList.toggle('active-mode', GameState.isAutoMode);
     
     RenderSystem.draw();

@@ -161,25 +161,41 @@
 
 ## Known Issues
 
-1. ~~Start Button~~ (FIXED)
-   - ~~Clicking the Start button does not start the game.~~
+1. **UI Issues** (🔴 CRITICAL):
+   - HUD text shifting with score/time changes
+   - Riddle text appears blurry
+   - Dark mode not applying correctly
+   - Color schemes not working
+   - Solution: Updated CSS and rendering system
 
-2. ~~Auto Mode~~ (FIXED)
-   - ~~A* pathfinding implemented for auto mode.~~
-   - ~~Automatic activation after inactivity now working.~~
-   - ~~Mode switching during gameplay prevented.~~
+2. **Auto Mode** (🟡 IMPORTANT):
+   - Cannot toggle off during gameplay
+   - State management issues
+   - Solution: Improved event handling and state tracking
 
-3. ~~Visual Issues~~ (FIXED)
-   - ~~Snake visibility in different levels~~
-   - ~~Game canvas transparency~~
-   - ~~Background visibility~~
-
-4. **Riddle System** (🟡 IMPORTANT):
-   - Timer synchronization needs improvement
-   - Animation transitions can be smoother
-   - Question/Answer positioning needs refinement
+3. **Visual Styles** (🟡 IMPORTANT):
+   - Snake colors not following color schemes
+   - Dark mode not affecting all elements
+   - Solution: Implemented proper theme system
 
 ## Change History
+
+### 2024-01-24 17:00 UTC
+- **Fix**: Visual and Control Issues
+  - Fixed HUD text shifting with monospace font
+  - Improved riddle text rendering
+  - Implemented proper dark mode system
+  - Fixed color scheme selection
+  - Added multi-color snake support
+  - Fixed auto mode toggle
+  - Updated documentation
+
+### 2024-01-24 16:00 UTC
+- **Fix**: UI Stability
+  - Added fixed widths to HUD elements
+  - Implemented proper alignment
+  - Fixed content shifting issues
+  - Improved layout consistency
 
 ### 2024-01-24 15:45 UTC
 - **Fix**: Game Mode Switching

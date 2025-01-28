@@ -10,33 +10,31 @@
 </head>
 <body>
     <div class="game-header">
-        <div>🏆 <span id="score">0</span></div>
-        <div class="hearts" id="hearts">❤❤❤</div>
+        <div class="level-info">
+            <span class="level-number">Level <span id="levelNumber">1</span></span>
+            <span class="level-name" id="levelName">Slithering Start</span>
+        </div>
         <div>⏳ <span id="timer">0</span>s</div>
+        <div class="hearts" id="hearts">❤❤❤</div>
+        <div>🏆 <span id="score">0</span></div>
     </div>
 
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
-        <div id="levelName" class="level-name">Level 1: Slithering Start</div>
         <!-- The game over overlay will be dynamically inserted here -->
     </div>
 
-    <div class="riddle-container">
-        <div id="riddleTimer">Next answer in: <span id="riddleCountdown">15</span>s</div>
-        <div id="riddleText"></div>
-    </div>
-
     <div class="controls">
-        <button id="startBtn">▶ Start</button>
-        <select id="colorMode">
-            <option value="rainbow">🌈 Colors</option>
-            <option value="pastel">🎨 Pastel</option>
-            <option value="neon">🌆 Neon</option>
-            <option value="grayscale">⚫ Grayscale</option>
+        <button id="startBtn" title="Start Game">⏵</button>
+        <button id="autoBtn" title="Auto Play">🤖</button>
+        <button id="speedBtn" title="Increase Speed">⚡</button>
+        <button id="themeToggle" title="Toggle Theme">🌓</button>
+        <select id="colorMode" title="Color Theme">
+            <option value="rainbow-mode">🌈</option>
+            <option value="pastel-mode">🎨</option>
+            <option value="neon-mode">🌆</option>
+            <option value="grayscale-mode">⚫</option>
         </select>
-        <button id="autoBtn">🤖 Auto</button>
-        <button id="speedBtn">🚀 Speed</button>
-        <button id="themeToggle">🌙 Night Mode</button>
     </div>
 
     <script src="script.js"></script>

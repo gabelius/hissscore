@@ -8,11 +8,12 @@
 }
 
 .night-mode {
-    --primary-bg: #2d3436;
-    --secondary-bg: #3b4345;
-    --text-color: #f0f9ff;
-    --primary-accent: #FF6B6B; /* Adjust if needed */
-    --secondary-accent: #4ECDC4; /* Adjust if needed */
+    --primary-bg: #1a1a1a;
+    --secondary-bg: #2d2d2d;
+    --text-color: #e0e0e0;
+    --primary-accent: #ff7f7f;
+    --secondary-accent: #66d9e8;
+    background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), var(--primary-bg);
 }
 
 body {
@@ -61,10 +62,12 @@ body.grayscale-mode {
 
 .game-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
     width: min(95vw, 400px);
     margin: 8px 0;
-    padding: 12px;
+    padding: 12px 16px;
     background: rgba(255,255,255,0.95);
     border-radius: 12px;
     backdrop-filter: blur(8px);
@@ -74,35 +77,55 @@ body.grayscale-mode {
     position: relative;
 }
 
+.game-header > div {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 80px; /* Increased fixed width */
+    justify-content: flex-end; /* Right align all content */
+    text-align: right;
+    font-family: monospace; /* Use monospace for numbers to prevent shifting */
+}
+
+.level-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    margin-right: auto; /* Push other elements to the right */
+    min-width: 140px; /* Ensure enough space for longest level name */
+}
+
+.level-number {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    color: var(--text-color);
+}
+
 .level-name {
-    position: absolute;
-    top: 10px; /* Adjusted position */
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    font-weight: bold;
     white-space: nowrap;
-    color: white;
-    z-index: 2; /* Ensure it is above the game canvas */
-    text-align: center;
-    opacity: 1; /* Ensure initial opacity is set */
-    transition: opacity 5s ease-out; /* Add transition for smooth fade-out */
+    color: var(--primary-accent);
 }
 
-.level-name.fade-out {
-    opacity: 0; /* Set opacity to 0 for fade-out effect */
-}
+/* Remove the old level-name styles since we're not using it anymore */
+/*.level-name {
+    position: absolute;
+    // ... existing level-name styles ...
+}*/
 
-@keyframes fadeOut {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+#score, #timer {
+    min-width: 24px;
+    display: inline-block;
+    text-align: right;
 }
 
 #hearts {
     color: var(--danger-accent);
     font-size: 1.1rem;
+    min-width: 60px; /* Fixed width for hearts */
+    justify-content: center;
 }
 
 #gameContainer {
@@ -120,77 +143,75 @@ body.grayscale-mode {
     width: 100%;
     height: 100%;
     touch-action: none;
-    background: rgba(255, 255, 255, 0.15); /* Add slight white transparency */
-    backdrop-filter: blur(2px); /* Add subtle blur effect */
-}
-
-.riddle-container {
-    width: min(95vw, 400px);
-    margin: 16px 0;
-    padding: 16px;
-    background: var(--secondary-bg);
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.1); /* Reduced opacity */
     position: relative;
-    overflow: hidden;
+    z-index: 1;
 }
 
-.riddle-text, .riddle-answer {
-    transition: opacity 0.5s ease-in-out;
-    min-height: 60px;
+/* Remove or comment out these styles as they're no longer needed */
+/*
+.riddle-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 0;
+    color: rgba(255, 255, 255, 0.25);
+    padding: 20px;
+    box-sizing: border-box;
+    pointer-events: none;
 }
+
+#riddleTimer, .riddle-text, .riddle-answer {
+    // ... existing riddle styles ...
+}
+*/
 
 .riddle-text {
-    opacity: 1;
-}
-
-.riddle-text.fade-out {
-    opacity: 0;
-}
-
-.riddle-answer {
-    opacity: 0;
-    font-weight: bold;
-    color: var(--primary-accent);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 16px;
-}
-
-.riddle-answer.fade-in {
-    opacity: 1;
-}
-
-#riddleTimer {
-    color: var(--secondary-accent);
-    margin-bottom: 10px;
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+    font-smooth: always;
 }
 
 .controls {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    justify-content: center;
     gap: 8px;
     width: min(95vw, 400px);
     margin: 8px 0;
 }
 
 button, select {
-    padding: 12px;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
     border: none;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
     color: white;
     cursor: pointer;
     transition: all 0.2s;
     font-weight: bold;
     backdrop-filter: blur(4px);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-align: center;
+    padding: 0;
+}
+
+#themeToggle {
+    background: var(--primary-accent);
 }
 
 button:hover, select:hover {
@@ -202,14 +223,24 @@ button:active, select:active {
     transform: scale(0.95);
 }
 
-#themeToggle {
-    grid-column: span 2;
-    background: var(--primary-accent);
-}
-
 .active-mode {
     background: var(--primary-accent) !important;
-    box-shadow: 0 0 8px rgba(255,107,107,0.5);
+    box-shadow: 0 0 12px rgba(255, 107, 107, 0.7);
+    transform: scale(1.05);
+}
+
+#autoBtn {
+    transition: all 0.3s ease;
+}
+
+#autoBtn.active-mode {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1.05); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1.05); }
 }
 
 .countdown {
