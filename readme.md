@@ -161,24 +161,36 @@
 
 ## Known Issues
 
-1. **UI Issues** (🔴 CRITICAL):
+1. **UI Issues** (🟢 FIXED):
    - HUD text shifting with score/time changes
    - Riddle text appears blurry
    - Dark mode not applying correctly
    - Color schemes not working
    - Solution: Updated CSS and rendering system
+   - Fixed: 2024-01-24 17:30 UTC
 
-2. **Auto Mode** (🟡 IMPORTANT):
+2. **Auto Mode** (✅ FIXED):
    - Cannot toggle off during gameplay
    - State management issues
+   - Button visual feedback missing
    - Solution: Improved event handling and state tracking
+   - Added proper visual feedback
+   - Fixed: 2024-01-24 18:00 UTC
 
-3. **Visual Styles** (🟡 IMPORTANT):
-   - Snake colors not following color schemes
-   - Dark mode not affecting all elements
-   - Solution: Implemented proper theme system
+3. **Riddle System** (🟡 IMPORTANT):
+   - Timer synchronization needs improvement
+   - Animation transitions can be smoother
+   - Question/Answer positioning needs refinement
 
 ## Change History
+
+### 2024-01-24 18:00 UTC
+- **Fix**: Auto Mode Toggle
+  - Fixed auto mode toggle during gameplay
+  - Added visual feedback for mode changes
+  - Improved state management
+  - Added keyboard override for auto mode
+  - Updated documentation
 
 ### 2024-01-24 17:00 UTC
 - **Fix**: Visual and Control Issues

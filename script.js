@@ -120,13 +120,14 @@ const MovementSystem = {
     handleKeyboardInput(key) {
         if (!GameState.isGameStarted || GameState.isGameOver) return;
         
-        // If we're in auto mode, pressing any key switches to manual mode
-        if (GameState.isAutoMode) {
+        // If in auto mode and any movement key is pressed, switch to manual mode
+        if (GameState.isAutoMode && this.isMovementKey(key)) {
             GameState.isAutoMode = false;
             document.getElementById('autoBtn').classList.remove('active-mode');
             return;
         }
         
+        // Handle movement
         const directions = {
             ArrowUp: {x: 0, y: -1},
             ArrowDown: {x: 0, y: 1},
@@ -142,6 +143,10 @@ const MovementSystem = {
         if (newDir && this.isValidDirection(newDir)) {
             GameState.direction = newDir;
         }
+    },
+
+    isMovementKey(key) {
+        return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 's', 'a', 'd'].includes(key);
     },
 
     // Update MovementSystem with simpler pathfinding
@@ -544,6 +549,7 @@ function gameLoop(timestamp) {
     }
 
     if (timestamp - GameState.lastUpdate > GameState.updateInterval) {
+        // Only use autoMove when auto mode is active
         if (GameState.isAutoMode && GameState.isGameStarted && !GameState.isGameOver) {
             autoMove();
         }
@@ -608,27 +614,23 @@ function setupEventListeners() {
         MovementSystem.handleKeyboardInput(e.key);
     });
 
-    // Auto mode toggle with proper state handling and visual feedback
+    // Auto mode toggle with improved state management
     document.getElementById('autoBtn').addEventListener('click', () => {
-        const autoBtn = document.getElementById('autoBtn');
-        
-        // Always toggle the mode state
+        // Toggle mode state
         GameState.isAutoMode = !GameState.isAutoMode;
         
-        // Update button appearance
+        // Update visual feedback
+        const autoBtn = document.getElementById('autoBtn');
         autoBtn.classList.toggle('active-mode', GameState.isAutoMode);
         
+        // Handle game state
         if (!GameState.isGameStarted) {
-            // If game hasn't started, start it
             startGame();
         } else {
-            // If game is running, handle mode switch
+            // If switching to manual mode, preserve current direction
             if (!GameState.isAutoMode) {
-                // Store current direction when switching to manual
                 const currentDir = { ...GameState.direction };
-                setTimeout(() => {
-                    GameState.direction = currentDir;
-                }, 50);
+                GameState.direction = currentDir;
             }
         }
     });
