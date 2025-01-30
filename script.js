@@ -19,6 +19,7 @@ const GameState = {
     autoModeDelay: 300, // Add delay between auto moves
     levelDelay: 2000,   // Add delay between levels
     foodDelay: 1000,    // Add delay between food collections
+    isPaused: false, // Add pause state
 };
 
 // Game Constants
@@ -564,6 +565,10 @@ function gameLoop(timestamp) {
         return;
     }
 
+    if (GameState.isPaused) {
+        return; // Exit if the game is paused
+    }
+
     if (timestamp - GameState.lastUpdate > GameState.updateInterval) {
         // Only use autoMove when auto mode is active
         if (GameState.isAutoMode && GameState.isGameStarted && !GameState.isGameOver) {
@@ -654,9 +659,16 @@ function setupEventListeners() {
     // Start button
     document.getElementById('startBtn').addEventListener('click', () => {
         if (!GameState.isGameStarted) {
-            GameState.isAutoMode = false;
-            document.getElementById('autoBtn').classList.remove('active-mode');
             startGame();
+            document.getElementById('startBtn').textContent = '⏸️'; // Change to pause icon
+        } else if (GameState.isPaused) {
+            GameState.isPaused = false;
+            GameState.lastUpdate = performance.now();
+            gameLoop(performance.now());
+            document.getElementById('startBtn').textContent = '⏸️'; // Ensure pause icon
+        } else {
+            pauseGame();
+            document.getElementById('startBtn').textContent = '▶️'; // Change to start icon
         }
     });
 
@@ -688,14 +700,20 @@ function startGame() {
     resetGameState();
     GameState.isGameStarted = true;
     GameState.isGameOver = false;
+    GameState.isPaused = false; // Ensure game is not paused
     GameState.lastUpdate = performance.now();
-    GameState.startTime = Date.now();
     
-    // Update auto button visual state
-    document.getElementById('autoBtn').classList.toggle('active-mode', GameState.isAutoMode);
+    // Update Start button icon
+    document.getElementById('startBtn').textContent = '⏸️';
     
     RenderSystem.draw();
     gameLoop(performance.now());
+}
+
+// Add Pause Game Function
+function pauseGame() {
+    GameState.isPaused = true;
+    cancelAnimationFrame(GameState.animationFrame);
 }
 
 // Update autoMove function with simpler, more direct pathfinding
