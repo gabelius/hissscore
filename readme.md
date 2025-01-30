@@ -13,7 +13,7 @@
 
 1. **Game Controls**:
    - Manual mode with keyboard/touch controls
-   - Auto mode with AI pathfinding
+   - **Auto mode that starts automatically**
    - Start button for manual play
    - Auto button for AI play
    - Speed control for faster gameplay

@@ -4,7 +4,7 @@ game:
     tileCount: 20
     updateInterval: 150
     minSwipeDistance: 30
-    autoStartDelay: 5
+    autoStartDelay: 0 # Set to 0 to start auto mode immediately
     riddleCycleTime: 15
 
 # Color Schemes

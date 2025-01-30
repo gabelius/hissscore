@@ -231,7 +231,16 @@ const MovementSystem = {
             currentKey = prevKey;
         }
         return path;
-    }
+    },
+
+    // Add isSafeMove method
+    isSafeMove(head, moveDir) {
+        const newHead = {
+            x: (head.x + moveDir.x + GAME.TILE_COUNT) % GAME.TILE_COUNT,
+            y: (head.y + moveDir.y + GAME.TILE_COUNT) % GAME.TILE_COUNT
+        };
+        return !GameState.snake.some(segment => segment.x === newHead.x && segment.y === newHead.y);
+    },
 };
 
 // Collision Detection System
@@ -701,10 +710,12 @@ function startGame() {
     GameState.isGameStarted = true;
     GameState.isGameOver = false;
     GameState.isPaused = false; // Ensure game is not paused
+    GameState.isAutoMode = true; // Enable auto mode
     GameState.lastUpdate = performance.now();
     
-    // Update Start button icon
-    document.getElementById('startBtn').textContent = '⏸️';
+    // Update Start and Auto buttons UI
+    document.getElementById('startBtn').textContent = '⏸️'; // Change to pause icon
+    document.getElementById('autoBtn').classList.add('active-mode'); // Activate auto mode UI
     
     RenderSystem.draw();
     gameLoop(performance.now());
@@ -766,6 +777,8 @@ function handleGameOver() {
 // Add auto-start functionality
 function resetInactivityTimer() {
     clearTimeout(GameState.inactivityTimer);
+    // Commenting out the timer to start auto mode immediately
+    /*
     if (!GameState.isGameStarted) {
         GameState.inactivityTimer = setTimeout(() => {
             GameState.isAutoMode = true;
@@ -773,6 +786,7 @@ function resetInactivityTimer() {
             startGame();
         }, 5000); // 5 seconds
     }
+    */
 }
 
 // Initialize the game

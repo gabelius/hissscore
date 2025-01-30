@@ -245,6 +245,13 @@ button:active, select:active {
     animation: pulse 2s infinite;
 }
 
+/* Modify the active state for autoBtn to differentiate from other buttons */
+.controls button#autoBtn.active-mode {
+    background: var(--secondary-accent) !important;
+    box-shadow: 0 0 12px rgba(102, 217, 232, 0.7);
+    transform: scale(1.05);
+}
+
 @keyframes pulse {
     0% { transform: scale(1.05); }
     50% { transform: scale(1.1); }
