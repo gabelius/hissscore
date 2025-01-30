@@ -149,56 +149,87 @@ const MovementSystem = {
         return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 's', 'a', 'd'].includes(key);
     },
 
-    // Update MovementSystem with simpler pathfinding
+    // Implement A* Pathfinding
     findPathToFood(start, goal) {
-        // Simple direct pathfinding
-        const dx = goal.x - start.x;
-        const dy = goal.y - start.y;
-        
-        // Try horizontal movement first if it's safe
-        if (dx !== 0) {
-            const horizontalMove = {
-                x: Math.sign(dx),
-                y: 0
-            };
-            if (this.isSafeMove(start, horizontalMove)) {
-                return true;
+        // A* algorithm implementation
+        const openSet = [];
+        const closedSet = new Set();
+        const cameFrom = new Map();
+
+        const gScore = new Map();
+        const fScore = new Map();
+
+        const startKey = `${start.x},${start.y}`;
+        const goalKey = `${goal.x},${goal.y}`;
+
+        gScore.set(startKey, 0);
+        fScore.set(startKey, this.heuristic(start, goal));
+
+        openSet.push({ pos: start, f: fScore.get(startKey) });
+
+        while (openSet.length > 0) {
+            // Sort openSet by fScore
+            openSet.sort((a, b) => a.f - b.f);
+            const current = openSet.shift().pos;
+            const currentKey = `${current.x},${current.y}`;
+
+            if (currentKey === goalKey) {
+                return this.reconstructPath(cameFrom, currentKey);
+            }
+
+            closedSet.add(currentKey);
+
+            const neighbors = this.getNeighbors(current);
+            for (const neighbor of neighbors) {
+                const neighborKey = `${neighbor.x},${neighbor.y}`;
+                if (closedSet.has(neighborKey)) continue;
+
+                const tentativeG = gScore.get(currentKey) + 1;
+
+                const existingG = gScore.get(neighborKey);
+                if (existingG === undefined || tentativeG < existingG) {
+                    cameFrom.set(neighborKey, currentKey);
+                    gScore.set(neighborKey, tentativeG);
+                    fScore.set(neighborKey, tentativeG + this.heuristic(neighbor, goal));
+
+                    if (!openSet.find(item => item.pos.x === neighbor.x && item.pos.y === neighbor.y)) {
+                        openSet.push({ pos: neighbor, f: fScore.get(neighborKey) });
+                    }
+                }
             }
         }
-        
-        // Try vertical movement if horizontal isn't possible
-        if (dy !== 0) {
-            const verticalMove = {
-                x: 0,
-                y: Math.sign(dy)
-            };
-            if (this.isSafeMove(start, verticalMove)) {
-                return true;
-            }
-        }
-        
-        // If direct path isn't safe, find any safe direction
-        return this.findSafeDirection(start);
+
+        // No path found
+        return null;
     },
 
-    isSafeMove(pos, dir) {
-        const newPos = {
+    heuristic(a, b) {
+        // Manhattan distance
+        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    },
+
+    getNeighbors(pos) {
+        const dirs = [
+            {x: 1, y: 0},
+            {x: -1, y: 0},
+            {x: 0, y: 1},
+            {x: 0, y: -1}
+        ];
+        return dirs.map(dir => ({
             x: (pos.x + dir.x + GAME.TILE_COUNT) % GAME.TILE_COUNT,
             y: (pos.y + dir.y + GAME.TILE_COUNT) % GAME.TILE_COUNT
-        };
-        
-        // Check if new position collides with snake
-        return !GameState.snake.some(s => s.x === newPos.x && s.y === newPos.y);
+        }));
     },
 
-    findSafeDirection(pos) {
-        const directions = [
-            {x: 1, y: 0}, {x: 0, y: 1},
-            {x: -1, y: 0}, {x: 0, y: -1}
-        ];
-        
-        // Filter safe directions and prioritize those leading towards food
-        return directions.find(dir => this.isSafeMove(pos, dir));
+    reconstructPath(cameFrom, currentKey) {
+        const path = [];
+        while (cameFrom.has(currentKey)) {
+            const prevKey = cameFrom.get(currentKey);
+            const [x, y] = prevKey.split(',').map(Number);
+            path.unshift({x, y});
+            currentKey = prevKey;
+        }
+        return path;
     }
 };
 
@@ -389,36 +420,30 @@ const RiddleSystem = {
     timeLeft: 10,
 
     startRiddles() {
-        // Simplified to only handle state updates and animation frame
         const updateRiddle = (timestamp) => {
             if (!this.startTime) {
                 this.startTime = timestamp;
-                this.lastUpdateTime = timestamp;
             }
-            
-            const elapsed = timestamp - this.startTime;
-            
-            // Update state and force redraw every second
-            if (timestamp - this.lastUpdateTime >= 1000) {
-                this.lastUpdateTime = timestamp;
-                
-                if (!GameState.config?.riddles) return;
 
-                if (elapsed < this.QUESTION_DURATION) {
-                    this.timeLeft = Math.ceil((this.QUESTION_DURATION - elapsed) / 1000);
-                    this.isShowingAnswer = false;
-                } else if (elapsed < this.QUESTION_DURATION + this.ANSWER_DURATION) {
-                    this.timeLeft = Math.ceil((this.QUESTION_DURATION + this.ANSWER_DURATION - elapsed) / 1000);
-                    this.isShowingAnswer = true;
-                } else {
-                    this.startTime = timestamp;
-                    this.riddleIndex = (this.riddleIndex + 1) % GameState.config.riddles.length;
-                    this.isShowingAnswer = false;
-                    this.timeLeft = 10;
-                }
-                
-                RenderSystem.draw(); // Force canvas redraw
+            const elapsed = timestamp - this.startTime;
+
+            if (!this.isShowingAnswer && elapsed >= this.QUESTION_DURATION * 1000) {
+                this.isShowingAnswer = true;
+                this.timeLeft = this.ANSWER_DURATION;
+                this.startTime = timestamp;
+            } else if (this.isShowingAnswer && elapsed >= this.ANSWER_DURATION * 1000) {
+                this.isShowingAnswer = false;
+                this.timeLeft = this.QUESTION_DURATION;
+                this.riddleIndex = (this.riddleIndex + 1) % GameState.config.riddles.length;
+                this.startTime = timestamp;
+            } else {
+                this.timeLeft = this.isShowingAnswer 
+                    ? Math.max(0, this.ANSWER_DURATION - Math.floor(elapsed / 1000))
+                    : Math.max(0, this.QUESTION_DURATION - Math.floor(elapsed / 1000));
             }
+
+            this.lastUpdateTime = timestamp;
+            RenderSystem.draw();
 
             if (!GameState.isGameOver) {
                 this.animationFrame = requestAnimationFrame(updateRiddle);
@@ -512,32 +537,23 @@ const GameOverSystem = {
             <div class="game-over-message">${message}</div>
             <div class="game-over-score">Score: ${GameState.score}</div>
             <div class="game-over-message">${fact}</div>
-            <div class="game-over-countdown">Restarting in: 10</div>
+            <div class="game-over-countdown">Restarting in: <span id="countdown">10</span>s</div>
         `;
         
         container.appendChild(overlay);
         setTimeout(() => overlay.classList.add('visible'), 100);
 
-        // Wait 10 seconds before countdown
-        setTimeout(() => {
-            let count = 10;
-            const countdownEl = overlay.querySelector('.game-over-countdown');
-            
-            const countdown = setInterval(() => {
-                count--;
-                countdownEl.textContent = `Restarting in: ${count}`;
-                
-                if (count <= 0) {
-                    clearInterval(countdown);
-                    overlay.classList.remove('visible');
-                    setTimeout(() => {
-                        overlay.remove();
-                        resetGameState();
-                        startGame();
-                    }, 500);
-                }
-            }, 1000);
-        }, 10000);
+        let count = 10;
+        const countdownElement = overlay.querySelector('#countdown');
+        const countdownInterval = setInterval(() => {
+            count--;
+            countdownElement.textContent = count;
+            if (count <= 0) {
+                clearInterval(countdownInterval);
+                overlay.remove();
+                resetInactivityTimer();
+            }
+        }, 1000);
     }
 };
 
