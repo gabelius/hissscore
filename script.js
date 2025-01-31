@@ -797,3 +797,46 @@ window.addEventListener('load', () => {
 
 // Initialize the game
 initializeGame();
+
+// Update the Start/Pause button event listener
+document.getElementById('startBtn').addEventListener('click', () => {
+    if (!GameState.isGameStarted) {
+        startGame();
+    } else if (GameState.isPaused) {
+        resumeGame();
+    } else {
+        pauseGame();
+    }
+
+    // Toggle button icon
+    document.getElementById('startBtn').textContent = GameState.isPaused ? '▶️' : '⏸️';
+});
+
+// Add resumeGame function
+function resumeGame() {
+    GameState.isPaused = false;
+    GameState.animationFrame = requestAnimationFrame(gameLoop);
+    // Update Start button to show Pause icon
+    document.getElementById('startBtn').textContent = '⏸️';
+}
+
+// Update pauseGame function
+function pauseGame() {
+    GameState.isPaused = true;
+    cancelAnimationFrame(GameState.animationFrame);
+    // Update Start button to show Play icon
+    document.getElementById('startBtn').textContent = '▶️';
+}
+
+// Update startGame function
+function startGame() {
+    resetGameState();
+    GameState.isGameStarted = true;
+    GameState.isPaused = false;
+
+    // Change Start button to Pause icon
+    document.getElementById('startBtn').textContent = '⏸️';
+
+    RenderSystem.draw();
+    gameLoop(performance.now());
+}
