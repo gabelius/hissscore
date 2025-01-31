@@ -777,16 +777,24 @@ function handleGameOver() {
 // Add auto-start functionality
 function resetInactivityTimer() {
     clearTimeout(GameState.inactivityTimer);
-    // Commenting out the timer to start auto mode immediately
-    /*
+
+    // If autoStartDelay is 0, start immediately if not started
+    if (!GameState.isGameStarted && (GameState.config?.game.autoStartDelay === 0)) {
+        GameState.isAutoMode = true;
+        document.getElementById('autoBtn').classList.add('active-mode');
+        startGame();
+        return;
+    }
+
+    // Otherwise, wait the specified delay
     if (!GameState.isGameStarted) {
+        const delay = GameState.config?.game.autoStartDelay || 5000;
         GameState.inactivityTimer = setTimeout(() => {
             GameState.isAutoMode = true;
             document.getElementById('autoBtn').classList.add('active-mode');
             startGame();
-        }, 5000); // 5 seconds
+        }, delay);
     }
-    */
 }
 
 // Initialize the game
