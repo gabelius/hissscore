@@ -1,3 +1,17 @@
+import {
+    initializeGame,
+    setupGame,
+    resetGameState,
+    gameLoop,
+    startGame,
+    pauseGame,
+    resumeGame,
+    GameState
+} from './coreGame.js';
+import { autoMove, resetInactivityTimer } from './autoGame.js';
+import RiddleSystem from './riddleSystem.js';
+import { toggleTheme, updateColorScheme } from './theme.js';
+
 // Game Configuration and State Management
 const GameState = {
     config: null,
@@ -424,8 +438,8 @@ const RiddleSystem = {
     animationFrame: null,
     startTime: null,
     lastUpdateTime: 0,
-    QUESTION_DURATION: 10000,
-    ANSWER_DURATION: 5000,
+    QUESTION_DURATION: 10,
+    ANSWER_DURATION: 5,
     isShowingAnswer: false,
     timeLeft: 10,
 
@@ -802,6 +816,10 @@ window.addEventListener('load', () => {
     initializeGame();
     resetInactivityTimer();
 });
+
+// Example event listeners
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+document.getElementById('colorMode').addEventListener('change', updateColorScheme);
 
 // Initialize the game
 initializeGame();
