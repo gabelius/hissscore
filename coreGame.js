@@ -67,6 +67,9 @@ const UISystem = {
 };
 
 const MovementSystem = {
+    touchStart: null,
+    minSwipeDistance: 30, // Minimum distance for a swipe
+
     isValidDirection(newDir) {
         return !(
             (newDir.x === -GameState.direction.x && newDir.y === GameState.direction.y) ||
@@ -196,6 +199,43 @@ const MovementSystem = {
             y: (head.y + moveDir.y + GAME.TILE_COUNT) % GAME.TILE_COUNT
         };
         return !GameState.snake.some(segment => segment.x === newHead.x && segment.y === newHead.y);
+    },
+
+    // Add to existing MovementSystem
+    handleTouchStart(e) {
+        this.touchStart = {
+            x: e.touches[0].clientX,
+            y: e.touches[0].clientY
+        };
+    },
+
+    handleTouchEnd(e) {
+        if (!this.touchStart) return;
+
+        const touchEnd = {
+            x: e.changedTouches[0].clientX,
+            y: e.changedTouches[0].clientY
+        };
+
+        const dx = touchEnd.x - this.touchStart.x;
+        const dy = touchEnd.y - this.touchStart.y;
+
+        // Reset touch start
+        this.touchStart = null;
+
+        // Minimum swipe distance check
+        if (Math.abs(dx) < this.minSwipeDistance && Math.abs(dy) < this.minSwipeDistance) {
+            return;
+        }
+
+        // Determine swipe direction
+        if (Math.abs(dx) > Math.abs(dy)) {
+            // Horizontal swipe
+            this.handleKeyboardInput(dx > 0 ? 'ArrowRight' : 'ArrowLeft');
+        } else {
+            // Vertical swipe
+            this.handleKeyboardInput(dy > 0 ? 'ArrowDown' : 'ArrowUp');
+        }
     },
 };
 
@@ -618,6 +658,17 @@ function setupEventListeners() {
         }
         MovementSystem.handleKeyboardInput(e.key);
     });
+
+    // Add touch controls
+    document.getElementById('gameCanvas').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        MovementSystem.handleTouchStart(e);
+    }, { passive: false });
+
+    document.getElementById('gameCanvas').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        MovementSystem.handleTouchEnd(e);
+    }, { passive: false });
 }
 
 // Export what is needed in other modules
