@@ -6,7 +6,6 @@
     <title>Smart Snake Gwame</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
 </head>
 <body>
     <div class="game-header">
@@ -39,7 +38,9 @@
         <button id="themeSettingsBtn" title="Theme Settings" onclick="location.href='themeSettings.html'">🎨</button>
     </div>
 
-    <!-- Change script tag to use type="module" -->
-    <script src="script.js" type="module"></script>
+    <!-- Load YAML first -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <!-- Then load our game -->
+    <script type="module" src="script.js"></script>
 </body>
 </html>

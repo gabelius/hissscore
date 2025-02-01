@@ -644,65 +644,84 @@ function resumeGame() {
 }
 
 function setupEventListeners() {
-    // Start/Pause button
-    document.getElementById('startBtn').addEventListener('click', () => {
-        clearTimeout(GameState.inactivityTimer); // Clear auto-start timer
-        GameState.isAutoMode = false; // Ensure manual mode
-        if (!GameState.isGameStarted) startGame();
-        else if (GameState.isPaused) resumeGame();
-        else pauseGame();
-    });
-
-    // Auto mode button
-    document.getElementById('autoBtn').addEventListener('click', () => {
-        clearTimeout(GameState.inactivityTimer); // Clear auto-start timer
-        GameState.isAutoMode = !GameState.isAutoMode;
-        document.getElementById('autoBtn').classList.toggle('active-mode');
-        if (!GameState.isGameStarted) startGame();
-    });
-
-    // Speed button
-    document.getElementById('speedBtn').addEventListener('click', () => {
-        GameState.currentSpeed = (GameState.currentSpeed % GameState.maxSpeed) + 1;
-        GameState.updateInterval = GameState.baseInterval / GameState.currentSpeed;
+    try {
+        // Start/Pause button
+        const startBtn = document.getElementById('startBtn');
+        if (!startBtn) throw new Error('Start button not found');
         
-        // Update speed indicators
-        const speedBtn = document.getElementById('speedBtn');
-        const speedIndicator = document.getElementById('speedIndicator');
-        
-        speedBtn.textContent = '⚡'.repeat(GameState.currentSpeed);
-        speedBtn.setAttribute('data-speed', GameState.currentSpeed);
-        speedIndicator.textContent = GameState.currentSpeed + 'x';
-        
-        // Visual feedback
-        speedBtn.classList.add('active-mode');
-        setTimeout(() => speedBtn.classList.remove('active-mode'), 200);
-    });
+        startBtn.addEventListener('click', () => {
+            console.log('Start button clicked, game state:', {
+                started: GameState.isGameStarted,
+                paused: GameState.isPaused
+            });
+            
+            clearTimeout(GameState.inactivityTimer);
+            GameState.isAutoMode = false;
+            
+            if (!GameState.isGameStarted) {
+                startGame();
+            } else if (GameState.isPaused) {
+                resumeGame();
+            } else {
+                pauseGame();
+            }
+        });
 
-    // Keyboard controls
-    document.addEventListener('keydown', (e) => {
-        if (!GameState.isGameStarted) {
+        // Auto mode button
+        document.getElementById('autoBtn').addEventListener('click', () => {
             clearTimeout(GameState.inactivityTimer); // Clear auto-start timer
-        }
-        MovementSystem.handleKeyboardInput(e.key);
-    });
+            GameState.isAutoMode = !GameState.isAutoMode;
+            document.getElementById('autoBtn').classList.toggle('active-mode');
+            if (!GameState.isGameStarted) startGame();
+        });
 
-    // Touch controls with proper passive settings
-    const canvas = document.getElementById('gameCanvas');
-    
-    canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        MovementSystem.handleTouchStart(e);
-    }, { passive: false });
-    
-    canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-    }, { passive: false });
-    
-    canvas.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        MovementSystem.handleTouchEnd(e);
-    }, { passive: false });
+        // Speed button
+        document.getElementById('speedBtn').addEventListener('click', () => {
+            GameState.currentSpeed = (GameState.currentSpeed % GameState.maxSpeed) + 1;
+            GameState.updateInterval = GameState.baseInterval / GameState.currentSpeed;
+            
+            // Update speed indicators
+            const speedBtn = document.getElementById('speedBtn');
+            const speedIndicator = document.getElementById('speedIndicator');
+            
+            speedBtn.textContent = '⚡'.repeat(GameState.currentSpeed);
+            speedBtn.setAttribute('data-speed', GameState.currentSpeed);
+            speedIndicator.textContent = GameState.currentSpeed + 'x';
+            
+            // Visual feedback
+            speedBtn.classList.add('active-mode');
+            setTimeout(() => speedBtn.classList.remove('active-mode'), 200);
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (!GameState.isGameStarted) {
+                clearTimeout(GameState.inactivityTimer); // Clear auto-start timer
+            }
+            MovementSystem.handleKeyboardInput(e.key);
+        });
+
+        // Touch controls with proper passive settings
+        const canvas = document.getElementById('gameCanvas');
+        
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            MovementSystem.handleTouchStart(e);
+        }, { passive: false });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            MovementSystem.handleTouchEnd(e);
+        }, { passive: false });
+        
+    } catch (error) {
+        console.error('Failed to setup event listeners:', error);
+        throw error;
+    }
 }
 
 // Export what is needed in other modules

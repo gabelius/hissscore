@@ -3,6 +3,10 @@ import { ThemeEngine } from './themeEngine.js';
 class ThemeSettings {
     constructor() {
         this.dialog = document.getElementById('themeEditor');
+        if (!this.dialog) {
+            console.error('Theme editor dialog not found');
+            return;
+        }
         this.setupEventListeners();
         this.loadThemes();
     }
@@ -112,6 +116,7 @@ class ThemeSettings {
 }
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', () => {
     new ThemeSettings();
+    ThemeEngine.init(); // Initialize theme engine
 });

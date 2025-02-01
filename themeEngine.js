@@ -24,23 +24,28 @@ export const ThemeEngine = {
     },
 
     init() {
-        // Load saved preferences
-        this.currentTheme = localStorage.getItem('theme') || 'light';
-        this.currentColorScheme = localStorage.getItem('colorScheme') || 'rainbow';
-        this.applyTheme();
-        this.setupListeners();
+        try {
+            // Load saved preferences
+            this.currentTheme = localStorage.getItem('theme') || 'light';
+            this.currentColorScheme = localStorage.getItem('colorScheme') || 'rainbow';
+            this.applyTheme();
+            this.setupListeners();
+        } catch (error) {
+            console.error('Theme engine initialization failed:', error);
+        }
     },
 
     setupListeners() {
-        // Theme toggle button
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            this.toggleTheme();
-        });
+        const themeToggle = document.getElementById('themeToggle');
+        const colorMode = document.getElementById('colorMode');
 
-        // Color scheme selector
-        document.getElementById('colorMode').addEventListener('change', (e) => {
-            this.setColorScheme(e.target.value);
-        });
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => this.toggleTheme());
+        }
+
+        if (colorMode) {
+            colorMode.addEventListener('change', (e) => this.setColorScheme(e.target.value));
+        }
     },
 
     toggleTheme() {
