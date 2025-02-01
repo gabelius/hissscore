@@ -2,6 +2,7 @@
 
 import { RiddleSystem } from './riddleSystem.js';
 import { autoMove } from './autoGame.js';
+import { ThemeEngine } from './themeEngine.js';
 
 const GameState = {
     config: null,
@@ -406,19 +407,10 @@ const RenderSystem = {
     },
 
     getSnakeColor(index) {
-        const defaultColors = ['#4CAF50', '#81C784', '#A5D6A7'];
-        let colors;
-        
-        // Get color scheme based on selected mode
         const colorMode = document.getElementById('colorMode').value;
-        if (colorMode && GameState.config?.colorSchemes?.[colorMode.replace('-mode', '')]) {
-            colors = GameState.config.colorSchemes[colorMode.replace('-mode', '')];
-        } else if (GameState.config?.levels?.[GameState.currentLevel - 1]?.snakeColors) {
-            colors = GameState.config.levels[GameState.currentLevel - 1].snakeColors;
-        } else {
-            colors = defaultColors;
-        }
-
+        const level = GameState.config?.levels?.[GameState.currentLevel - 1];
+        const colors = ThemeEngine.getSnakeColors(level, colorMode.replace('-mode', ''));
+        
         return {
             fill: colors[index % colors.length],
             outline: '#000000'

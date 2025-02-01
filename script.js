@@ -1,5 +1,6 @@
-import { initializeGame, GameState } from './coreGame.js';
+import { initializeGame } from './coreGame.js';
 import { resetInactivityTimer } from './autoGame.js';
+import { ThemeEngine } from './themeEngine.js';
 
 // Initialize GAME object
 window.GAME = {
@@ -11,6 +12,7 @@ window.GAME = {
 
 // Initialize game when document is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    ThemeEngine.init();
     initializeGame();
     resetInactivityTimer();
 

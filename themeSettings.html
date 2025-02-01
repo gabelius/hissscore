@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Settings - Smart Snake Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="themeSettings.css">
+</head>
+<body>
+    <div class="theme-settings">
+        <header>
+            <h1>Theme Settings</h1>
+            <button onclick="location.href='index.html'" class="back-btn">🏠</button>
+        </header>
+
+        <section class="theme-selector">
+            <h2>Built-in Themes</h2>
+            <div class="theme-grid" id="builtInThemes"></div>
+        </section>
+
+        <section class="custom-themes">
+            <h2>Custom Themes</h2>
+            <div class="theme-grid" id="customThemes"></div>
+            <button id="newThemeBtn" class="new-theme-btn">+ Create New Theme</button>
+        </section>
+
+        <dialog id="themeEditor">
+            <form method="dialog" class="theme-form">
+                <h3>Theme Editor</h3>
+                <div class="form-group">
+                    <label for="themeName">Theme Name:</label>
+                    <input type="text" id="themeName" required>
+                </div>
+                <div class="color-inputs">
+                    <div class="form-group">
+                        <label for="primaryBg">Primary Background:</label>
+                        <input type="color" id="primaryBg">
+                    </div>
+                    <div class="form-group">
+                        <label for="secondaryBg">Secondary Background:</label>
+                        <input type="color" id="secondaryBg">
+                    </div>
+                    <div class="form-group">
+                        <label for="primaryAccent">Primary Accent:</label>
+                        <input type="color" id="primaryAccent">
+                    </div>
+                    <div class="form-group">
+                        <label for="secondaryAccent">Secondary Accent:</label>
+                        <input type="color" id="secondaryAccent">
+                    </div>
+                    <div class="form-group">
+                        <label for="textColor">Text Color:</label>
+                        <input type="color" id="textColor">
+                    </div>
+                </div>
+                <div class="preview" id="themePreview">
+                    <div class="preview-header">Preview</div>
+                    <div class="preview-content">Sample Text</div>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="save-btn">Save Theme</button>
+                </div>
+            </form>
+        </dialog>
+    </div>
+    <script type="module" src="themeSettings.js"></script>
+</body>
+</html>
