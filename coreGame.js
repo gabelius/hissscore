@@ -593,6 +593,16 @@ function resumeGame() {
     document.getElementById('startBtn').textContent = '⏸️';
 }
 
+function setupEventListeners() {
+    // ...existing code...
+    document.getElementById('startBtn').addEventListener('click', () => {
+        if (!GameState.isGameStarted) startGame();
+        else if (!GameState.isPaused) pauseGame();
+        else resumeGame();
+    });
+    // ...existing code...
+}
+
 // Export what is needed in other modules
 export {
     GameState,
