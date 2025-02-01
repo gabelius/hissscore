@@ -179,9 +179,40 @@ body.grayscale-mode {
 .controls {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 12px;
     width: min(95vw, 400px);
-    margin: 8px 0;
+    margin: 12px 0;
+}
+
+.controls button,
+.controls select {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.controls button:hover,
+.controls select:hover {
+    transform: translateY(-2px);
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+
+.controls button:active,
+.controls select:active {
+    transform: translateY(1px);
 }
 
 button, select {
@@ -237,7 +268,7 @@ button:active, select:active {
 
 .active-mode {
     background: var(--primary-accent) !important;
-    box-shadow: 0 0 12px rgba(255, 107, 107, 0.7);
+    box-shadow: 0 0 12px rgba(255, 107, 107, 0.7) !important;
     transform: scale(1.05);
 }
 

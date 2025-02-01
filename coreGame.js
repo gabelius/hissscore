@@ -1,6 +1,7 @@
 // Core game systems (GameState, FoodSystem, UISystem, Movement, Collision, Render, Level, GameOver).
 
 import { RiddleSystem } from './riddleSystem.js';
+import { autoMove } from './autoGame.js';
 
 const GameState = {
     config: null,
@@ -499,12 +500,11 @@ function gameLoop(timestamp) {
     }
 
     if (GameState.isPaused) {
-        return; // Exit if the game is paused
+        return;
     }
 
     if (timestamp - GameState.lastUpdate > GameState.updateInterval) {
-        // Only use autoMove when auto mode is active
-        if (GameState.isAutoMode && GameState.isGameStarted && !GameState.isGameOver) {
+        if (GameState.isAutoMode && GameState.isGameStarted) {
             autoMove();
         }
         updateGameState();
