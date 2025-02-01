@@ -203,30 +203,36 @@ const MovementSystem = {
 
     // Add to existing MovementSystem
     handleTouchStart(e) {
+        if (GameState.isGameOver || !GameState.isGameStarted) return;
+        
+        const canvas = document.getElementById('gameCanvas');
+        const rect = canvas.getBoundingClientRect();
+        
         this.touchStart = {
-            x: e.touches[0].clientX,
-            y: e.touches[0].clientY
+            x: e.touches[0].clientX - rect.left,
+            y: e.touches[0].clientY - rect.top
         };
     },
 
     handleTouchEnd(e) {
-        if (!this.touchStart) return;
-
+        if (!this.touchStart || GameState.isGameOver || !GameState.isGameStarted) return;
+        
+        const canvas = document.getElementById('gameCanvas');
+        const rect = canvas.getBoundingClientRect();
+        
         const touchEnd = {
-            x: e.changedTouches[0].clientX,
-            y: e.changedTouches[0].clientY
+            x: e.changedTouches[0].clientX - rect.left,
+            y: e.changedTouches[0].clientY - rect.top
         };
 
         const dx = touchEnd.x - this.touchStart.x;
         const dy = touchEnd.y - this.touchStart.y;
 
-        // Reset touch start
+        // Clear touch start
         this.touchStart = null;
 
-        // Minimum swipe distance check
-        if (Math.abs(dx) < this.minSwipeDistance && Math.abs(dy) < this.minSwipeDistance) {
-            return;
-        }
+        // Use larger minimum swipe distance for mobile
+        if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
 
         // Determine swipe direction
         if (Math.abs(dx) > Math.abs(dy)) {
@@ -659,13 +665,18 @@ function setupEventListeners() {
         MovementSystem.handleKeyboardInput(e.key);
     });
 
-    // Add touch controls
-    document.getElementById('gameCanvas').addEventListener('touchstart', (e) => {
+    // Touch controls
+    const canvas = document.getElementById('gameCanvas');
+    canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         MovementSystem.handleTouchStart(e);
     }, { passive: false });
 
-    document.getElementById('gameCanvas').addEventListener('touchend', (e) => {
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault(); // Prevent scrolling
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
         e.preventDefault();
         MovementSystem.handleTouchEnd(e);
     }, { passive: false });

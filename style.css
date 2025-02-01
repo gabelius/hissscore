@@ -149,6 +149,7 @@ body.grayscale-mode {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Remove or comment out these styles as they're no longer needed */
