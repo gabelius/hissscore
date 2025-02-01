@@ -1,4 +1,3 @@
-
 import {
     GameState,
     MovementSystem,
@@ -48,21 +47,15 @@ export function autoMove() {
 export function resetInactivityTimer() {
     clearTimeout(GameState.inactivityTimer);
 
-    // If autoStartDelay is 0, start immediately if not started
-    if (!GameState.isGameStarted && (GameState.config?.game.autoStartDelay === 0)) {
-        GameState.isAutoMode = true;
-        document.getElementById('autoBtn').classList.add('active-mode');
-        startGame();
-        return;
-    }
+    // Don't start timer if game is already running
+    if (GameState.isGameStarted) return;
 
-    // Otherwise, wait the specified delay
-    if (!GameState.isGameStarted) {
-        const delay = GameState.config?.game.autoStartDelay || 5000;
-        GameState.inactivityTimer = setTimeout(() => {
+    // Set new timer
+    GameState.inactivityTimer = setTimeout(() => {
+        if (!GameState.isGameStarted) {
             GameState.isAutoMode = true;
             document.getElementById('autoBtn').classList.add('active-mode');
             startGame();
-        }, delay);
-    }
+        }
+    }, 5000); // Always use 5 seconds for auto-start
 }

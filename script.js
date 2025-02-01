@@ -1,5 +1,5 @@
-import { initializeGame } from './coreGame.js';
-import { autoMove, resetInactivityTimer } from './autoGame.js';
+import { initializeGame, GameState } from './coreGame.js';
+import { resetInactivityTimer } from './autoGame.js';
 
 // Initialize GAME object
 window.GAME = {
@@ -13,4 +13,9 @@ window.GAME = {
 document.addEventListener('DOMContentLoaded', () => {
     initializeGame();
     resetInactivityTimer();
+
+    // Reset inactivity timer on any user interaction
+    document.addEventListener('click', resetInactivityTimer);
+    document.addEventListener('keydown', resetInactivityTimer);
+    document.addEventListener('touchstart', resetInactivityTimer);
 });

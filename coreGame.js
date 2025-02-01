@@ -596,6 +596,8 @@ function resumeGame() {
 function setupEventListeners() {
     // Start/Pause button
     document.getElementById('startBtn').addEventListener('click', () => {
+        clearTimeout(GameState.inactivityTimer); // Clear auto-start timer
+        GameState.isAutoMode = false; // Ensure manual mode
         if (!GameState.isGameStarted) startGame();
         else if (GameState.isPaused) resumeGame();
         else pauseGame();
@@ -603,6 +605,7 @@ function setupEventListeners() {
 
     // Auto mode button
     document.getElementById('autoBtn').addEventListener('click', () => {
+        clearTimeout(GameState.inactivityTimer); // Clear auto-start timer
         GameState.isAutoMode = !GameState.isAutoMode;
         document.getElementById('autoBtn').classList.toggle('active-mode');
         if (!GameState.isGameStarted) startGame();
@@ -610,6 +613,9 @@ function setupEventListeners() {
 
     // Keyboard controls
     document.addEventListener('keydown', (e) => {
+        if (!GameState.isGameStarted) {
+            clearTimeout(GameState.inactivityTimer); // Clear auto-start timer
+        }
         MovementSystem.handleKeyboardInput(e.key);
     });
 }
