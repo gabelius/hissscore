@@ -22,7 +22,7 @@ colorSchemes:
         - "#BAFFC9"
         - "#BAE1FF"
     neon:
-        - "#FF00FF"
+        - "w#FF00FF"
         - "#00FFFF"
         - "#FF0000"
         - "#00FF00"

@@ -1,5 +1,6 @@
-
 // Core game systems (GameState, FoodSystem, UISystem, Movement, Collision, Render, Level, GameOver).
+
+import { RiddleSystem } from './riddleSystem.js';
 
 const GameState = {
     config: null,
