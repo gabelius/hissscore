@@ -205,42 +205,46 @@ const MovementSystem = {
     handleTouchStart(e) {
         if (GameState.isGameOver || !GameState.isGameStarted) return;
         
-        const canvas = document.getElementById('gameCanvas');
-        const rect = canvas.getBoundingClientRect();
-        
+        // Store raw touch coordinates
         this.touchStart = {
-            x: e.touches[0].clientX - rect.left,
-            y: e.touches[0].clientY - rect.top
+            x: e.touches[0].pageX,
+            y: e.touches[0].pageY
         };
     },
 
     handleTouchEnd(e) {
         if (!this.touchStart || GameState.isGameOver || !GameState.isGameStarted) return;
         
-        const canvas = document.getElementById('gameCanvas');
-        const rect = canvas.getBoundingClientRect();
-        
         const touchEnd = {
-            x: e.changedTouches[0].clientX - rect.left,
-            y: e.changedTouches[0].clientY - rect.top
+            x: e.changedTouches[0].pageX,
+            y: e.changedTouches[0].pageY
         };
 
         const dx = touchEnd.x - this.touchStart.x;
         const dy = touchEnd.y - this.touchStart.y;
 
-        // Clear touch start
         this.touchStart = null;
 
-        // Use larger minimum swipe distance for mobile
-        if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+        // Minimum swipe distance (30px)
+        const minSwipe = 30;
+        
+        if (Math.abs(dx) < minSwipe && Math.abs(dy) < minSwipe) return;
 
-        // Determine swipe direction
+        // Use the larger direction
         if (Math.abs(dx) > Math.abs(dy)) {
-            // Horizontal swipe
-            this.handleKeyboardInput(dx > 0 ? 'ArrowRight' : 'ArrowLeft');
+            // Left/Right
+            if (dx > 0 && this.isValidDirection({x: 1, y: 0})) {
+                GameState.direction = {x: 1, y: 0}; // Right
+            } else if (dx < 0 && this.isValidDirection({x: -1, y: 0})) {
+                GameState.direction = {x: -1, y: 0}; // Left
+            }
         } else {
-            // Vertical swipe
-            this.handleKeyboardInput(dy > 0 ? 'ArrowDown' : 'ArrowUp');
+            // Up/Down
+            if (dy > 0 && this.isValidDirection({x: 0, y: 1})) {
+                GameState.direction = {x: 0, y: 1}; // Down
+            } else if (dy < 0 && this.isValidDirection({x: 0, y: -1})) {
+                GameState.direction = {x: 0, y: -1}; // Up
+            }
         }
     },
 };
@@ -665,17 +669,18 @@ function setupEventListeners() {
         MovementSystem.handleKeyboardInput(e.key);
     });
 
-    // Touch controls
+    // Touch controls with proper passive settings
     const canvas = document.getElementById('gameCanvas');
+    
     canvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         MovementSystem.handleTouchStart(e);
     }, { passive: false });
-
+    
     canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault(); // Prevent scrolling
+        e.preventDefault();
     }, { passive: false });
-
+    
     canvas.addEventListener('touchend', (e) => {
         e.preventDefault();
         MovementSystem.handleTouchEnd(e);
