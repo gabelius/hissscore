@@ -299,14 +299,33 @@ button:active, select:active {
 
 #speedBtn {
     min-width: 50px;
-    letter-spacing: -3px;
     font-size: 20px;
     transition: all 0.2s ease;
+    position: relative;
+}
+
+#speedBtn::after {
+    content: attr(data-speed) 'x';
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    background: var(--primary-accent);
+    border-radius: 50%;
+    font-size: 12px;
+    padding: 2px 4px;
+    line-height: 1;
 }
 
 #speedBtn.active-mode {
     transform: scale(1.1);
     background: var(--primary-accent);
+}
+
+#speedIndicator {
+    font-family: monospace;
+    font-weight: bold;
+    min-width: 24px;
+    display: inline-block;
 }
 
 .countdown {

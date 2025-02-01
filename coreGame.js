@@ -24,6 +24,7 @@ const GameState = {
     levelDelay: 2000,   // Add delay between levels
     foodDelay: 1000,    // Add delay between food collections
     isPaused: false, // Add pause state
+
     currentSpeed: 1,
     maxSpeed: 3,
     baseInterval: 150, // Base speed interval
@@ -546,6 +547,8 @@ function resetGameState() {
     FoodSystem.spawnFood();
     UISystem.updateUI();
     document.getElementById('speedBtn').textContent = '⚡';
+    document.getElementById('speedBtn').setAttribute('data-speed', '1');
+    document.getElementById('speedIndicator').textContent = '1x';
 }
 
 function gameLoop(timestamp) {
@@ -671,13 +674,17 @@ function setupEventListeners() {
         GameState.currentSpeed = (GameState.currentSpeed % GameState.maxSpeed) + 1;
         GameState.updateInterval = GameState.baseInterval / GameState.currentSpeed;
         
-        // Update button text to show current speed
-        const btn = document.getElementById('speedBtn');
-        btn.textContent = '⚡'.repeat(GameState.currentSpeed);
+        // Update speed indicators
+        const speedBtn = document.getElementById('speedBtn');
+        const speedIndicator = document.getElementById('speedIndicator');
+        
+        speedBtn.textContent = '⚡'.repeat(GameState.currentSpeed);
+        speedBtn.setAttribute('data-speed', GameState.currentSpeed);
+        speedIndicator.textContent = GameState.currentSpeed + 'x';
         
         // Visual feedback
-        btn.classList.add('active-mode');
-        setTimeout(() => btn.classList.remove('active-mode'), 200);
+        speedBtn.classList.add('active-mode');
+        setTimeout(() => speedBtn.classList.remove('active-mode'), 200);
     });
 
     // Keyboard controls
