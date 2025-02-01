@@ -1,11 +1,12 @@
-import { initializeGame } from './coreGame.js';
-import { resetInactivityTimer } from './autoGame.js';
+import { GameState } from './systems/GameState.js';
+import { setupEventListeners } from './systems/EventSystem.js';
 import { ThemeEngine } from './themeEngine.js';
+import { resetInactivityTimer } from './autoGame.js';
 
-// Wait for document load
+// Initialize game when document is loaded
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // First initialize GAME object
+        // Initialize GAME object
         window.GAME = {
             canvas: document.getElementById('gameCanvas'),
             ctx: document.getElementById('gameCanvas').getContext('2d'),
@@ -13,15 +14,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             TILE_COUNT: 20
         };
 
-        // Then initialize systems in order
-        await ThemeEngine.init();
-        await initializeGame();
-        resetInactivityTimer();
+        // Load config
+        const response = await fetch('config.yaml');
+        const yamlText = await response.text();
+        GameState.config = jsyaml.load(yamlText);
 
-        // Setup global interaction handlers
-        document.addEventListener('click', resetInactivityTimer);
-        document.addEventListener('keydown', resetInactivityTimer);
-        document.addEventListener('touchstart', resetInactivityTimer);
+        // Initialize systems
+        ThemeEngine.init();
+        setupEventListeners();
+        resetInactivityTimer();
 
         console.log('Game initialized successfully');
     } catch (error) {
