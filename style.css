@@ -297,6 +297,18 @@ button:active, select:active {
     100% { transform: scale(1.05); }
 }
 
+#speedBtn {
+    min-width: 50px;
+    letter-spacing: -3px;
+    font-size: 20px;
+    transition: all 0.2s ease;
+}
+
+#speedBtn.active-mode {
+    transform: scale(1.1);
+    background: var(--primary-accent);
+}
+
 .countdown {
     position: absolute;
     top: 50%;
