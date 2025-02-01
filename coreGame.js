@@ -594,13 +594,24 @@ function resumeGame() {
 }
 
 function setupEventListeners() {
-    // ...existing code...
+    // Start/Pause button
     document.getElementById('startBtn').addEventListener('click', () => {
         if (!GameState.isGameStarted) startGame();
-        else if (!GameState.isPaused) pauseGame();
-        else resumeGame();
+        else if (GameState.isPaused) resumeGame();
+        else pauseGame();
     });
-    // ...existing code...
+
+    // Auto mode button
+    document.getElementById('autoBtn').addEventListener('click', () => {
+        GameState.isAutoMode = !GameState.isAutoMode;
+        document.getElementById('autoBtn').classList.toggle('active-mode');
+        if (!GameState.isGameStarted) startGame();
+    });
+
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+        MovementSystem.handleKeyboardInput(e.key);
+    });
 }
 
 // Export what is needed in other modules
