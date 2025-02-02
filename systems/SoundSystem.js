@@ -1,7 +1,8 @@
 export const SoundSystem = {
     sounds: {
         eat: new Audio('assets/sounds/eat.wav'),
-        heart: new Audio('assets/sounds/powerup.wav'),  // Add new sound for heart
+        heart: new Audio('assets/sounds/powerup.wav'),  // For heart collection
+        apple: new Audio('assets/sounds/crunch.wav'),   // New sound for apple
         die: new Audio('assets/sounds/die.wav'),
         hit: new Audio('assets/sounds/hit.wav')
     },

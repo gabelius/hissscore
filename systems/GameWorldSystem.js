@@ -29,7 +29,7 @@ export const GameWorldSystem = {
                 SoundSystem.play('heart');  // Play heart collection sound
             } else {
                 GameSystem.state.score += 10;
-                SoundSystem.play('eat');    // Play regular food sound
+                SoundSystem.play('apple');  // Play apple eating sound
             }
             this.spawnFood();
         } else {
