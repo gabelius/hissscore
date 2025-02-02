@@ -23,8 +23,14 @@ export const GameWorldSystem = {
         
         // Check if snake ate food
         if (this.checkFoodCollision(nextHead)) {
-            GameSystem.state.score += 10;
-            SoundSystem.play('eat');
+            // Handle different food types
+            if (GameSystem.state.food.type === 'heart') {
+                GameSystem.state.hearts = Math.min(GameSystem.state.hearts + 1, 3);  // Max 3 hearts
+                SoundSystem.play('heart');  // Play heart collection sound
+            } else {
+                GameSystem.state.score += 10;
+                SoundSystem.play('eat');    // Play regular food sound
+            }
             this.spawnFood();
         } else {
             // Remove tail if no food eaten
