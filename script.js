@@ -18,45 +18,42 @@ import { RenderSystem } from './systems/RenderSystem.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Setup loading indicator
         const container = document.getElementById('gameContainer');
         container.classList.add('loading');
         
-        // Initialize canvas with error boundary
-        await initializeCanvas();
+        // First load config
+        await loadConfig();
         
-        // Load and initialize systems
-        await Promise.all([
-            loadConfig(),
-            preloadImages(),
-            GameSystem.init()
-        ]).then(() => {
-            // Setup auto mode with proper cleanup
-            GameWorldSystem.setupAutoMode();
-            window.addEventListener('beforeunload', () => {
-                GameWorldSystem.clearInactivityTimer();
-            });
-            
-            // Start auto timer only if not started manually
-            let autoStartTimer = setTimeout(() => {
-                if (!GameSystem.state.isGameStarted) {
-                    GameSystem.toggleAutoMode();
-                    GameSystem.startGame();
-                }
-            }, 5000);
-    
-            // Clear auto timer if game starts manually
-            document.getElementById('startBtn').addEventListener('click', () => {
-                clearTimeout(autoStartTimer);
-            });
-    
-            // Initial render and remove loading state
-            RenderSystem.draw();
-            container.classList.remove('loading');
-            GAME.isLoading = false;
+        // Then initialize canvas and preload images
+        await initializeCanvas();
+        await preloadImages();
+        
+        // Finally initialize game system
+        await GameSystem.init();
+        
+        // Setup auto mode and cleanup
+        GameWorldSystem.setupAutoMode();
+        
+        // Start auto timer only if not started manually
+        let autoStartTimer = setTimeout(() => {
+            if (!GameSystem.state.isGameStarted) {
+                GameSystem.toggleAutoMode();
+                GameSystem.startGame();
+            }
+        }, 5000);
+
+        // Clear auto timer if game starts manually
+        document.getElementById('startBtn').addEventListener('click', () => {
+            clearTimeout(autoStartTimer);
         });
 
+        // Initial render and remove loading state
+        RenderSystem.draw();
+        container.classList.remove('loading');
+        GAME.isLoading = false;
+
     } catch (error) {
+        console.error('Game initialization failed:', error);
         handleInitError(error);
     }
 });
@@ -76,11 +73,20 @@ async function initializeCanvas() {
 async function loadConfig() {
     const response = await fetch('config.yaml');
     const yamlText = await response.text();
-    GAME.assets.config = jsyaml.load(yamlText);
+    const config = jsyaml.load(yamlText);
+    if (!config || !config.levels) {
+        throw new Error('Invalid config file: missing levels');
+    }
+    GAME.assets.config = config;
+    return config;
 }
 
 async function preloadImages() {
-    const loadPromises = GameSystem.state.config.levels.map(level => {
+    if (!GAME.assets.config || !GAME.assets.config.levels) {
+        throw new Error('Config must be loaded before preloading images');
+    }
+    
+    const loadPromises = GAME.assets.config.levels.map(level => {
         return new Promise((resolve, reject) => {
             const img = new Image();
             img.src = level.background;

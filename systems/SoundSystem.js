@@ -7,15 +7,22 @@ export const SoundSystem = {
     isMuted: false,  // Move mute state here
 
     init() {
-        // Pre-load sounds
-        Object.values(this.sounds).forEach(sound => {
-            sound.addEventListener('error', (e) => {
-                console.error('Sound failed to load:', e.target.src);
-            });
-            sound.load();
-            // Try to restore previous volume setting
-            const savedVolume = localStorage.getItem('gameVolume');
-            sound.volume = savedVolume ? parseFloat(savedVolume) : 0.3;
+        return new Promise((resolve, reject) => {
+            try {
+                // Pre-load sounds
+                Object.values(this.sounds).forEach(sound => {
+                    sound.addEventListener('error', (e) => {
+                        console.error('Sound failed to load:', e.target.src);
+                    });
+                    sound.load();
+                    // Try to restore previous volume setting
+                    const savedVolume = localStorage.getItem('gameVolume');
+                    sound.volume = savedVolume ? parseFloat(savedVolume) : 0.3;
+                });
+                resolve();
+            } catch (error) {
+                reject(error);
+            }
         });
     },
 

@@ -9,7 +9,7 @@ export const GameSystem = {
         currentLevel: 1,
         snake: [{x: 10, y: 10}],
         food: null,
-        direction: {x: 1, y: 0},
+        direction: {x: 1, y: 0}],
         score: 0,
         hearts: 3,
         isGameOver: false,
@@ -28,10 +28,11 @@ export const GameSystem = {
 
     async init() {
         try {
-            // Load config first
-            const response = await fetch('config.yaml');
-            const yamlText = await response.text();
-            this.state.config = jsyaml.load(yamlText);
+            // Use already loaded config
+            this.state.config = GAME.assets.config;
+            if (!this.state.config) {
+                throw new Error('Config not loaded');
+            }
             
             // Initialize sound system
             await SoundSystem.init().catch(err => {
@@ -367,9 +368,9 @@ export const GameSystem = {
     },
 
     toggleMute() {
-// Export state for legacy compatibility
         SoundSystem.toggleMute(); // Update to use SoundSystem's mute state
-        document.getElementById('muteBtn')?.classList.toggle('active-mode');        document.getElementById('muteBtn').textContent = SoundSystem.isMuted ? '🔇' : '🔊';
+        document.getElementById('muteBtn')?.classList.toggle('active-mode');
+        document.getElementById('muteBtn').textContent = SoundSystem.isMuted ? '🔇' : '🔊';
     },
 
     destroy() {
