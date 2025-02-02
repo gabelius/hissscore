@@ -34,7 +34,10 @@ export const GameSystem = {
             this.state.config = jsyaml.load(yamlText);
             
             // Initialize sound system
-            SoundSystem.init();
+            await SoundSystem.init().catch(err => {
+                console.warn('Sound system failed to initialize:', err);
+                // Continue without sound rather than failing completely
+            });
             
             // Initialize state
             this.resetGameState();
@@ -81,40 +84,69 @@ export const GameSystem = {
     },
 
     resetGameState() {
+        // Clear all event listeners first
+        this.clearEventListeners();
+        
+        // Reset state
         Object.assign(this.state, {
             snake: [{x: 10, y: 10}],
             direction: {x: 1, y: 0},
             score: 0,
             hearts: 3,
             isGameOver: false,
+            isAutoMode: false,  // Add this
+            isPaused: false,    // Add this
             startTime: Date.now(),
             currentLevel: 1,
             updateInterval: this.state.baseInterval,
-            currentSpeed: 1
+            currentSpeed: 1,
+            currentSpeedIndex: 0  // Add this
         });
+
+        // Reset UI elements
+        this.resetUI();
+        
+        // Reattach event listeners
+        this.setupEventListeners();
+    },
+
+    clearEventListeners() {
+        document.removeEventListener('keydown', this.handleKeydown);
+        document.removeEventListener('touchstart', this.handleTouch);
+        document.removeEventListener('touchmove', this.handleTouch);
+        document.removeEventListener('touchend', this.handleTouch);
+        document.removeEventListener('mousemove', GameWorldSystem.handleInactivity);
+    },
+
+    resetUI() {
+        // Reset all button states
+        ['startBtn', 'autoBtn', 'speedBtn', 'muteBtn'].forEach(id => {
+            document.getElementById(id)?.classList.remove('active-mode');
+        });
+        document.getElementById('speedBtn').setAttribute('data-speed', '1');
+        document.getElementById('hearts').textContent = '❤'.repeat(this.state.hearts);
+        document.getElementById('score').textContent = '0';
+        document.getElementById('timer').textContent = '0';
     },
 
     startGame() {
-        console.log('Starting game');
         if (this.state.isGameStarted) return;
         
-        // Clear any pending auto-start timers
-        if (GameWorldSystem.inactivityTimer) {
-            clearTimeout(GameWorldSystem.inactivityTimer);
-        }
+        // Reset all systems first
+        this.resetGameState();
+        GameWorldSystem.clearInactivityTimer();
         
         this.state.isGameStarted = true;
         this.state.isPaused = false;
         this.state.startTime = Date.now();
         this.state.lastUpdate = performance.now();
         
-        // Ensure initial state
-        this.state.snake = [{x: 10, y: 10}];
-        this.state.direction = {x: 1, y: 0};
+        // Update UI
+        document.getElementById('startBtn').classList.add('active-mode');
+        document.getElementById('autoBtn').classList.remove('active-mode');
         
         // Start game loop
         requestAnimationFrame(this.gameLoop.bind(this));
-        console.log('Game started:', this.state);
     },
 
     gameLoop(timestamp) {
@@ -124,19 +156,21 @@ export const GameSystem = {
         }
 
         if (timestamp - this.state.lastUpdate >= this.state.updateInterval) {
-            console.log('Game tick', this.state.direction);
-            
-            // Update snake position
+            // Add auto mode movement
+            if (this.state.isAutoMode) {
+                GameWorldSystem.autoMove();
+            }
+
             const nextHead = GameWorldSystem.getNextHeadPosition();
-            
-            // Check collision with self
             if (GameWorldSystem.checkCollision(nextHead)) {
                 this.handleCollision();
             } else {
                 GameWorldSystem.moveSnake(nextHead);
             }
             
-            // Draw updated state
+            // Update level if needed
+            this.checkLevelProgression();
+            
             RenderSystem.draw();
             this.state.lastUpdate = timestamp;
         }
@@ -144,15 +178,21 @@ export const GameSystem = {
         requestAnimationFrame(this.gameLoop.bind(this));
     },
 
-    updateGameState() {
-        if (!this.state.isGameStarted || this.state.isGameOver) return;
-
-        // Check for level progression
+    checkLevelProgression() {
+        if (this.state.isAutoMode) return; // Don't progress levels in auto mode
+        
         const currentLevel = this.state.config?.levels[this.state.currentLevel - 1];
         if (currentLevel && this.state.score >= currentLevel.scoreThreshold) {
             this.state.currentLevel = Math.min(this.state.currentLevel + 1, this.state.config.levels.length);
             this.updateLevel();
         }
+    },
+
+    updateGameState() {
+        if (!this.state.isGameStarted || this.state.isGameOver) return;
+
+        // Remove duplicate level check and combine with checkLevelProgression
+        this.checkLevelProgression();
 
         const nextHead = GameWorldSystem.getNextHeadPosition();
         if (GameWorldSystem.checkCollision(nextHead)) {
@@ -161,6 +201,17 @@ export const GameSystem = {
         }
 
         GameWorldSystem.moveSnake(nextHead);
+    },
+
+    updateGameSpeed() {
+        // Improve speed scaling
+        const levelBonus = Math.min((this.state.currentLevel - 1) * 0.15, 1.0); // Increased scaling
+        const baseSpeed = this.state.speedLevels[this.state.currentSpeedIndex];
+        const finalSpeed = Math.min(baseSpeed + levelBonus, this.state.maxSpeed);
+        
+        this.state.currentSpeed = finalSpeed;
+        this.state.updateInterval = this.state.baseInterval / finalSpeed;
+        document.getElementById('speedBtn').setAttribute('data-speed', finalSpeed.toFixed(1));
     },
 
     handleCollision() {
@@ -174,7 +225,15 @@ export const GameSystem = {
 
     handleGameOver() {
         this.state.isGameOver = true;
-        GameWorldSystem.handleGameOver();  // Fix: Was using WorldSystem
+        this.state.isAutoMode = false;
+        
+        // Clean up systems
+        GameWorldSystem.handleGameOver();
+        document.getElementById('autoBtn').classList.remove('active-mode');
+        document.removeEventListener('mousemove', GameWorldSystem.handleInactivity);
+        
+        // Play sound
+        SoundSystem.play('die');
     },
 
     togglePause() {
@@ -188,6 +247,15 @@ export const GameSystem = {
         if (!this.state.isGameStarted) {
             this.startGame();
         }
+        
+        // Add proper state cleanup
+        if (this.state.isAutoMode) {
+            GameWorldSystem.clearInactivityTimer();
+            document.getElementById('autoBtn').classList.remove('active-mode');
+        } else {
+            document.getElementById('autoBtn').classList.add('active-mode');
+        }
+        
         this.state.isAutoMode = !this.state.isAutoMode;
     },
 
@@ -200,18 +268,35 @@ export const GameSystem = {
     },
 
     updateLevel() {
-        document.getElementById('levelNumber').textContent = this.state.currentLevel;
         const level = this.state.config?.levels[this.state.currentLevel - 1];
         if (level) {
+            // Update UI
+            document.getElementById('levelNumber').textContent = this.state.currentLevel;
             document.getElementById('levelName').textContent = level.name;
             document.body.style.backgroundImage = `url('assets/${level.background}')`;
+            
+            // Update game speed based on level
+            this.state.currentSpeed = this.state.speedLevels[
+                Math.min(this.state.currentLevel - 1, this.state.speedLevels.length - 1)
+            ];
+            this.state.updateInterval = this.state.baseInterval / this.state.currentSpeed;
+            
+            // Update speed button
+            document.getElementById('speedBtn').setAttribute('data-speed', this.state.currentSpeed);
         }
     },
 
     // Event handlers
     handleKeydown(event) {
-        if (!this.state.isGameStarted || this.state.isGameOver || this.state.isAutoMode) return;
-        
+        // Allow space key in auto mode
+        if (event.key === ' ') {
+            this.togglePause();
+            return;
+        }
+
+        if (!this.state.isGameStarted || this.state.isGameOver || 
+            this.state.isPaused || (this.state.isAutoMode && event.key !== ' ')) return;
+
         const keyActions = {
             'ArrowLeft': {x: -1, y: 0},
             'ArrowRight': {x: 1, y: 0},
@@ -238,8 +323,35 @@ export const GameSystem = {
     },
 
     handleTouch(e) {
-        // Move touch controls here from EventSystem
-        // ...existing touch control code...
+        if (!this.state.isGameStarted || this.state.isGameOver || 
+            this.state.isPaused || this.state.isAutoMode) return;
+
+        const touch = e.touches[0];
+        const gameRect = GAME.canvas.getBoundingClientRect();
+        const x = touch.clientX - gameRect.left;
+        const y = touch.clientY - gameRect.top;
+
+        // Convert to game coordinates
+        const gameX = Math.floor(x / GAME.TILE_SIZE);
+        const gameY = Math.floor(y / GAME.TILE_SIZE);
+
+        // Calculate direction based on current snake head position
+        const head = this.state.snake[0];
+        const dx = gameX - head.x;
+        const dy = gameY - head.y;
+
+        // Add direction validation
+        if (Math.abs(dx) > Math.abs(dy)) {
+            const newDir = { x: Math.sign(dx), y: 0 };
+            if (newDir.x !== -this.state.direction.x) {
+                this.state.direction = newDir;
+            }
+        } else {
+            const newDir = { x: 0, y: Math.sign(dy) };
+            if (newDir.y !== -this.state.direction.y) {
+                this.state.direction = newDir;
+            }
+        }
     },
 
     handleInput() {
@@ -255,11 +367,19 @@ export const GameSystem = {
     },
 
     toggleMute() {
+// Export state for legacy compatibility
         SoundSystem.toggleMute(); // Update to use SoundSystem's mute state
-        document.getElementById('muteBtn')?.classList.toggle('active-mode');
-        document.getElementById('muteBtn').textContent = SoundSystem.isMuted ? '🔇' : '🔊';
+        document.getElementById('muteBtn')?.classList.toggle('active-mode');        document.getElementById('muteBtn').textContent = SoundSystem.isMuted ? '🔇' : '🔊';
     },
+
+    destroy() {
+        this.clearEventListeners();
+        GameWorldSystem.clearInactivityTimer();
+        SoundSystem.destroy();
+        this.resetUI();
+        this.state = null;
+    }
 };
 
-// Export state for legacy compatibility
+// Only one export needed
 export const GameState = GameSystem.state;

@@ -82,7 +82,53 @@ export const GameWorldSystem = {
 
     // Pathfinding for auto mode
     findPathToFood() {
-        // ...existing pathfinding code...
+        const snake = GameSystem.state.snake[0];
+        const food = GameSystem.state.food;
+        if (!snake || !food) return null;
+        
+        // Generate all possible moves
+        const possibleMoves = [
+            { x: snake.x + 1, y: snake.y },
+            { x: snake.x - 1, y: snake.y },
+            { x: snake.x, y: snake.y + 1 },
+            { x: snake.x, y: snake.y - 1 }
+        ];
+        
+        // Filter safe moves
+        const safeMoves = possibleMoves.filter(move => {
+            // Wrap coordinates
+            const wrappedMove = {
+                x: (move.x + GAME.TILE_COUNT) % GAME.TILE_COUNT,
+                y: (move.y + GAME.TILE_COUNT) % GAME.TILE_COUNT
+            };
+            
+            // Check if move is safe (no collision with snake)
+            return !this.checkCollision(wrappedMove);
+        });
+
+        // If no safe moves, try to find any move that doesn't kill immediately
+        if (safeMoves.length === 0) {
+            return possibleMoves.find(move => {
+                const wrappedMove = {
+                    x: (move.x + GAME.TILE_COUNT) % GAME.TILE_COUNT,
+                    y: (move.y + GAME.TILE_COUNT) % GAME.TILE_COUNT
+                };
+                return !this.checkImmediateCollision(wrappedMove);
+            });
+        }
+
+        // Find best move (closest to food)
+        return safeMoves.reduce((best, move) => {
+            const currentDist = Math.abs(move.x - food.x) + Math.abs(move.y - food.y);
+            const bestDist = best ? Math.abs(best.x - food.x) + Math.abs(best.y - food.y) : Infinity;
+            return currentDist < bestDist ? move : best;
+        });
+    },
+
+    checkImmediateCollision(position) {
+        // Only check head collision, not full snake
+        return position.x === GameSystem.state.snake[0].x && 
+               position.y === GameSystem.state.snake[0].y;
     },
 
     // Add these missing methods
@@ -110,13 +156,20 @@ export const GameWorldSystem = {
     },
 
     autoMove() {
-        const path = this.findPathToFood(GameSystem.state.snake[0], GameSystem.state.food);
-        if (path && path.length > 0) {
-            const nextMove = path[0];
-            GameSystem.state.direction = {
+        if (!GameSystem.state.isAutoMode) return;
+        
+        const nextMove = this.findPathToFood();
+        if (nextMove) {
+            const newDir = {
                 x: Math.sign(nextMove.x - GameSystem.state.snake[0].x),
                 y: Math.sign(nextMove.y - GameSystem.state.snake[0].y)
             };
+            
+            // Prevent opposite direction
+            if ((newDir.x !== 0 && newDir.x !== -GameSystem.state.direction.x) ||
+                (newDir.y !== 0 && newDir.y !== -GameSystem.state.direction.y)) {
+                GameSystem.state.direction = newDir;
+            }
         }
     },
 

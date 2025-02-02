@@ -21,8 +21,17 @@ export const SoundSystem = {
 
     play(soundName) {
         const sound = this.sounds[soundName];
-        if (sound && !this.isMuted) {
-            sound.currentTime = 0; // Reset sound to start
+        if (!sound || this.isMuted) return;
+        
+        // Clone audio for overlapping sounds
+        if (sound.currentTime > 0 && sound.currentTime < sound.duration) {
+            const clone = sound.cloneNode();
+            clone.volume = sound.volume;
+            clone.play().catch(e => console.log('Sound play failed:', e));
+            // Cleanup clone after playing
+            clone.onended = () => clone.remove();
+        } else {
+            sound.currentTime = 0;
             sound.play().catch(e => console.log('Sound play failed:', e));
         }
     },
@@ -40,5 +49,15 @@ export const SoundSystem = {
         Object.values(this.sounds).forEach(sound => {
             sound.muted = this.isMuted;
         });
+    },
+
+    destroy() {
+        // Cleanup and unload sounds when game ends
+        Object.values(this.sounds).forEach(sound => {
+            sound.pause();
+            sound.src = '';
+            sound.removeEventListener('error', () => {});
+        });
+        this.sounds = {};
     }
 };

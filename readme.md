@@ -449,6 +449,25 @@ Each issue is now tracked with timestamps for better debugging and feature imple
 4. Start local server
 5. Open index.html
 
+## Code Review Strategy
+
+Whenever the phrase "perform codereview" (`pcr`) is requested:
+1. Read this README file first.
+2. Then review index.html.
+3. Finally review the JS files in the order they appear.
+
+Each module should be described in a table:
+• Module Name  
+• Purpose  
+• Current Issues  
+• Proposed Fixes  
+• Priority  
+
+Procedure:
+• On user confirmation, apply those fixes.  
+• If user says "next module" (`nm`), move to the next module.  
+• If user says "review same module again" (`rsma`), repeat the current module review.  
+
 ---
 Last updated: 2024-01-25 UTC
 

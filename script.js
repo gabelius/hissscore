@@ -3,7 +3,13 @@ window.GAME = {
     canvas: null,
     ctx: null,
     TILE_SIZE: 20,
-    TILE_COUNT: 20
+    TILE_COUNT: 20,
+    isLoading: true,  // Add loading state
+    assets: {         // Track asset loading
+        images: new Map(),
+        sounds: new Map(),
+        config: null
+    }
 };
 
 import { GameSystem } from './systems/GameSystem.js';
@@ -12,70 +18,93 @@ import { RenderSystem } from './systems/RenderSystem.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Initialize GAME object properties
-        GAME.canvas = document.getElementById('gameCanvas');
-        if (!GAME.canvas) throw new Error('Canvas element not found');
+        // Setup loading indicator
+        const container = document.getElementById('gameContainer');
+        container.classList.add('loading');
         
-        GAME.ctx = GAME.canvas.getContext('2d');
-        if (!GAME.ctx) throw new Error('Could not get canvas context');
-
-        GAME.canvas.width = GAME.TILE_COUNT * GAME.TILE_SIZE;
-        GAME.canvas.height = GAME.TILE_COUNT * GAME.TILE_SIZE;
-
-        // Now initialize systems
-        await GameSystem.init();
-        GameWorldSystem.setupAutoMode();
+        // Initialize canvas with error boundary
+        await initializeCanvas();
         
-        // Preload images with correct path
-        const images = GameSystem.state.config.levels.map(level => {
-            const img = new Image();
-            img.src = level.background;
-            return new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = () => {
-                    console.error(`Failed to load image: ${level.background}`);
-                    resolve(); // Continue even if image fails
-                };
+        // Load and initialize systems
+        await Promise.all([
+            loadConfig(),
+            preloadImages(),
+            GameSystem.init()
+        ]).then(() => {
+            // Setup auto mode with proper cleanup
+            GameWorldSystem.setupAutoMode();
+            window.addEventListener('beforeunload', () => {
+                GameWorldSystem.clearInactivityTimer();
             });
+            
+            // Start auto timer only if not started manually
+            let autoStartTimer = setTimeout(() => {
+                if (!GameSystem.state.isGameStarted) {
+                    GameSystem.toggleAutoMode();
+                    GameSystem.startGame();
+                }
+            }, 5000);
+    
+            // Clear auto timer if game starts manually
+            document.getElementById('startBtn').addEventListener('click', () => {
+                clearTimeout(autoStartTimer);
+            });
+    
+            // Initial render and remove loading state
+            RenderSystem.draw();
+            container.classList.remove('loading');
+            GAME.isLoading = false;
         });
-        
-        await Promise.all(images);
 
-        // Set up UI controls
-        const startBtn = document.getElementById('startBtn');
-        const autoBtn = document.getElementById('autoBtn');
-        startBtn?.addEventListener('click', () => GameSystem.startGame());
-        autoBtn?.addEventListener('click', () => GameSystem.toggleAutoMode());
-        
-        // Add speed button handler
-        document.getElementById('speedBtn')?.addEventListener('click', () => {
-            GameSystem.toggleSpeed();
-        });
-
-        // Set up game controls
-        document.addEventListener('keydown', (e) => GameSystem.handleKeydown(e));
-        GAME.canvas.addEventListener('touchstart', (e) => GameSystem.handleTouch(e));
-        GAME.canvas.addEventListener('touchmove', (e) => GameSystem.handleTouch(e));
-
-        // Start auto mode timer
-        setTimeout(() => {
-            if (!GameSystem.state.isGameStarted) {
-                GameSystem.toggleAutoMode();
-                GameSystem.startGame();
-            }
-        }, 5000);
-
-        // Initial render
-        GameSystem.state.snake = [{x: 10, y: 10}];
-        GameWorldSystem.spawnFood();
-        GameSystem.updateLevel();
-        
-        // Draw initial state
-        RenderSystem.draw();
-
-        console.log('Initial game state:', GameSystem.state);
-        
     } catch (error) {
-        console.error('Game initialization failed:', error);
+        handleInitError(error);
     }
 });
+
+// Helper functions (moved out of main scope)
+async function initializeCanvas() {
+    GAME.canvas = document.getElementById('gameCanvas');
+    if (!GAME.canvas) throw new Error('Canvas element not found');
+    
+    GAME.ctx = GAME.canvas.getContext('2d');
+    if (!GAME.ctx) throw new Error('Could not get canvas context');
+
+    GAME.canvas.width = GAME.TILE_COUNT * GAME.TILE_SIZE;
+    GAME.canvas.height = GAME.TILE_COUNT * GAME.TILE_SIZE;
+}
+
+async function loadConfig() {
+    const response = await fetch('config.yaml');
+    const yamlText = await response.text();
+    GAME.assets.config = jsyaml.load(yamlText);
+}
+
+async function preloadImages() {
+    const loadPromises = GameSystem.state.config.levels.map(level => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.src = level.background;
+            img.onload = () => {
+                GAME.assets.images.set(level.background, img);
+                resolve();
+            };
+            img.onerror = reject;
+        });
+    });
+    
+    return Promise.all(loadPromises).catch(err => {
+        console.warn('Some images failed to load:', err);
+    });
+}
+
+function handleInitError(error) {
+    const container = document.getElementById('gameContainer');
+    container.classList.remove('loading');
+    container.classList.add('error');
+    container.innerHTML = `
+        <div class="error-message">
+            Failed to initialize game: ${error.message}<br>
+            <button onclick="location.reload()">Retry</button>
+        </div>
+    `;
+}

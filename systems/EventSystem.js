@@ -37,9 +37,9 @@ export function setupEventListeners() {
         }
     });
 
-    // Improved touch controls
+    // Improved touch controls with minimum swipe distance
     let touchStart = null;
-    let minSwipeDistance = 30; // Minimum distance for a swipe
+    let minSwipeDistance = 30;
 
     document.addEventListener('touchstart', (e) => {
         if (!GameSystem.state.isGameStarted || GameSystem.state.isGameOver || GameSystem.state.isPaused) return;
