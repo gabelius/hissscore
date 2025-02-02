@@ -1,9 +1,9 @@
 export const SoundSystem = {
     sounds: {
-        crunch: new Audio('assets/sounds/crunch.wav'),    // For eating apples
-        powerup: new Audio('assets/sounds/powerup.wav'),  // For collecting hearts
-        die: new Audio('assets/sounds/die.wav'),
-        hit: new Audio('assets/sounds/hit.wav')
+        crunch: new Audio('assets/audio/crunch.wav'),    // For eating apples
+        powerup: new Audio('assets/audio/powerup.wav'),  // For collecting hearts
+        die: new Audio('assets/audio/die.wav'),
+        hit: new Audio('assets/audio/hit.wav')
     },
     isMuted: false,  // Move mute state here
     isUserInteracted: false,  // Track if user has interacted

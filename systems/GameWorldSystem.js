@@ -51,12 +51,24 @@ export const GameWorldSystem = {
 
     // World management
     spawnFood() {
+        // Clear any existing timers first
+        this.clearHeartTimers();
+        
         if (!window.GAME) {
             console.error('GAME object not initialized');
             return;
         }
 
-        const spawnHeart = GameSystem.state.hearts < 3 && Math.random() < 0.3;
+        // Handle heart spawning logic
+        let spawnHeart = false;
+        if (GameSystem.state.hearts < 3) {
+            spawnHeart = Math.random() < 0.3;
+            // If current food is a heart, don't spawn another one
+            if (GameSystem.state.food?.type === 'heart') {
+                spawnHeart = false;
+            }
+        }
+
         let x, y;
         do {
             x = Math.floor(Math.random() * GAME.TILE_COUNT);
@@ -72,15 +84,15 @@ export const GameWorldSystem = {
 
         // Set timers for heart
         if (spawnHeart) {
-            // Clear existing timers
-            if (this.heartTimer) clearTimeout(this.heartTimer);
-            if (this.heartBlinkTimer) clearInterval(this.heartBlinkTimer);
-
+            // Clear any existing timers
+            this.clearHeartTimers();
+            
             // Start blinking after 5 seconds
             this.heartTimer = setTimeout(() => {
                 this.heartBlinkTimer = setInterval(() => {
                     if (GameSystem.state.food?.type === 'heart') {
                         GameSystem.state.food.isVisible = !GameSystem.state.food.isVisible;
+                        RenderSystem.draw();  // Force redraw when visibility changes
                     }
                 }, 500); // Blink every 500ms
             }, 5000);
@@ -90,10 +102,13 @@ export const GameWorldSystem = {
                 if (GameSystem.state.food?.type === 'heart') {
                     this.spawnFood(); // Spawn new food (apple)
                 }
-                // Clear timers
-                if (this.heartTimer) clearTimeout(this.heartTimer);
-                if (this.heartBlinkTimer) clearInterval(this.heartBlinkTimer);
+                this.clearHeartTimers();
             }, 10000);
+        }
+
+        // Update HUD after spawning food - fixed method call
+        if (GameSystem.updateHUD) {
+            GameSystem.updateHUD();
         }
     },
 
@@ -207,6 +222,7 @@ export const GameWorldSystem = {
     },
 
     handleCollision() {
+        this.clearHeartTimers();  // Clear timers on collision
         SoundSystem.play('hit');  // Only play hit sound when actually colliding
         this.clearInactivityTimer();
         // Remove mousemove listener to prevent auto-start after game over

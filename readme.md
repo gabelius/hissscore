@@ -49,6 +49,13 @@
    - Food spawns as either apples or hearts (30% chance for hearts when lives < 3).
    - 3 lives system: losing all lives ends the game.
    - Level progression: Score thresholds trigger higher levels with increased speed.
+   - **Heart Power-up System**:
+     - Hearts appear when player has less than 3 lives
+     - 30% chance to spawn heart instead of apple
+     - Hearts stay static for 5 seconds
+     - Then blink for 5 seconds before disappearing
+     - Collecting heart restores 1 life (max 3)
+     - Different sound effects for heart vs apple collection
 
 2. **UI and Controls**:
    - HUD displaying score, lives, current level, timer, and level name.
@@ -440,33 +447,51 @@ Each issue is now tracked with timestamps for better debugging and feature imple
 [Directory structure as shown above]
 
 ## Setup
-1. Place background images in /assets
+1. Create the following directory structure:
+   ```
+   /assets
+   ├── audio/
+   │   ├── crunch.wav  (apple eating sound)
+   │   ├── powerup.wav (heart collection sound)
+   │   ├── die.wav     (game over sound)
+   │   └── hit.wav     (collision sound)
+   └── img/
+       ├── 1.webp      (level backgrounds)
+       ├── 2.webp
+       └── ...
+   ```
 2. Configure levels in config.yaml
-3. Place sound files (.wav) in /assets/sounds:
-   - eat.wav: Food eating sound
-   - die.wav: Game over sound
-   - hit.wav: Collision sound
-4. Start local server
-5. Open index.html
+3. Start local server
+4. Open index.html
 
 ## Code Review Strategy
 
 Whenever the phrase "perform codereview" (`pcr`) is requested:
-1. Read this README file first.
-2. Then review index.html.
-3. Finally review the JS files in the order they appear.
 
-Each module should be described in a table:
-• Module Name  
-• Purpose  
-• Current Issues  
-• Proposed Fixes  
-• Priority  
+1. **Review Order**:
+   - First read this README file
+   - Then review index.html
+   - Finally review JS files in order of dependency
 
-Procedure:
-• On user confirmation, apply those fixes.  
-• If user says "next module" (`nm`), move to the next module.  
-• If user says "review same module again" (`rsma`), repeat the current module review.  
+2. **Review Format**:
+   Each module should be described in a table with columns:
+   | Module Name | Purpose | Current Issues | Proposed Fixes | Priority |
+   |------------|---------|----------------|----------------|----------|
+
+3. **Fix Application**:
+   - All proposed fixes should be applied immediately
+   - Changes should be made in order of priority (High → Medium → Low)
+   - Each fix should be tested before moving to the next
+
+4. **Navigation Commands**:
+   - `nm` (next module): Move to next module in review sequence
+   - `rsma` (review same module again): Re-review current module
+   - Changes from previous review should be verified before moving on
+
+5. **Review Completion**:
+   - All high priority fixes must be applied and tested
+   - Update documentation for any significant changes
+   - Verify system stability after all changes
 
 ---
 Last updated: 2024-01-25 UTC

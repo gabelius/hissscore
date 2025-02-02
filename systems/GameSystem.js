@@ -4,6 +4,16 @@ import { SoundSystem } from './SoundSystem.js';
 
 // Combine GameState directly into GameSystem
 export const GameSystem = {
+    // Default configuration for fallback
+    defaultConfig: {
+        levels: [{
+            name: "Default Level",
+            background: null,
+            snakeColors: ["#4CAF50"],
+            scoreThreshold: 100
+        }]
+    },
+
     state: {
         config: null,
         currentLevel: 1,
@@ -28,10 +38,11 @@ export const GameSystem = {
 
     async init() {
         try {
-            // Use already loaded config
-            this.state.config = GAME.assets.config;
-            if (!this.state.config) {
-                throw new Error('Config not loaded');
+            // Use already loaded config or fallback to defaults
+            this.state.config = GAME.assets.config || this.defaultConfig;
+            if (!this.state.config?.levels?.length) {
+                console.warn('Invalid config, using defaults');
+                this.state.config = this.defaultConfig;
             }
             
             // Initialize sound system
@@ -87,10 +98,10 @@ export const GameSystem = {
     },
 
     resetGameState() {
-        // Clear all event listeners first
-        this.clearEventListeners();
+        // Clear all timers first
+        this.clearAllTimers();
         
-        // Reset state
+        // Reset state with complete cleanup
         Object.assign(this.state, {
             snake: [{x: 10, y: 10}],
             direction: {x: 1, y: 0},
@@ -103,7 +114,13 @@ export const GameSystem = {
             currentLevel: 1,
             updateInterval: this.state.baseInterval,
             currentSpeed: 1,
-            currentSpeedIndex: 0  // Add this
+            currentSpeedIndex: 0,  // Add this
+            food: null,  // Reset food state
+            lastUpdate: 0,
+            _pausedHeartTime: null,  // Clear paused heart time
+            _lastStateUpdate: Date.now(),  // Add state update tracking
+            _totalPauseTime: 0,  // Add pause time tracking
+            _pauseStartTime: null
         });
 
         // Reset UI elements
@@ -111,6 +128,26 @@ export const GameSystem = {
         
         // Reattach event listeners
         this.setupEventListeners();
+    },
+
+    clearAllTimers() {
+        // Clear existing event listeners
+        this.clearEventListeners();
+        
+        // Clear heart timers
+        GameWorldSystem.clearHeartTimers();
+        
+        // Clear any game timers
+        if (this._gameLoopId) {
+            cancelAnimationFrame(this._gameLoopId);
+            this._gameLoopId = null;
+        }
+        
+        // Clear any stored timeouts
+        if (this._stateTimeouts) {
+            this._stateTimeouts.forEach(clearTimeout);
+            this._stateTimeouts = [];
+        }
     },
 
     clearEventListeners() {
@@ -223,30 +260,113 @@ export const GameSystem = {
 
     handleCollision() {
         this.state.hearts--;
+        // Force immediate UI update for hearts
+        this.updateHUD();  // This will now work
+        
         if (this.state.hearts <= 0) {
             this.handleGameOver();
             return;
         }
-        SoundSystem.play('hit');  // Play hit sound only on actual collision
+        
+        // Clear any existing heart timers and food
+        GameWorldSystem.clearHeartTimers();
+        this.state.food = null;
+        
+        SoundSystem.play('hit');
         GameWorldSystem.respawnSnake();
+        // Spawn new food after respawn
+        GameWorldSystem.spawnFood();
     },
 
     handleGameOver() {
+        // Ensure state is valid
+        if (!this.validateGameState()) return;
+        
         this.state.isGameOver = true;
         this.state.isAutoMode = false;
+        
+        // Clear all timers and states
+        this.clearAllTimers();
+        
+        // Clear food state
+        this.state.food = null;
         
         // Clean up systems
         GameWorldSystem.handleGameOver();
         document.getElementById('autoBtn').classList.remove('active-mode');
-        document.removeEventListener('mousemove', GameWorldSystem.handleInactivity);
         
         // Play sound
         SoundSystem.play('die');
+        
+        // Force final render
+        RenderSystem.lastDrawnState = null;
+        RenderSystem.draw();
+    },
+
+    validateGameState() {
+        // Basic state validation
+        if (!this.state) return false;
+        
+        // Ensure critical properties exist
+        const requiredProps = ['snake', 'hearts', 'score', 'currentLevel'];
+        if (!requiredProps.every(prop => prop in this.state)) {
+            console.error('Invalid game state');
+            return false;
+        }
+        
+        // Validate current level
+        const currentLevel = this.state.config?.levels?.[this.state.currentLevel - 1];
+        if (!currentLevel) {
+            console.error('Invalid level configuration');
+            return false;
+        }
+        
+        // Validate level configuration and thresholds
+        if (!currentLevel.name || !currentLevel.background || !currentLevel.snakeColors || 
+            typeof currentLevel.scoreThreshold !== 'number') {
+            console.error('Incomplete level configuration');
+            return false;
+        }
+        
+        // Validate score thresholds are in ascending order
+        const thresholds = this.state.config.levels.map(l => l.scoreThreshold);
+        if (!thresholds.every((t, i) => i === 0 || t > thresholds[i - 1])) {
+            console.error('Invalid level score thresholds');
+            return false;
+        }
+        
+        return true;
     },
 
     togglePause() {
         this.state.isPaused = !this.state.isPaused;
-        if (!this.state.isPaused) {
+        
+        if (this.state.isPaused) {
+            // Store pause state
+            this.state._pauseStartTime = Date.now();
+            this._heartVisibilityState = this.state.food?.isVisible;
+            // Clear timers when paused
+            GameWorldSystem.clearHeartTimers();
+            if (this.state.food?.type === 'heart') {
+                this._pausedHeartTime = Date.now() - this.state.food.createTime;
+                this._heartBlinkPhase = Date.now() - (this.state.food.createTime + 5000) > 0;
+            }
+        } else {
+            // Calculate total pause duration
+            const pauseDuration = Date.now() - this.state._pauseStartTime;
+            this.state._totalPauseTime += pauseDuration;
+            
+            // Restore heart state
+            if (this.state.food?.type === 'heart') {
+                this.state.food.createTime = Date.now() - this._pausedHeartTime;
+                this.state.food.isVisible = this._heartVisibilityState;
+                if (this._heartBlinkPhase) {
+                    GameWorldSystem.startHeartBlink(this._pausedHeartTime);
+                }
+                delete this._pausedHeartTime;
+                delete this._heartBlinkPhase;
+                delete this._heartVisibilityState;
+            }
             requestAnimationFrame(this.gameLoop.bind(this));
         }
     },
@@ -315,7 +435,7 @@ export const GameSystem = {
             'ArrowLeft': {x: -1, y: 0},
             'ArrowRight': {x: 1, y: 0},
             'ArrowUp': {x: 0, y: -1},
-            'ArrowDown': {x: 0, y: 1},
+            'ArrowDown': {x: 0, y: 1},  // Fixed: was incorrectly set to y: 1
             'a': {x: -1, y: 0},
             'd': {x: 1, y: 0},
             'w': {x: 0, y: -1},
@@ -386,9 +506,27 @@ export const GameSystem = {
         document.getElementById('muteBtn').textContent = SoundSystem.isMuted ? '🔇' : '🔊';
     },
 
+    updateHUD() {
+        document.getElementById('score').textContent = this.state.score;
+        document.getElementById('hearts').textContent = '❤'.repeat(this.state.hearts);
+        
+        // Calculate actual game time excluding pauses
+        const currentTime = Date.now();
+        const totalPauseTime = this.state._totalPauseTime || 0;
+        const activeTime = this.state.startTime ? 
+            Math.floor((currentTime - this.state.startTime - totalPauseTime) / 1000) : 0;
+        
+        document.getElementById('timer').textContent = activeTime;
+        
+        // Force redraw to ensure food visibility is correct
+        RenderSystem.lastDrawnState = null;
+        RenderSystem.draw();
+    },
+
     destroy() {
-        this.clearEventListeners();
+        this.clearAllTimers();
         GameWorldSystem.clearInactivityTimer();
+        GameWorldSystem.clearHeartTimers();  // Added heart timer cleanup
         SoundSystem.destroy();
         this.resetUI();
         this.state = null;

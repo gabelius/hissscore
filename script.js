@@ -107,10 +107,18 @@ function handleInitError(error) {
     const container = document.getElementById('gameContainer');
     container.classList.remove('loading');
     container.classList.add('error');
+    
+    // More detailed error message
+    const errorDetails = error.message.includes('404') ? 
+        'Missing required files. Please check assets directory structure.' : 
+        error.message;
+    
     container.innerHTML = `
         <div class="error-message">
-            Failed to initialize game: ${error.message}<br>
+            <p>Failed to initialize game:</p>
+            <p>${errorDetails}</p>
             <button onclick="location.reload()">Retry</button>
         </div>
     `;
+    console.error('Initialization error:', error);
 }
