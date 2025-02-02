@@ -1,8 +1,6 @@
 // Core game systems (GameState, FoodSystem, UISystem, Movement, Collision, Render, Level, GameOver).
 
 import { RiddleSystem } from './riddleSystem.js';
-import { autoMove } from './autoGame.js';
-import { ThemeEngine } from './themeEngine.js';
 
 const GameState = {
     config: null,
@@ -25,10 +23,6 @@ const GameState = {
     levelDelay: 2000,   // Add delay between levels
     foodDelay: 1000,    // Add delay between food collections
     isPaused: false, // Add pause state
-
-    currentSpeed: 1,
-    maxSpeed: 3,
-    baseInterval: 150, // Base speed interval
 };
 
 const FoodSystem = {
@@ -72,9 +66,6 @@ const UISystem = {
 };
 
 const MovementSystem = {
-    touchStart: null,
-    minSwipeDistance: 30, // Minimum distance for a swipe
-
     isValidDirection(newDir) {
         return !(
             (newDir.x === -GameState.direction.x && newDir.y === GameState.direction.y) ||
@@ -204,53 +195,6 @@ const MovementSystem = {
             y: (head.y + moveDir.y + GAME.TILE_COUNT) % GAME.TILE_COUNT
         };
         return !GameState.snake.some(segment => segment.x === newHead.x && segment.y === newHead.y);
-    },
-
-    // Add to existing MovementSystem
-    handleTouchStart(e) {
-        if (GameState.isGameOver || !GameState.isGameStarted) return;
-        
-        // Store raw touch coordinates
-        this.touchStart = {
-            x: e.touches[0].pageX,
-            y: e.touches[0].pageY
-        };
-    },
-
-    handleTouchEnd(e) {
-        if (!this.touchStart || GameState.isGameOver || !GameState.isGameStarted) return;
-        
-        const touchEnd = {
-            x: e.changedTouches[0].pageX,
-            y: e.changedTouches[0].pageY
-        };
-
-        const dx = touchEnd.x - this.touchStart.x;
-        const dy = touchEnd.y - this.touchStart.y;
-
-        this.touchStart = null;
-
-        // Minimum swipe distance (30px)
-        const minSwipe = 30;
-        
-        if (Math.abs(dx) < minSwipe && Math.abs(dy) < minSwipe) return;
-
-        // Use the larger direction
-        if (Math.abs(dx) > Math.abs(dy)) {
-            // Left/Right
-            if (dx > 0 && this.isValidDirection({x: 1, y: 0})) {
-                GameState.direction = {x: 1, y: 0}; // Right
-            } else if (dx < 0 && this.isValidDirection({x: -1, y: 0})) {
-                GameState.direction = {x: -1, y: 0}; // Left
-            }
-        } else {
-            // Up/Down
-            if (dy > 0 && this.isValidDirection({x: 0, y: 1})) {
-                GameState.direction = {x: 0, y: 1}; // Down
-            } else if (dy < 0 && this.isValidDirection({x: 0, y: -1})) {
-                GameState.direction = {x: 0, y: -1}; // Up
-            }
-        }
     },
 };
 
@@ -407,10 +351,19 @@ const RenderSystem = {
     },
 
     getSnakeColor(index) {
-        const colorMode = document.getElementById('colorMode').value;
-        const level = GameState.config?.levels?.[GameState.currentLevel - 1];
-        const colors = ThemeEngine.getSnakeColors(level, colorMode.replace('-mode', ''));
+        const defaultColors = ['#4CAF50', '#81C784', '#A5D6A7'];
+        let colors;
         
+        // Get color scheme based on selected mode
+        const colorMode = document.getElementById('colorMode').value;
+        if (colorMode && GameState.config?.colorSchemes?.[colorMode.replace('-mode', '')]) {
+            colors = GameState.config.colorSchemes[colorMode.replace('-mode', '')];
+        } else if (GameState.config?.levels?.[GameState.currentLevel - 1]?.snakeColors) {
+            colors = GameState.config.levels[GameState.currentLevel - 1].snakeColors;
+        } else {
+            colors = defaultColors;
+        }
+
         return {
             fill: colors[index % colors.length],
             outline: '#000000'
@@ -533,14 +486,10 @@ function resetGameState() {
         isGameOver: false,
         startTime: Date.now(),
         currentLevel: 1,
-        updateInterval: GameState.config?.game.updateInterval || 150,
-        currentSpeed: 1,
+        updateInterval: GameState.config?.game.updateInterval || 150
     });
     FoodSystem.spawnFood();
     UISystem.updateUI();
-    document.getElementById('speedBtn').textContent = '⚡';
-    document.getElementById('speedBtn').setAttribute('data-speed', '1');
-    document.getElementById('speedIndicator').textContent = '1x';
 }
 
 function gameLoop(timestamp) {
@@ -550,11 +499,12 @@ function gameLoop(timestamp) {
     }
 
     if (GameState.isPaused) {
-        return;
+        return; // Exit if the game is paused
     }
 
     if (timestamp - GameState.lastUpdate > GameState.updateInterval) {
-        if (GameState.isAutoMode && GameState.isGameStarted) {
+        // Only use autoMove when auto mode is active
+        if (GameState.isAutoMode && GameState.isGameStarted && !GameState.isGameOver) {
             autoMove();
         }
         updateGameState();
@@ -641,87 +591,6 @@ function resumeGame() {
     GameState.animationFrame = requestAnimationFrame(gameLoop);
     // Update Start button to show Pause icon
     document.getElementById('startBtn').textContent = '⏸️';
-}
-
-function setupEventListeners() {
-    try {
-        // Start/Pause button
-        const startBtn = document.getElementById('startBtn');
-        if (!startBtn) throw new Error('Start button not found');
-        
-        startBtn.addEventListener('click', () => {
-            console.log('Start button clicked, game state:', {
-                started: GameState.isGameStarted,
-                paused: GameState.isPaused
-            });
-            
-            clearTimeout(GameState.inactivityTimer);
-            GameState.isAutoMode = false;
-            
-            if (!GameState.isGameStarted) {
-                startGame();
-            } else if (GameState.isPaused) {
-                resumeGame();
-            } else {
-                pauseGame();
-            }
-        });
-
-        // Auto mode button
-        document.getElementById('autoBtn').addEventListener('click', () => {
-            clearTimeout(GameState.inactivityTimer); // Clear auto-start timer
-            GameState.isAutoMode = !GameState.isAutoMode;
-            document.getElementById('autoBtn').classList.toggle('active-mode');
-            if (!GameState.isGameStarted) startGame();
-        });
-
-        // Speed button
-        document.getElementById('speedBtn').addEventListener('click', () => {
-            GameState.currentSpeed = (GameState.currentSpeed % GameState.maxSpeed) + 1;
-            GameState.updateInterval = GameState.baseInterval / GameState.currentSpeed;
-            
-            // Update speed indicators
-            const speedBtn = document.getElementById('speedBtn');
-            const speedIndicator = document.getElementById('speedIndicator');
-            
-            speedBtn.textContent = '⚡'.repeat(GameState.currentSpeed);
-            speedBtn.setAttribute('data-speed', GameState.currentSpeed);
-            speedIndicator.textContent = GameState.currentSpeed + 'x';
-            
-            // Visual feedback
-            speedBtn.classList.add('active-mode');
-            setTimeout(() => speedBtn.classList.remove('active-mode'), 200);
-        });
-
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            if (!GameState.isGameStarted) {
-                clearTimeout(GameState.inactivityTimer); // Clear auto-start timer
-            }
-            MovementSystem.handleKeyboardInput(e.key);
-        });
-
-        // Touch controls with proper passive settings
-        const canvas = document.getElementById('gameCanvas');
-        
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            MovementSystem.handleTouchStart(e);
-        }, { passive: false });
-        
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-        }, { passive: false });
-        
-        canvas.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            MovementSystem.handleTouchEnd(e);
-        }, { passive: false });
-        
-    } catch (error) {
-        console.error('Failed to setup event listeners:', error);
-        throw error;
-    }
 }
 
 // Export what is needed in other modules
