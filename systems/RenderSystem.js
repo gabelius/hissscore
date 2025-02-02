@@ -140,6 +140,11 @@ export const RenderSystem = {
     drawFood() {
         if (!GameSystem.state.food) return;
         
+        // Don't draw if it's a heart and not visible (during blink)
+        if (GameSystem.state.food.type === 'heart' && !GameSystem.state.food.isVisible) {
+            return;
+        }
+
         GAME.ctx.font = '24px system-ui';
         GAME.ctx.textAlign = 'center';
         GAME.ctx.textBaseline = 'middle';

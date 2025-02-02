@@ -2,6 +2,11 @@ import { GameSystem } from './GameSystem.js';
 import { SoundSystem } from './SoundSystem.js';
 
 export const GameWorldSystem = {
+    // Add heart timing properties
+    heartTimer: null,
+    heartBlinkTimer: null,
+    heartBlinkState: true,
+
     // Physics methods
     getNextHeadPosition() {
         const head = GameSystem.state.snake[0];
@@ -23,13 +28,13 @@ export const GameWorldSystem = {
         
         // Check if snake ate food
         if (this.checkFoodCollision(nextHead)) {
-            // Handle different food types
+            // Handle different food types with different sounds
             if (GameSystem.state.food.type === 'heart') {
-                GameSystem.state.hearts = Math.min(GameSystem.state.hearts + 1, 3);  // Max 3 hearts
-                SoundSystem.play('heart');  // Play heart collection sound
+                GameSystem.state.hearts = Math.min(GameSystem.state.hearts + 1, 3);
+                SoundSystem.play('powerup');  // Use powerup sound for heart
             } else {
                 GameSystem.state.score += 10;
-                SoundSystem.play('apple');  // Play apple eating sound
+                SoundSystem.play('crunch');   // Use crunch sound for apple
             }
             this.spawnFood();
         } else {
@@ -60,8 +65,52 @@ export const GameWorldSystem = {
 
         GameSystem.state.food = {
             x, y,
-            type: spawnHeart ? 'heart' : 'apple'
+            type: spawnHeart ? 'heart' : 'apple',
+            createTime: spawnHeart ? Date.now() : null,
+            isVisible: true
         };
+
+        // Set timers for heart
+        if (spawnHeart) {
+            // Clear existing timers
+            if (this.heartTimer) clearTimeout(this.heartTimer);
+            if (this.heartBlinkTimer) clearInterval(this.heartBlinkTimer);
+
+            // Start blinking after 5 seconds
+            this.heartTimer = setTimeout(() => {
+                this.heartBlinkTimer = setInterval(() => {
+                    if (GameSystem.state.food?.type === 'heart') {
+                        GameSystem.state.food.isVisible = !GameSystem.state.food.isVisible;
+                    }
+                }, 500); // Blink every 500ms
+            }, 5000);
+
+            // Remove heart after 10 seconds
+            setTimeout(() => {
+                if (GameSystem.state.food?.type === 'heart') {
+                    this.spawnFood(); // Spawn new food (apple)
+                }
+                // Clear timers
+                if (this.heartTimer) clearTimeout(this.heartTimer);
+                if (this.heartBlinkTimer) clearInterval(this.heartBlinkTimer);
+            }, 10000);
+        }
+    },
+
+    clearHeartTimers() {
+        if (this.heartTimer) {
+            clearTimeout(this.heartTimer);
+            this.heartTimer = null;
+        }
+        if (this.heartBlinkTimer) {
+            clearInterval(this.heartBlinkTimer);
+            this.heartBlinkTimer = null;
+        }
+    },
+
+    destroy() {
+        this.clearHeartTimers();
+        this.clearInactivityTimer();
     },
 
     // Auto features
