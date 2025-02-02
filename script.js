@@ -3,34 +3,53 @@ import { GameWorldSystem } from './systems/GameWorldSystem.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        // Create global game object
         window.GAME = {
             canvas: document.getElementById('gameCanvas'),
-            ctx: document.getElementById('gameCanvas').getContext('2d'),
+            ctx: null,
             TILE_SIZE: 20,
             TILE_COUNT: 20
         };
-        
-        GAME.canvas.width = GAME.canvas.height = 400;
+
+        // Ensure canvas exists before getting context
+        if (!GAME.canvas) {
+            throw new Error('Canvas element not found');
+        }
+
+        GAME.ctx = GAME.canvas.getContext('2d');
+        GAME.canvas.width = GAME.canvas.height = GAME.TILE_COUNT * GAME.TILE_SIZE;
+
+        // Initialize game systems
         await GameSystem.init();
         GameWorldSystem.setupAutoMode();
         
-        // Add event handlers
-        document.addEventListener('keydown', GameSystem.handleKeydown.bind(GameSystem));
-        document.addEventListener('touchstart', GameSystem.handleTouch.bind(GameSystem));
-        document.addEventListener('touchmove', GameSystem.handleTouch.bind(GameSystem));
+        // Set up UI controls
+        const startBtn = document.getElementById('startBtn');
+        const autoBtn = document.getElementById('autoBtn');
+        startBtn?.addEventListener('click', () => GameSystem.startGame());
+        autoBtn?.addEventListener('click', () => GameSystem.toggleAutoMode());
         
-        // Preload images
-        const images = GameSystem.state.config.levels.map(level => {
-            const img = new Image();
-            img.src = level.background;
-            return img;
-        });
+        // Set up game controls
+        document.addEventListener('keydown', (e) => GameSystem.handleKeydown(e));
+        GAME.canvas.addEventListener('touchstart', (e) => GameSystem.handleTouch(e));
+        GAME.canvas.addEventListener('touchmove', (e) => GameSystem.handleTouch(e));
+
+        // Start auto mode timer
+        setTimeout(() => {
+            if (!GameSystem.state.isGameStarted) {
+                GameSystem.toggleAutoMode();
+                GameSystem.startGame();
+            }
+        }, 5000);
+
+        // Initial render
+        GameSystem.state.snake = [{x: 10, y: 10}];
+        GameWorldSystem.spawnFood();
+        GameSystem.updateLevel();
         
-        await Promise.all(images.map(img => 
-            new Promise(resolve => img.onload = resolve)
-        ));
+        console.log('Game initialized:', GameSystem.state);
         
     } catch (error) {
-        console.error('Failed to initialize game:', error);
+        console.error('Game initialization failed:', error);
     }
 });

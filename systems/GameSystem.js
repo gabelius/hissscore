@@ -53,18 +53,45 @@ export const GameSystem = {
         });
     },
 
-    gameLoop(timestamp) {
-        if (this.state.isGameOver || this.state.isPaused) return;
+    startGame() {
+        console.log('Starting game...');
+        if (this.state.isGameStarted) return;
         
+        this.state.isGameStarted = true;
+        this.state.isPaused = false;
+        this.state.startTime = Date.now();
+        this.state.snake = [{x: 10, y: 10}];
+        GameWorldSystem.spawnFood();
+        
+        // Start game loop
+        requestAnimationFrame(this.gameLoop.bind(this));
+        console.log('Game started:', this.state);
+    },
+
+    gameLoop(timestamp) {
+        if (!this.state.isGameStarted || this.state.isGameOver) {
+            return;
+        }
+
         if (timestamp - this.state.lastUpdate > this.state.updateInterval) {
-            if (this.state.isAutoMode && this.state.isGameStarted) {
-                PhysicsSystem.autoMove();
+            // Update game state
+            if (this.state.isAutoMode) {
+                GameWorldSystem.autoMove();
             }
-            this.updateGameState();
+            
+            const nextHead = GameWorldSystem.getNextHeadPosition();
+            if (GameWorldSystem.checkCollision(nextHead)) {
+                this.handleCollision();
+                return;
+            }
+
+            GameWorldSystem.moveSnake(nextHead);
+            
+            // Update display
             RenderSystem.draw();
             this.state.lastUpdate = timestamp;
         }
-        
+
         requestAnimationFrame(this.gameLoop.bind(this));
     },
 
@@ -92,13 +119,6 @@ export const GameSystem = {
     handleGameOver() {
         this.state.isGameOver = true;
         GameWorldSystem.handleGameOver();  // Fix: Was using WorldSystem
-    },
-
-    startGame() {
-        this.state.isGameStarted = true;
-        this.state.isPaused = false;
-        this.state.startTime = Date.now();
-        requestAnimationFrame(this.gameLoop.bind(this));
     },
 
     togglePause() {
@@ -133,9 +153,24 @@ export const GameSystem = {
 
     // Event handlers
     handleKeydown(event) {
-        // Move keyboard controls here from EventSystem
-        if (!this.state.isGameStarted || this.state.isGameOver) return;
-        // ...existing keyboard control code...
+        if (!this.state.isGameStarted || this.state.isGameOver || this.state.isAutoMode) return;
+        
+        const keyActions = {
+            'ArrowLeft': {x: -1, y: 0},
+            'ArrowRight': {x: 1, y: 0},
+            'ArrowUp': {x: 0, y: -1},
+            'ArrowDown': {x: 0, y: 1},
+            'a': {x: -1, y: 0},
+            'd': {x: 1, y: 0},
+            'w': {x: 0, y: -1},
+            's': {x: 0, y: 1}
+        };
+
+        const newDir = keyActions[event.key.toLowerCase()];
+        if (newDir) {
+            this.state.direction = newDir;
+            event.preventDefault();
+        }
     },
 
     handleTouch(e) {

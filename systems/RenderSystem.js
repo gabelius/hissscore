@@ -10,15 +10,16 @@ export const RenderSystem = {
     },
 
     clearCanvas() {
+        if (!GAME.ctx) return;
         GAME.ctx.clearRect(0, 0, GAME.canvas.width, GAME.canvas.height);
         GAME.ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
         GAME.ctx.fillRect(0, 0, GAME.canvas.width, GAME.canvas.height);
     },
 
     drawSnake() {
+        if (!GameSystem.state.snake) return;
+        
         GameSystem.state.snake.forEach((segment, index) => {
-            const colors = this.getSnakeColor(index);
-            
             GAME.ctx.beginPath();
             GAME.ctx.roundRect(
                 segment.x * GAME.TILE_SIZE,
@@ -28,23 +29,11 @@ export const RenderSystem = {
                 5
             );
             
-            GAME.ctx.fillStyle = colors.fill;
+            GAME.ctx.fillStyle = '#4CAF50';
             GAME.ctx.fill();
-            GAME.ctx.strokeStyle = colors.outline;
+            GAME.ctx.strokeStyle = '#000000';
             GAME.ctx.lineWidth = 2;
             GAME.ctx.stroke();
-            
-            // Add highlight
-            GAME.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-            GAME.ctx.beginPath();
-            GAME.ctx.roundRect(
-                segment.x * GAME.TILE_SIZE + 2,
-                segment.y * GAME.TILE_SIZE + 2,
-                (GAME.TILE_SIZE - 1) / 2,
-                (GAME.TILE_SIZE - 1) / 2,
-                3
-            );
-            GAME.ctx.fill();
         });
     },
 
