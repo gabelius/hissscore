@@ -151,14 +151,17 @@ export const GameWorldSystem = {
     },
 
     checkCollision(position) {
-        // Add proper collision detection
-        const hasCollision = GameSystem.state.snake.some(segment => 
+        // Add proper collision detection without sound
+        return GameSystem.state.snake.some(segment => 
             segment.x === position.x && segment.y === position.y
         );
-        if (hasCollision) {
-            SoundSystem.play('hit');
-        }
-        return hasCollision;
+    },
+
+    handleCollision() {
+        SoundSystem.play('hit');  // Only play hit sound when actually colliding
+        this.clearInactivityTimer();
+        // Remove mousemove listener to prevent auto-start after game over
+        document.removeEventListener('mousemove', this.handleInactivity);
     },
 
     autoMove() {

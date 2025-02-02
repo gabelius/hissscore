@@ -227,7 +227,8 @@ export const GameSystem = {
             this.handleGameOver();
             return;
         }
-        GameWorldSystem.respawnSnake(); // Fix reference
+        SoundSystem.play('hit');  // Play hit sound only on actual collision
+        GameWorldSystem.respawnSnake();
     },
 
     handleGameOver() {
