@@ -66,4 +66,9 @@ export function setupEventListeners() {
         
         touchStart = null;
     });
+
+    // Add cleanup for game over
+    document.addEventListener('gameOver', () => {
+        GameWorldSystem.clearInactivityTimer();
+    });
 }

@@ -13,7 +13,9 @@ export const SoundSystem = {
                 console.error('Sound failed to load:', e.target.src);
             });
             sound.load();
-            sound.volume = 0.3; // Set default volume
+            // Try to restore previous volume setting
+            const savedVolume = localStorage.getItem('gameVolume');
+            sound.volume = savedVolume ? parseFloat(savedVolume) : 0.3;
         });
     },
 
@@ -26,8 +28,10 @@ export const SoundSystem = {
     },
 
     setVolume(volume) {
+        const validVolume = Math.max(0, Math.min(1, volume));
+        localStorage.setItem('gameVolume', validVolume.toString());
         Object.values(this.sounds).forEach(sound => {
-            sound.volume = Math.max(0, Math.min(1, volume));
+            sound.volume = validVolume;
         });
     },
 

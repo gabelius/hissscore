@@ -116,8 +116,15 @@ export const GameWorldSystem = {
         }
     },
 
+    getSnakeColor() {
+        const currentLevel = GameSystem.state.config?.levels[GameSystem.state.currentLevel - 1];
+        return currentLevel?.snakeColors?.[0] || '#4CAF50';
+    },
+
     respawnSnake() {
         GameSystem.state.snake = [{x: 10, y: 10}];
         GameSystem.state.direction = {x: 1, y: 0};
+        // Clear any pending inactivity timer
+        this.clearInactivityTimer();
     }
 };

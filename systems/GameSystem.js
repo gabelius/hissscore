@@ -24,7 +24,6 @@ export const GameSystem = {
         baseInterval: 150,
         speedLevels: [1, 1.5, 2, 2.5, 3],
         currentSpeedIndex: 0,
-        isMuted: false,  // Add mute state
     },
 
     async init() {
@@ -249,11 +248,9 @@ export const GameSystem = {
     },
 
     toggleMute() {
-        this.state.isMuted = !this.state.isMuted;
-        Object.values(SoundSystem.sounds).forEach(sound => {
-            sound.muted = this.state.isMuted;
-        });
+        SoundSystem.toggleMute(); // Update to use SoundSystem's mute state
         document.getElementById('muteBtn')?.classList.toggle('active-mode');
+        document.getElementById('muteBtn').textContent = SoundSystem.isMuted ? '🔇' : '🔊';
     },
 };
 
