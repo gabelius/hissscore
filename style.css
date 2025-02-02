@@ -75,6 +75,12 @@ body.grayscale-mode {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     color: var(--text-color);
     position: relative;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.game-header.visible {
+    opacity: 1;
 }
 
 .game-header > div {
@@ -187,6 +193,14 @@ body.grayscale-mode {
     gap: 12px;
     width: min(95vw, 400px);
     margin: 12px 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.controls.visible {
+    opacity: 1;
+    pointer-events: all;
 }
 
 .controls button,
@@ -344,13 +358,31 @@ button:active, select:active {
     padding: 20px;
     opacity: 0;
     transition: opacity 0.5s ease;
-    z-index: 10;
+    z-index: 100; /* Ensure overlay is above everything */
     text-align: center;
     border-radius: 16px;
 }
 
 .game-over-overlay.visible {
     opacity: 1;
+}
+
+.game-over-overlay .game-over-controls {
+    margin-top: 20px;
+}
+
+.game-over-overlay .game-over-controls #startBtn {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+    background: var(--primary-accent);
+    border: 2px solid white;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+}
+
+.controls.game-over {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .game-over-message {
@@ -396,4 +428,90 @@ button:active, select:active {
 .controls button#muteBtn.active-mode {
     background: var(--danger-accent) !important;
     box-shadow: 0 0 12px rgba(255, 118, 117, 0.7);
+}
+
+.welcome-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    z-index: 10;
+    text-align: center;
+    border-radius: 16px;
+}
+
+.welcome-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.welcome-logo-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.welcome-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+}
+
+.welcome-logo-container #welcomeStartBtn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    font-size: 2.5rem;
+    background: rgba(255,107,107,0.5);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    /* Optional: add a subtle shadow */
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+}
+
+/* Remove or comment out since we're using an image instead
+.welcome-title {
+    color: var(--primary-accent);
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+} */
+
+.welcome-screen #startBtn {
+    width: 100px;
+    height: 100px;
+    font-size: 2.5rem;
+    background: var(--primary-accent);
+    border: 2px solid white;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+}
+
+.game-header, .controls {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.game-over .game-header,
+.game-over .controls:not(.game-over-controls) {
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
 }

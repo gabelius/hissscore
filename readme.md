@@ -10,7 +10,7 @@
 7. [Change History](#change-history)
 
 ## User Requirements
-
+0. Code should be simple, optimised and simple.
 1. **Game Controls**:
    - Manual mode with keyboard/touch controls
    - **Auto mode that starts automatically**
