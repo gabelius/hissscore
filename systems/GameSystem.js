@@ -62,6 +62,8 @@ export const GameSystem = {
     setupEventListeners() {
         // Game controls
         document.addEventListener('keydown', this.handleKeydown.bind(this));
+        document.addEventListener('click', SoundSystem.handleUserInteraction.bind(SoundSystem));
+        document.addEventListener('touchstart', SoundSystem.handleUserInteraction.bind(SoundSystem));
         
         // Button controls
         const startBtn = document.getElementById('startBtn');
@@ -117,6 +119,8 @@ export const GameSystem = {
         document.removeEventListener('touchmove', this.handleTouch);
         document.removeEventListener('touchend', this.handleTouch);
         document.removeEventListener('mousemove', GameWorldSystem.handleInactivity);
+        document.removeEventListener('click', SoundSystem.handleUserInteraction);
+        document.removeEventListener('touchstart', SoundSystem.handleUserInteraction);
     },
 
     resetUI() {
@@ -128,6 +132,8 @@ export const GameSystem = {
         document.getElementById('hearts').textContent = '❤'.repeat(this.state.hearts);
         document.getElementById('score').textContent = '0';
         document.getElementById('timer').textContent = '0';
+        document.getElementById('levelNumber').textContent = this.state.currentLevel;
+        document.getElementById('levelName').textContent = this.state.config.levels[this.state.currentLevel - 1].name;
     },
 
     startGame() {
@@ -274,7 +280,9 @@ export const GameSystem = {
             // Update UI
             document.getElementById('levelNumber').textContent = this.state.currentLevel;
             document.getElementById('levelName').textContent = level.name;
-            document.body.style.backgroundImage = `url('assets/${level.background}')`;
+            
+            // Remove the body background image
+            document.body.style.backgroundImage = 'none';
             
             // Update game speed based on level
             this.state.currentSpeed = this.state.speedLevels[
@@ -284,6 +292,10 @@ export const GameSystem = {
             
             // Update speed button
             document.getElementById('speedBtn').setAttribute('data-speed', this.state.currentSpeed);
+            
+            // Force a redraw
+            RenderSystem.lastDrawnState = null;
+            RenderSystem.draw();
         }
     },
 

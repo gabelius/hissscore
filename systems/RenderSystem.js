@@ -13,7 +13,7 @@ export const RenderSystem = {
             return;
         }
         
-        console.log('Drawing with state:', GameSystem.state);
+        //console.log('Drawing with state:', GameSystem.state);
         
         this.clearCanvas();
         this.drawBackground();
@@ -40,8 +40,6 @@ export const RenderSystem = {
     clearCanvas() {
         if (!GAME.ctx) return;
         GAME.ctx.clearRect(0, 0, GAME.canvas.width, GAME.canvas.height);
-        GAME.ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-        GAME.ctx.fillRect(0, 0, GAME.canvas.width, GAME.canvas.height);
     },
 
     drawBackground() {
@@ -49,9 +47,13 @@ export const RenderSystem = {
         if (level?.background) {
             const img = GAME.assets.images.get(level.background);
             if (img) {
-                GAME.ctx.globalAlpha = 0.3;
+                GAME.ctx.globalAlpha = 0.2;  // Make background more subtle
                 GAME.ctx.drawImage(img, 0, 0, GAME.canvas.width, GAME.canvas.height);
                 GAME.ctx.globalAlpha = 1;
+                
+                // Add semi-transparent overlay
+                GAME.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                GAME.ctx.fillRect(0, 0, GAME.canvas.width, GAME.canvas.height);
             }
         }
     },

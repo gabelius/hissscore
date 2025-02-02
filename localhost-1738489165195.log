@@ -1,0 +1,785 @@
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(1), food: {…}, direction: {…}, …}
+GameSystem.js:55 Game initialized with state: {config: {…}, currentLevel: 1, snake: Array(1), food: {…}, direction: {…}, …}
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(1), food: {…}, direction: {…}, …}
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(1), food: {…}, direction: {…}, …}
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(1), food: {…}, direction: {…}, …}
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(1), food: {…}, direction: {…}, …}
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(1), food: {…}, direction: {…}, …}
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(1), food: {…}, direction: {…}, …}
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(2), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(3), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(4), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(4), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(4), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(4), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(4), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(4), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(4), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(4), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(4), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(5), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(5), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(5), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(5), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(5), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(5), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(6), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(7), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(8), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(8), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(8), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(9), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+RenderSystem.js:16 Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+SoundSystem.js:42 Sound play failed: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(10), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(11), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Sound play failed: 
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+favicon.ico:1  GET http://localhost:8000/favicon.ico 404 (File not found)
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 1, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 2, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(10), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(11), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(12), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(13), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(14), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(15), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(16), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(17), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(18), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(18), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(18), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(18), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(18), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(19), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(19), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(19), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(20), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(21), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(22), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(23), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(24), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(25), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(26), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(27), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(28), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(29), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(30), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(31), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(32), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(33), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(34), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(34), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(34), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(34), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(34), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(35), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(1), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(1), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(1), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(1), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(1), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(2), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(2), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(2), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(2), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(2), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(2), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(2), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(2), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(2), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(3), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(4), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(4), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(4), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(4), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(4), food: {…}, direction: {…}, …}
+ Drawing with state: {config: {…}, currentLevel: 3, snake: Array(5), food: {…}, direction: {…}, …}

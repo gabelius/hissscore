@@ -5,6 +5,7 @@ export const SoundSystem = {
         hit: new Audio('assets/sounds/hit.wav')
     },
     isMuted: false,  // Move mute state here
+    isUserInteracted: false,  // Track if user has interacted
 
     init() {
         return new Promise((resolve, reject) => {
@@ -27,6 +28,7 @@ export const SoundSystem = {
     },
 
     play(soundName) {
+        if (!this.isUserInteracted) return;  // Prevent playing sound before user interaction
         const sound = this.sounds[soundName];
         if (!sound || this.isMuted) return;
         
@@ -56,6 +58,10 @@ export const SoundSystem = {
         Object.values(this.sounds).forEach(sound => {
             sound.muted = this.isMuted;
         });
+    },
+
+    handleUserInteraction() {
+        this.isUserInteracted = true;
     },
 
     destroy() {
