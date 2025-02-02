@@ -4,13 +4,11 @@ game:
     tileCount: 20
     updateInterval: 150
     minSwipeDistance: 30
-    autoStartDelay: 0 # Set to 0 to start auto mode immediately
-    riddleCycleTime: 15
 
 # Color Schemes
 colorSchemes:
-    rainbow: ["#FF6B6B", "#4ECDC4", "#45B7D1"]
-    pastel: ["#FFB3BA", "#BAFFC9", "#BAE1FF"]
+    rainbow: &default ["#FF6B6B", "#4ECDC4", "#45B7D1"]
+    pastel: *default
     neon: ["#FF00FF", "#00FFFF", "#FF3377"]
     grayscale: ["#999999", "#666666", "#333333"]
 

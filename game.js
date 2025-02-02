@@ -1,537 +1,83 @@
-// Remove this line since systems are defined in this file
-// import { Systems } from './systems.js';
+const C={T:20,A:['c.wav','p.wav','d.wav','h.wav','g.wav']},w=window,G$={c:null,x:null,t:C.T,n:C.T,l:1,i:0,m:localStorage.getItem('m')!='0',a:null,g:null,u:{i:new Map,s:new Map},h:'light',s:1};w.GAME=G$;
+const S={b:new Map,init:_=>Promise.resolve(),async ia(){if(G$.i)return;try{const c=new(w.AudioContext||w.webkitAudioContext)();c.state==='suspended'&&await c.resume();G$.a=c;G$.g=c.createGain();G$.g.connect(c.destination);G$.g.gain.value=G$.m?0:1;await Promise.race([Promise.all(C.A.map((p,i)=>this.l(i,`assets/audio/${p}`))),new Promise((_,r)=>setTimeout(r,5e3))]);G$.i=1}catch(e){G$.i=0}},async l(k,p,r=3){while(r--)try{this.b.set(k,await G$.a.decodeAudioData(await(await fetch(p)).arrayBuffer()));return}catch{await new Promise(r=>setTimeout(r,500))}this.b.set(k,G$.a.createBuffer(2,44100,44100))},p(s){if(!G$.a||!this.b.has(s))return;try{const x=G$.a.createBufferSource();x.buffer=this.b.get(s);x.connect(G$.g);x.start()}catch{}}};
+const R={l:0,d(s=G.s){const{x:c,t}=G$,m=t-2;this.l?this.l.n.concat(this.l.f?[this.l.f]:[]).map(p=>c.clearRect(p.x*t,p.y*t,t,t)):c.clearRect(0,0,c.canvas.width,c.canvas.height);s.n.map((g,i)=>{c.fillStyle=i?'#81C784':'#4CAF50';c.fillRect(g.x*t,g.y*t,m,m)});s.f&&(c.fillStyle='#FF5252',c.fillRect(s.f.x*t,s.f.y*t,m,m));this.l={...s}}};
 
-// Initialize global game object
-window.GAME = {
-    canvas: null,
-    ctx: null,
-    TILE_SIZE: 20,
-    TILE_COUNT: 20,
-    isLoading: true,
-    assets: {
-        images: new Map(),
-        sounds: new Map(),
-        config: null
-    }
-};
-
-// === Sound System ===
-const SoundSystem = {
-    sounds: {},
-
-    async init() {
-        const audioFiles = {
-            crunch: 'assets/audio/crunch.wav',
-            powerup: 'assets/audio/powerup.wav',
-            die: 'assets/audio/die.wav',
-            hit: 'assets/audio/hit.wav',
-            gameover: 'assets/audio/gameover.wav'
-        };
-
-        for (const [key, path] of Object.entries(audioFiles)) {
-            try {
-                const audio = new Audio();
-                audio.src = path;
-                await new Promise((resolve, reject) => {
-                    audio.addEventListener('canplaythrough', resolve, { once: true });
-                    audio.addEventListener('error', reject, { once: true });
-                    // Add timeout to avoid hanging
-                    setTimeout(resolve, 2000);
-                });
-                this.sounds[key] = audio;
-            } catch (err) {
-                console.warn(`Failed to load sound: ${path}`, err);
-                // Create silent audio as fallback
-                this.sounds[key] = { play: () => Promise.resolve() };
-            }
-        }
+G={
+    s:{r:0,p:0,a:0,o:0,l:1,v:3,n:[],f:0,d:'r',x:'r'},
+    f:0,t:0,d:0,v:150,
+    init(){this.e();return Promise.resolve()},
+    e(){
+        this.v=150;
+        this.d=0;
+        this.t=performance.now();
+        this.deltaAccumulator=0;
+        Object.assign(this.s,{r:0,p:0,a:0,o:0,l:1,v:3,n:[{x:10,y:10}],f:null,d:'r',x:'r'});
+        this.s.f=this.f()
     },
-
-    playSound(soundName) {
-        const sound = this.sounds[soundName];
-        if (sound) {
-            sound.currentTime = 0; // Reset sound to start
-            sound.play().catch(err => console.warn('Sound play failed:', err));
-        }
-    }
-};
-
-// === Render System ===
-const RenderSystem = {
-    lastDrawnState: null,
-    
-    draw(state = GameSystem.state) {
-        const ctx = GAME.ctx;
-        
-        // Clear canvas
-        ctx.clearRect(0, 0, GAME.canvas.width, GAME.canvas.height);
-        
-        // Draw snake
-        state.snake.forEach((segment, index) => {
-            ctx.fillStyle = index === 0 ? '#4CAF50' : '#81C784';
-            ctx.fillRect(
-                segment.x * GAME.TILE_SIZE,
-                segment.y * GAME.TILE_SIZE,
-                GAME.TILE_SIZE - 2,
-                GAME.TILE_SIZE - 2
-            );
-        });
-        
-        // Draw food
-        if (state.food) {
-            ctx.fillStyle = '#FF5252';
-            ctx.fillRect(
-                state.food.x * GAME.TILE_SIZE,
-                state.food.y * GAME.TILE_SIZE,
-                GAME.TILE_SIZE - 2,
-                GAME.TILE_SIZE - 2
-            );
-        }
-        
-        this.lastDrawnState = {...state};
-    }
-};
-
-// === Game World System ===
-const GameWorldSystem = {
-    heartTimer: null,
-    heartBlinkTimer: null,
-    heartBlinkState: true,
-    // ...existing GameWorldSystem code from GameWorldSystem.js...
-};
-
-// === Game System ===
-const GameSystem = {
-    defaultConfig: {
-        // ...existing defaultConfig...
-    },
-    state: {
-        isGameStarted: false,
-        isPaused: false,
-        isAutoMode: false,
-        score: 0,
-        level: 1,
-        lives: 3,
-        snake: [],
-        food: null,
-        direction: 'right',
-        nextDirection: 'right'
-    },
-
-    GAME_SPEED: 150, // Base game speed in ms
-    lastUpdate: 0,   // Track last update time
-    isResetting: false, // Add flag to prevent multiple resets
-
-    init() {
-        this.reset();
-        return Promise.resolve();
-    },
-
-    reset() {
-        this.GAME_SPEED = 150; // Reset speed to base value
-        Object.assign(this.state, {
-            isGameStarted: false,
-            isPaused: false,
-            isAutoMode: false,
-            score: 0,
-            level: 1,
-            snake: [{x: 10, y: 10}],
-            food: this.generateFood(),
-            direction: 'right',
-            nextDirection: 'right'
-        });
-        // Don't reset lives here, they're managed in handleDeath
-    },
-
-    showGameOverOverlay() {
-        const container = document.getElementById('gameContainer');
-        document.body.classList.add('game-over');
-        
-        const overlay = document.createElement('div');
-        overlay.className = 'game-over-overlay';
-        overlay.innerHTML = `
-            <div class="game-over-message">Game Over!</div>
-            <div class="game-over-score">Score: ${this.state.score}</div>
-            <div class="game-over-controls">
-                <button id="restartBtn" title="Restart Game">▶️</button>
-            </div>
-        `;
-        
-        container.appendChild(overlay);
-        
-        // Setup restart button with direct binding
-        const restartBtn = overlay.querySelector('#restartBtn');
-        restartBtn.addEventListener('click', () => this.restartGame());
-        
-        requestAnimationFrame(() => overlay.classList.add('visible'));
-    },
-
-    restartGame() {
-        // Complete reset of game state
-        this.state.lives = 3;
-        this.isResetting = false;
-        this.lastUpdate = 0;
-        this.GAME_SPEED = 150;
-        
-        // Reset game state
-        Object.assign(this.state, {
-            isGameStarted: false,
-            isPaused: false,
-            isAutoMode: false,
-            score: 0,
-            level: 1,
-            snake: [{x: 10, y: 10}],
-            food: this.generateFood(),
-            direction: 'right',
-            nextDirection: 'right'
-        });
-
-        // Clean up UI
-        document.body.classList.remove('game-over');
-        this.hideGameOverOverlay();
-        
-        // Show controls and header
-        const controls = document.querySelector('.controls');
-        const header = document.querySelector('.game-header');
-        controls.classList.add('visible');
-        header.classList.add('visible');
-        
-        // Start new game
-        this.state.isGameStarted = true;
-        this.gameLoop();
-    },
-
-    hideGameOverOverlay() {
-        const overlay = document.querySelector('.game-over-overlay');
-        if (overlay) {
-            overlay.classList.remove('visible');
-            setTimeout(() => overlay.remove(), 500);
-        }
-    },
-
-    showWelcomeScreen() {
-        const container = document.getElementById('gameContainer');
-        if (!container) {
-            console.error("Error: 'gameContainer' element not found.");
-            return;
-        }
-        const controls = document.querySelector('.controls');
-        const header = document.querySelector('.game-header');
-        const startBtn = document.getElementById('startBtn');
-        
-        const welcome = document.createElement('div');
-        welcome.className = 'welcome-screen';
-        welcome.innerHTML = `
-            <div class="welcome-logo-container">
-                <img src="assets/img/logo.webp" alt="Smart Snake" class="welcome-logo">
-                <button id="welcomeStartBtn" title="Start Game"></button>
-            </div>
-        `;
-        
-        // Move start button to welcome screen
-        const welcomeControls = welcome.querySelector('.welcome-controls');
-        welcomeControls.appendChild(startBtn.cloneNode(true));
-        
-        container.appendChild(welcome);
-        
-        // Setup new start button listener
-        const newStartBtn = welcome.querySelector('#welcomeStartBtn');
-        newStartBtn.addEventListener('click', () => {
-            if (!GAME.isLoading) {
-                this.hideWelcomeScreen();
-                this.startGame();
-            }
-        });
-    },
-
-    hideWelcomeScreen() {
-        const welcome = document.querySelector('.welcome-screen');
-        const controls = document.querySelector('.controls');
-        const header = document.querySelector('.game-header');
-        
-        if (welcome) {
-            welcome.classList.add('hidden');
-            setTimeout(() => welcome.remove(), 500);
-        }
-        
-        // Show game UI
-        controls.classList.add('visible');
-        header.classList.add('visible');
-    },
-
-    startGame() {
-        if (this.state.isGameStarted) return;
-        
-        this.hideGameOverOverlay();
-        this.reset();
-        this.state.isGameStarted = true;
-        this.gameLoop();
-    },
-
-    update() {
-        if (!this.state.isGameStarted || this.state.isPaused || this.isResetting) return;
-
-        const now = Date.now();
-        if (now - this.lastUpdate < this.GAME_SPEED) return;
-        this.lastUpdate = now;
-
-        // Update snake position based on direction
-        const head = {...this.state.snake[0]};
-        
-        switch(this.state.direction) {
-            case 'up': head.y--; break;
-            case 'down': head.y++; break;
-            case 'left': head.x--; break;
-            case 'right': head.x++; break;
-        }
-
-        // Check collisions
-        if (this.checkCollision(head)) {
-            SoundSystem.playSound('hit');
-            this.handleDeath();
-            return;
-        }
-
-        // Check food collection
-        if (head.x === this.state.food.x && head.y === this.state.food.y) {
-            this.state.score += 10;
-            this.state.food = this.generateFood();
-            SoundSystem.playSound('crunch');
-        } else {
-            this.state.snake.pop();
-        }
-
-        // Update snake
-        this.state.snake.unshift(head);
-        this.state.direction = this.state.nextDirection;
-    },
-
-    checkCollision(head) {
-        // Wall collision
-        if (head.x < 0 || head.x >= GAME.TILE_COUNT || 
-            head.y < 0 || head.y >= GAME.TILE_COUNT) {
-            return true;
-        }
-        
-        // Self collision
-        return this.state.snake.some(segment => 
-            segment.x === head.x && segment.y === head.y);
-    },
-
-    handleDeath() {
-        if (this.isResetting) return; // Prevent multiple deaths
-        this.isResetting = true;
-        
-        this.state.lives--;
-        SoundSystem.playSound('die');
-        this.state.isGameStarted = false;
-        
-        if (this.state.lives <= 0) {
-            this.gameOver();
-        } else {
-            // Add delay before reset
-            setTimeout(() => {
-                this.reset();
-                this.lastUpdate = 0; // Reset timing
-                this.state.isGameStarted = true;
-                this.isResetting = false;
-                this.gameLoop();
-            }, 1000);
-        }
-    },
-
-    gameOver() {
-        this.state.isGameStarted = false;
-        this.state.isPaused = true;
-        SoundSystem.playSound('gameover'); // Add gameover sound
-        this.showGameOverOverlay();
-    },
-
-    generateFood() {
-        let food;
-        do {
-            food = {
-                x: Math.floor(Math.random() * GAME.TILE_COUNT),
-                y: Math.floor(Math.random() * GAME.TILE_COUNT)
-            };
-        } while (this.state.snake.some(segment => 
-            segment.x === food.x && segment.y === food.y));
-        return food;
-    },
-
-    gameLoop() {
-        if (!this.state.isGameStarted || this.state.isPaused) return;
-        
-        this.update();
-        RenderSystem.draw(this.state);
-        
-        if (this.state.isGameStarted) { // Only continue if game is still running
-            requestAnimationFrame(() => this.gameLoop());
+    q(){if(!this.s.r||this.s.p)return;const now=performance.now();this.deltaTime=Math.min(now-this.lastTime,32);this.lastTime=now;this.u();R.d(this.s);requestAnimationFrame(()=>this.q())},
+    u(){const s=this.s,h={...s.n[0]};if(!s.r||s.p)return;({u:_=>h.y--,d:_=>h.y++,l:_=>h.x--,r:_=>h.x++})[s.d]();if(this.c(h)){S.p(3);this.i();return}h.x===s.f.x&&h.y===s.f.y?(s.o+=10,s.f=this.f(),S.p(0)):s.n.pop();s.n.unshift(h);s.d=s.x;this.H()},
+    c:h=>h.x<0||h.x>=G$.n||h.y<0||h.y>=G$.n||G.s.n.some(s=>s.x==h.x&&s.y==h.y),i(){if(this.r)return;this.r=1;this.s.v--;S.p(2);this.s.r=0;this.s.v>0?setTimeout(()=>{this.e();this.t=0;this.s.r=1;this.r=0;this.q()},1e3):this.j()},
+    j(){this.s.r=this.s.p=1;S.p(4);this.k()},
+    f(){let f;do f={x:~~(Math.random()*G$.n),y:~~(Math.random()*G$.n)};while(this.s.n.some(s=>s.x==f.x&&s.y==f.y));return f},
+    h(){document.querySelector('.game-over-overlay')?.remove()},
+    k(){const o=document.createElement('div'),h=document.querySelector('.game-header');o.className='welcome-screen game-over-overlay';o.innerHTML=`<div class="welcome-logo-container"><img src="assets/img/logo.webp" alt="Smart Snake" class="welcome-logo"><div class="game-over-text">Game Over!</div><div class="game-over-score">Final Score: ${this.s.o}</div><button id="welcomeStartBtn" title="Restart Game">▶️</button></div>`;h&&(h.style.opacity='0');document.getElementById('gameContainer').appendChild(o);o.querySelector('#welcomeStartBtn').onclick=()=>{o.classList.add('hidden');h&&(h.style.opacity='1');setTimeout(()=>o.remove(),500);this.e();this.s.v=3;this.s.r=1;this.q()}},
+    H(){['hearts','score','levelNumber'].map(i=>{const e=document.getElementById(i);e&&(e.textContent=i=='hearts'?'❤'.repeat(this.s.v):i=='score'?this.s.o:this.s.l)})},
+    t(){if(this.s.r)return;this.h();this.e();this.s.r=1;this.s.p=0;this.lastTime=performance.now();this.q()},
+    setSpeed(v){G$.s=v;this.v=150-v*20},
+    w(){
+        const c=document.getElementById('gameContainer');
+        if(!c)return;
+        const h=document.querySelector('.game-header');
+        const n=document.querySelector('.controls');
+        h?.classList.remove('visible');
+        n?.classList.remove('visible');
+        const w=document.createElement('div');
+        w.className='welcome-screen';
+        w.innerHTML='<div class="welcome-logo-container"><img src="assets/img/logo.webp" alt="Smart Snake" class="welcome-logo"><button id="welcomeStartBtn" title="Start Game">▶️</button></div>';
+        c.querySelectorAll('.welcome-screen').forEach(e=>e.remove());
+        c.appendChild(w);
+        w.querySelector('#welcomeStartBtn').onclick=()=>{
+            if(G$.l)return;
+            w.classList.add('hidden');
+            h?.classList.add('visible');
+            n?.classList.add('visible');
+            setTimeout(()=>{
+                w.remove();
+                this.e();
+                this.s.r=1;
+                this.s.p=0;
+                this.lastTime=performance.now();
+                this.deltaAccumulator=0;
+                this.H();
+                this.q()
+            },500)
         }
     }
 };
 
-// Make systems available globally first, before using them
-window.Systems = {
-    SoundSystem,
-    RenderSystem,
-    GameWorldSystem,
-    GameSystem
-};
-
-// === Event System ===
-function setupEventListeners() {
-    const startBtn = document.getElementById('startBtn');
-    const autoBtn = document.getElementById('autoBtn');
-
-    startBtn.addEventListener('click', () => {
-        if (!GAME.isLoading) {
-            if (!GameSystem.state.isGameStarted) {
-                GameSystem.startGame();
-            } else {
-                GameSystem.state.isPaused = !GameSystem.state.isPaused;
-                if (!GameSystem.state.isPaused) {
-                    GameSystem.gameLoop();
-                }
-            }
-        }
-    });
-
-    autoBtn.addEventListener('click', () => {
-        if (!GAME.isLoading && !GameSystem.state.isGameStarted) {
-            GameSystem.state.isAutoMode = true;
-            GameSystem.startGame();
-        }
-    });
-
-    // Add keyboard controls
-    document.addEventListener('keydown', (event) => {
-        if (!GameSystem.state.isGameStarted || GameSystem.state.isAutoMode) return;
-
-        switch(event.key) {
-            case 'ArrowUp':
-            case 'w':
-                if (GameSystem.state.direction !== 'down') 
-                    GameSystem.state.nextDirection = 'up';
-                break;
-            case 'ArrowDown':
-            case 's':
-                if (GameSystem.state.direction !== 'up') 
-                    GameSystem.state.nextDirection = 'down';
-                break;
-            case 'ArrowLeft':
-            case 'a':
-                if (GameSystem.state.direction !== 'right') 
-                    GameSystem.state.nextDirection = 'left';
-                break;
-            case 'ArrowRight':
-            case 'd':
-                if (GameSystem.state.direction !== 'left') 
-                    GameSystem.state.nextDirection = 'right';
-                break;
-        }
-    });
-
-    // ...existing EventSystem code from EventSystem.js...
-}
-
-// === Main Initialization ===
-async function initializeGame() {
+async function I() {
     try {
-        // Wait a moment to ensure DOM is ready
-        await new Promise(resolve => setTimeout(resolve, 100));
+        const c = document.getElementById('gameContainer');
+        if (!c) return;
         
-        const container = document.getElementById('gameContainer');
-        if (!container) {
-            throw new Error('Game container not found');
-        }
+        c.classList.add('loading');
+        G$.c = document.getElementById('gameCanvas');
+        G$.x = G$.c.getContext('2d');
+        G$.c.width = G$.c.height = G$.t * G$.n;
         
-        container.classList.add('loading');
-        
-        // Initialize systems in sequence
-        await initializeCanvas();
-        await SoundSystem.init(); // Add this line
         await Promise.all([
-            loadConfig(),
-            preloadImages()
+            S.init(),
+            G.init()
         ]);
         
-        await GameSystem.init();
-        setupEventListeners();
-        
-        container.classList.remove('loading');
-        GAME.isLoading = false;
-        
-        // Show welcome screen
-        GameSystem.showWelcomeScreen();
-        
-    } catch (error) {
-        console.error('Game initialization failed:', error);
-        handleInitError(error);
+        U(); // Setup controls
+        c.classList.remove('loading');
+        G$.l = 0; // Reset loading state
+        G.w(); // Show welcome screen
+    } catch (e) {
+        console.error('Initialization failed:', e);
     }
 }
 
-// Update the DOMContentLoaded handler
-document.addEventListener('DOMContentLoaded', () => {
-    // Start initialization after a short delay
-    setTimeout(initializeGame, 100);
-});
-
-// Core helper functions
-async function initializeCanvas() {
-    GAME.canvas = document.getElementById('gameCanvas');
-    GAME.ctx = GAME.canvas.getContext('2d');
-    
-    // Set canvas size based on tile count and size
-    GAME.canvas.width = GAME.TILE_SIZE * GAME.TILE_COUNT;
-    GAME.canvas.height = GAME.TILE_SIZE * GAME.TILE_COUNT;
-    
-    // Enable crisp pixel rendering
-    GAME.ctx.imageSmoothingEnabled = false;
-    
-    return Promise.resolve();
-}
-
-async function loadConfig() {
-    try {
-        const response = await fetch('config.yaml');
-        const yamlText = await response.text();
-        GAME.assets.config = jsyaml.load(yamlText);
-        return Promise.resolve();
-    } catch (error) {
-        console.error('Failed to load config:', error);
-        return Promise.reject(error);
-    }
-}
-
-async function preloadImages() {
-    const backgrounds = Array.from({length: 10}, (_, i) => `assets/img/${i + 1}.webp`);
-    
-    const loadPromises = backgrounds.map(src => {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => {
-                GAME.assets.images.set(src, img);
-                resolve();
-            };
-            img.onerror = () => {
-                console.warn(`Failed to load image: ${src}`);
-                resolve(); // Resolve anyway to continue loading
-            };
-            img.src = src;
-        });
-    });
-
-    return Promise.all(loadPromises);
-}
-
-function handleInitError(error) {
-    console.error('Initialization error:', error);
-    const container = document.getElementById('gameContainer');
-    container.classList.remove('loading');
-    container.innerHTML = `
-        <div class="error-message" style="color: red; padding: 20px; text-align: center;">
-            Failed to initialize game. Please refresh the page or check console for details.
-        </div>
-    `;
-}
+w.S={S,R,G};const T={x:0,y:0,t:30,m(e,g){if(!g.s.r||g.s.a)return;const X=e.touches[0].clientX-this.x,Y=e.touches[0].clientY-this.y,d=g.s.d;Math.abs(X)>Math.abs(Y)&&Math.abs(X)>this.t?g.s.x=X>0&&d!='l'?'r':X<0&&d!='r'?'l':d:Math.abs(Y)>this.t&&(g.s.x=Y>0&&d!='u'?'d':Y<0&&d!='d'?'u':d)}};
+addEventListener('DOMContentLoaded',()=>setTimeout(I,100));

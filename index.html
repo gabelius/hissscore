@@ -10,8 +10,8 @@
 <body>
     <div class="game-header">
         <div class="level-info">
-            <span class="level-number">Level <span id="levelNumber">1</span></span>
-            <span class="level-name" id="levelName">Slithering Start</span>
+            <span class="level-number">Level <span id="levelNumber">0</span></span>
+            <span class="level-name" id="levelName"></span>
         </div>
         <div>⏳ <span id="timer">0</span>s</div>
         <div class="hearts" id="hearts">❤❤❤</div>
@@ -24,10 +24,10 @@
     </div>
 
     <div class="controls">
-        <button id="startBtn" title="Start/Pause Game">▶️</button>
-        <button id="autoBtn" title="Auto Play">🤖</button>
-        <button id="speedBtn" title="Speed">⚡</button>
+        <button id="startBtn" title="Start Game">▶️</button>
+        <button id="autoBtn" title="Auto Mode">🤖</button>
         <button id="muteBtn" title="Mute">🔊</button>
+        <button id="speedBtn" title="Speed">⚡</button>
         <button id="themeToggle" title="Theme">🌓</button>
         <select id="colorMode" title="Colors">
             <option value="rainbow-mode">🌈</option>
@@ -38,6 +38,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js" defer></script>
-    <script type="module" src="game.min.js" defer></script>
+    <script type="module" src="game.js" defer></script>
 </body>
 </html>
