@@ -1,4 +1,5 @@
 import { GameSystem } from './GameSystem.js';
+import { GameWorldSystem } from './GameWorldSystem.js';
 
 export function setupEventListeners() {
     // Game controls
@@ -36,34 +37,55 @@ export function setupEventListeners() {
         }
     });
 
-    // Add touch controls
+    // Improved touch controls
     let touchStart = null;
+    let minSwipeDistance = 30; // Minimum distance for a swipe
+
     document.addEventListener('touchstart', (e) => {
-        touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    });
+        if (!GameSystem.state.isGameStarted || GameSystem.state.isGameOver || GameSystem.state.isPaused) return;
+        e.preventDefault();
+        touchStart = { 
+            x: e.touches[0].clientX, 
+            y: e.touches[0].clientY 
+        };
+    }, { passive: false });
 
     document.addEventListener('touchmove', (e) => {
-        if (!touchStart) return;
+        if (!touchStart || GameSystem.state.isAutoMode) return;
         e.preventDefault();
         
-        const touchEnd = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        const touchEnd = { 
+            x: e.touches[0].clientX, 
+            y: e.touches[0].clientY 
+        };
+        
         const dx = touchEnd.x - touchStart.x;
         const dy = touchEnd.y - touchStart.y;
         
+        // Only change direction if swipe is long enough
+        if (Math.abs(dx) < minSwipeDistance && Math.abs(dy) < minSwipeDistance) return;
+
+        // Determine swipe direction
         if (Math.abs(dx) > Math.abs(dy)) {
             const newDir = { x: Math.sign(dx), y: 0 };
             // Prevent opposite direction
             if (newDir.x !== -GameSystem.state.direction.x) {
                 GameSystem.state.direction = newDir;
+                GameSystem.state.isAutoMode = false;
             }
         } else {
             const newDir = { x: 0, y: Math.sign(dy) };
             // Prevent opposite direction
             if (newDir.y !== -GameSystem.state.direction.y) {
                 GameSystem.state.direction = newDir;
+                GameSystem.state.isAutoMode = false;
             }
         }
         
+        touchStart = null;
+    }, { passive: false });
+
+    document.addEventListener('touchend', (e) => {
         touchStart = null;
     });
 

@@ -147,6 +147,13 @@ export const GameSystem = {
     updateGameState() {
         if (!this.state.isGameStarted || this.state.isGameOver) return;
 
+        // Check for level progression
+        const currentLevel = this.state.config?.levels[this.state.currentLevel - 1];
+        if (currentLevel && this.state.score >= currentLevel.scoreThreshold) {
+            this.state.currentLevel = Math.min(this.state.currentLevel + 1, this.state.config.levels.length);
+            this.updateLevel();
+        }
+
         const nextHead = GameWorldSystem.getNextHeadPosition();
         if (GameWorldSystem.checkCollision(nextHead)) {
             this.handleCollision();

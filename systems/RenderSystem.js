@@ -36,7 +36,11 @@ export const RenderSystem = {
                 5
             );
             
-            GAME.ctx.fillStyle = '#4CAF50';
+            // Use level-based colors
+            const currentLevel = GameSystem.state.config?.levels[GameSystem.state.currentLevel - 1];
+            const snakeColor = currentLevel?.snakeColors?.[index % (currentLevel.snakeColors.length || 1)] || '#4CAF50';
+            
+            GAME.ctx.fillStyle = snakeColor;
             GAME.ctx.fill();
             GAME.ctx.strokeStyle = '#000000';
             GAME.ctx.lineWidth = 2;

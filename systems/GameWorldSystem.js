@@ -88,6 +88,10 @@ export const GameWorldSystem = {
     // Add these missing methods
     handleGameOver() {
         SoundSystem.play('die');
+        this.clearInactivityTimer();
+        // Remove mousemove listener to prevent auto-start after game over
+        document.removeEventListener('mousemove', this.handleInactivity);
+        
         const container = document.getElementById('gameContainer');
         const overlay = document.createElement('div');
         overlay.className = 'game-over-overlay';
