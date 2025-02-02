@@ -51,7 +51,7 @@
    - Level progression: Score thresholds trigger higher levels with increased speed.
 
 2. **UI and Controls**:
-   - HUD displaying score, lives, current level, and level name.
+   - HUD displaying score, lives, current level, timer, and level name.
    - Responsive canvas for desktop and mobile play.
    - Controls via keyboard or touch gestures.
    - Buttons for Start/Pause, Auto-mode, Speed, Color Themes, and Day/Night toggle.
@@ -121,6 +121,13 @@
    - Fixed game state management
    - Added proper cleanup
 
+### 2024-01-25 UTC
+- **Fix**: UI and Performance
+  - Removed redundant speed display from HUD
+  - Added sound loading error handling
+  - Fixed inactivity timer management
+  - Updated documentation
+
 ### Developer Instructions
 1. Keep changes modular and system-focused
 2. Update README with new requirements
@@ -137,6 +144,7 @@
    - Food System (Implemented in GameWorldSystem)
    - UI System (Implemented in CSS and HTML)
    - Riddle System (Removed in current version)
+   - Sound System (NEW: Added audio feedback)
 
 2. ✅ **Features**:
    - Auto-mode pathfinding (Implemented in GameWorldSystem)
@@ -156,6 +164,8 @@
    - Add local high scores
    - Consider re-implementing riddle system
    - Add more power-ups
+   - Add sound effect volume control
+   - Add mute button
 
 ## Known Issues
 
@@ -184,7 +194,34 @@
    - Related code and styles have been commented out
    - May be reimplemented in future versions
 
+5. **Movement Issues** (✅ FIXED):
+   - Snake dying from opposite movement: Fixed with direction validation
+   - Added checks for keyboard controls
+   - Added checks for touch controls
+   - Implemented safe movement logic
+
+5. **Timer Issues** (✅ FIXED):
+   - Inactivity timer persisting after game start
+   - Sound loading error handling
+   - Auto-mode timer cleanup
+   - UI simplification
+
 ## Change History
+
+### 2024-01-25 UTC
+- **Fix**: Snake Movement
+  - Added validation to prevent opposite direction movement
+  - Fixed snake death from reverse movement
+  - Updated both keyboard and touch controls
+  - Added direction validation documentation
+
+### 2024-01-25 UTC
+- **Feature**: Sound Effects
+  - Added SoundSystem for audio management
+  - Added sound effects for eating food
+  - Added sound effects for snake death
+  - Added sound effects for collisions
+  - Implemented volume control
 
 ### 2024-01-24 18:00 UTC
 - **Fix**: Auto Mode Toggle
@@ -405,8 +442,12 @@ Each issue is now tracked with timestamps for better debugging and feature imple
 ## Setup
 1. Place background images in /assets
 2. Configure levels in config.yaml
-3. Start local server
-4. Open index.html
+3. Place sound files (.wav) in /assets/sounds:
+   - eat.wav: Food eating sound
+   - die.wav: Game over sound
+   - hit.wav: Collision sound
+4. Start local server
+5. Open index.html
 
 ---
 Last updated: 2024-01-25 UTC

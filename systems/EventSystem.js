@@ -20,31 +20,17 @@ export function setupEventListeners() {
         e.target.setAttribute('data-speed', GameSystem.state.currentSpeed);
     });
 
+    document.getElementById('muteBtn').addEventListener('click', (e) => {
+        GameSystem.toggleMute();
+        e.target.textContent = GameSystem.state.isMuted ? '🔇' : '🔊';
+    });
+
     // Remove theme handlers as they're now in ThemeSystem
     document.getElementById('themeToggle').removeEventListener('click');
     document.getElementById('colorMode').removeEventListener('change');
 
-    // Keyboard controls
+    // Remove duplicate keyboard controls, now handled in GameSystem
     document.addEventListener('keydown', (event) => {
-        if (!GameSystem.state.isGameStarted || GameSystem.state.isGameOver) return;
-        
-        const directions = {
-            'ArrowUp': {x: 0, y: -1},
-            'ArrowDown': {x: 0, y: 1},
-            'ArrowLeft': {x: -1, y: 0},
-            'ArrowRight': {x: 1, y: 0},
-            'w': {x: 0, y: -1},
-            's': {x: 0, y: 1},
-            'a': {x: -1, y: 0},
-            'd': {x: 1, y: 0}
-        };
-
-        const newDir = directions[event.key];
-        if (newDir) {
-            GameSystem.state.direction = newDir;
-            GameSystem.state.isAutoMode = false;
-        }
-
         if (event.key === ' ') {
             GameSystem.togglePause();
         }
@@ -65,9 +51,17 @@ export function setupEventListeners() {
         const dy = touchEnd.y - touchStart.y;
         
         if (Math.abs(dx) > Math.abs(dy)) {
-            GameSystem.state.direction = { x: Math.sign(dx), y: 0 };
+            const newDir = { x: Math.sign(dx), y: 0 };
+            // Prevent opposite direction
+            if (newDir.x !== -GameSystem.state.direction.x) {
+                GameSystem.state.direction = newDir;
+            }
         } else {
-            GameSystem.state.direction = { x: 0, y: Math.sign(dy) };
+            const newDir = { x: 0, y: Math.sign(dy) };
+            // Prevent opposite direction
+            if (newDir.y !== -GameSystem.state.direction.y) {
+                GameSystem.state.direction = newDir;
+            }
         }
         
         touchStart = null;

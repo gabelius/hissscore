@@ -81,10 +81,10 @@ body.grayscale-mode {
     display: flex;
     align-items: center;
     gap: 4px;
-    min-width: 80px; /* Increased fixed width */
-    justify-content: flex-end; /* Right align all content */
+    min-width: 60px; /* Reduced from 80px since we removed speed */
+    justify-content: flex-end;
     text-align: right;
-    font-family: monospace; /* Use monospace for numbers to prevent shifting */
+    font-family: monospace;
 }
 
 .level-info {
@@ -99,7 +99,7 @@ body.grayscale-mode {
 .level-number {
     font-size: 0.8rem;
     opacity: 0.8;
-    color: var(--text-color);
+    color: var (--text-color);
 }
 
 .level-name {
@@ -322,10 +322,7 @@ button:active, select:active {
 }
 
 #speedIndicator {
-    font-family: monospace;
-    font-weight: bold;
-    min-width: 24px;
-    display: inline-block;
+    display: none;
 }
 
 .countdown {
@@ -402,4 +399,13 @@ button:active, select:active {
         padding: 10px;
         font-size: 0.9rem;
     }
+}
+
+.controls button#muteBtn {
+    transition: all 0.3s ease;
+}
+
+.controls button#muteBtn.active-mode {
+    background: var(--danger-accent) !important;
+    box-shadow: 0 0 12px rgba(255, 118, 117, 0.7);
 }

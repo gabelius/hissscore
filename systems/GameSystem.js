@@ -1,5 +1,6 @@
 import { RenderSystem } from './RenderSystem.js';
 import { GameWorldSystem } from './GameWorldSystem.js';
+import { SoundSystem } from './SoundSystem.js';
 
 // Combine GameState directly into GameSystem
 export const GameSystem = {
@@ -23,6 +24,7 @@ export const GameSystem = {
         baseInterval: 150,
         speedLevels: [1, 1.5, 2, 2.5, 3],
         currentSpeedIndex: 0,
+        isMuted: false,  // Add mute state
     },
 
     async init() {
@@ -31,6 +33,9 @@ export const GameSystem = {
             const response = await fetch('config.yaml');
             const yamlText = await response.text();
             this.state.config = jsyaml.load(yamlText);
+            
+            // Initialize sound system
+            SoundSystem.init();
             
             // Initialize state
             this.resetGameState();
@@ -93,6 +98,11 @@ export const GameSystem = {
     startGame() {
         console.log('Starting game');
         if (this.state.isGameStarted) return;
+        
+        // Clear any pending auto-start timers
+        if (GameWorldSystem.inactivityTimer) {
+            clearTimeout(GameWorldSystem.inactivityTimer);
+        }
         
         this.state.isGameStarted = true;
         this.state.isPaused = false;
@@ -179,7 +189,8 @@ export const GameSystem = {
         this.state.currentSpeedIndex = (this.state.currentSpeedIndex + 1) % this.state.speedLevels.length;
         this.state.currentSpeed = this.state.speedLevels[this.state.currentSpeedIndex];
         this.state.updateInterval = this.state.baseInterval / this.state.currentSpeed;
-        document.getElementById('speedIndicator').textContent = this.state.currentSpeed + 'x';
+        // Remove speedIndicator update
+        document.getElementById('speedBtn').setAttribute('data-speed', this.state.currentSpeed);
     },
 
     updateLevel() {
@@ -208,8 +219,15 @@ export const GameSystem = {
 
         const newDir = keyActions[event.key.toLowerCase()];
         if (newDir) {
-            this.state.direction = newDir;
-            event.preventDefault();
+            // Prevent moving in opposite direction
+            const isOppositeDirection = 
+                (newDir.x !== 0 && newDir.x === -this.state.direction.x) ||
+                (newDir.y !== 0 && newDir.y === -this.state.direction.y);
+            
+            if (!isOppositeDirection) {
+                this.state.direction = newDir;
+                event.preventDefault();
+            }
         }
     },
 
@@ -228,7 +246,15 @@ export const GameSystem = {
 
     handleAutoMode() {
         // ...auto mode logic...
-    }
+    },
+
+    toggleMute() {
+        this.state.isMuted = !this.state.isMuted;
+        Object.values(SoundSystem.sounds).forEach(sound => {
+            sound.muted = this.state.isMuted;
+        });
+        document.getElementById('muteBtn')?.classList.toggle('active-mode');
+    },
 };
 
 // Export state for legacy compatibility

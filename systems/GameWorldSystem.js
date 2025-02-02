@@ -1,4 +1,5 @@
 import { GameSystem } from './GameSystem.js';
+import { SoundSystem } from './SoundSystem.js';
 
 export const GameWorldSystem = {
     // Physics methods
@@ -23,6 +24,7 @@ export const GameWorldSystem = {
         // Check if snake ate food
         if (this.checkFoodCollision(nextHead)) {
             GameSystem.state.score += 10;
+            SoundSystem.play('eat');
             this.spawnFood();
         } else {
             // Remove tail if no food eaten
@@ -58,12 +60,19 @@ export const GameWorldSystem = {
 
     // Auto features
     setupAutoMode() {
+        this.clearInactivityTimer();
         document.addEventListener('mousemove', this.handleInactivity.bind(this));
     },
 
+    clearInactivityTimer() {
+        if (this.inactivityTimer) {
+            clearTimeout(this.inactivityTimer);
+            this.inactivityTimer = null;
+        }
+    },
+
     handleInactivity() {
-        // Fixed inactivity timer (removed duplicate event listener)
-        clearTimeout(this.inactivityTimer);
+        this.clearInactivityTimer();
         if (!GameSystem.state.isGameStarted) {
             this.inactivityTimer = setTimeout(() => {
                 GameSystem.toggleAutoMode();
@@ -78,6 +87,7 @@ export const GameWorldSystem = {
 
     // Add these missing methods
     handleGameOver() {
+        SoundSystem.play('die');
         const container = document.getElementById('gameContainer');
         const overlay = document.createElement('div');
         overlay.className = 'game-over-overlay';
@@ -86,9 +96,13 @@ export const GameWorldSystem = {
 
     checkCollision(position) {
         // Add proper collision detection
-        return GameSystem.state.snake.some(segment => 
+        const hasCollision = GameSystem.state.snake.some(segment => 
             segment.x === position.x && segment.y === position.y
         );
+        if (hasCollision) {
+            SoundSystem.play('hit');
+        }
+        return hasCollision;
     },
 
     autoMove() {
