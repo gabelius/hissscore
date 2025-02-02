@@ -44,3 +44,41 @@ button:active,select:active{transform:scale(.95)}
 
 /* Responsive */
 @media (max-width:480px){.game-header{font-size:.8rem;padding:8px}.level-name{font-size:.75rem;top:50px}button,select{padding:10px;font-size:.9rem}}
+
+/* Welcome screen styles */
+.welcome-screen {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.welcome-logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.welcome-logo {
+    width: 200px;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,.3));
+}
+
+.welcome-screen #welcomeStartBtn {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+    background: var(--primary-accent);
+    border: 2px solid white;
+    box-shadow: 0 0 20px rgba(255,255,255,.2);
+}
+
+.welcome-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}

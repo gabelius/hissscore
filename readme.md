@@ -118,3 +118,27 @@ Check console for:
 3. ur: update readme file while maintaining minimum file size
 4. mf: minify current file while keeping the same filename and basic readability
 5. nm: pcr of next module or file
+
+## Development Process
+1. All code changes must follow visible step-by-step thinking:
+   - State the problem clearly
+   - Break down the solution into steps
+   - Show reasoning for each change
+   - Document unexpected side effects
+   - Maintain change history in chat
+
+2. Change Documentation:
+   - Keep all intermediate steps visible
+   - Show failed attempts and learnings
+   - Track dependencies between changes
+   - Reference related changes in other files
+   - Maintain error handling evolution
+
+3. Chat Output Guidelines:
+   - Each change starts with problem statement
+   - Steps are numbered and logical
+   - Code blocks show exact changes
+   - Filepaths are clearly marked
+   - Results and errors are documented
+   - Solutions build on previous attempts
+   - Reasoning is explicit and clear
