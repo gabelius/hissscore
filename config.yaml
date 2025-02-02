@@ -9,29 +9,10 @@ game:
 
 # Color Schemes
 colorSchemes:
-    rainbow:
-        - "#FF6B6B"
-        - "#FFD93D"
-        - "#6BFF6B"
-        - "#4ECDC4"
-        - "#9B59B6"
-    pastel:
-        - "#FFB3BA"
-        - "#FFDFBA"
-        - "#FFFFBA"
-        - "#BAFFC9"
-        - "#BAE1FF"
-    neon:
-        - "w#FF00FF"
-        - "#00FFFF"
-        - "#FF0000"
-        - "#00FF00"
-        - "#FFFF00"
-    grayscale:
-        - "#999"
-        - "#777"
-        - "#555"
-        - "#333"
+    rainbow: ["#FF6B6B", "#4ECDC4", "#45B7D1"]
+    pastel: ["#FFB3BA", "#BAFFC9", "#BAE1FF"]
+    neon: ["#FF00FF", "#00FFFF", "#FF3377"]
+    grayscale: ["#999999", "#666666", "#333333"]
 
 # Riddles
 riddles:
@@ -54,42 +35,42 @@ snakeFacts:
 # Level Names
 levels:
     - name: "The Green Meadow"
-      background: "img/1.webp"
-      snakeColors: ["#00FF00"]
-      scoreThreshold: 100
+      background: "assets/meadow.jpg"
+      snakeColors: ["#4CAF50", "#81C784", "#A5D6A7"]
+      scoreThreshold: 50
     - name: "The Desert Mirage"
-      background: "img/2.webp"
-      snakeColors: ["#C2B280"]
-      scoreThreshold: 200
+      background: "assets/desert.jpg"
+      snakeColors: ["#FFB74D", "#FFE0B2", "#FFCC80"]
+      scoreThreshold: 100
     - name: "The Mystic Forest"
-      background: "img/3.webp"
+      background: "assets/forest.jpg"
       snakeColors: ["#228B22"]
       scoreThreshold: 300
     - name: "The Arctic Tundra"
-      background: "img/4.webp"
+      background: "assets/tundra.jpg"
       snakeColors: ["#00FFFF"]
       scoreThreshold: 400
     - name: "The Molten Core"
-      background: "img/5.webp"
+      background: "assets/core.jpg"
       snakeColors: ["#FF4500"]
       scoreThreshold: 500
     - name: "The Starry Night"
-      background: "img/6.webp"
+      background: "assets/starry.jpg"
       snakeColors: ["#1E90FF"]
       scoreThreshold: 600
     - name: "The Ocean Depths"
-      background: "img/7.webp"
+      background: "assets/ocean.jpg"
       snakeColors: ["#008080"]
       scoreThreshold: 700
     - name: "The Golden Sands"
-      background: "img/8.webp"
+      background: "assets/sands.jpg"
       snakeColors: ["#FFD700"]
       scoreThreshold: 800
     - name: "The Thunder Plains"
-      background: "img/9.webp"
+      background: "assets/plains.jpg"
       snakeColors: ["#800080"]
       scoreThreshold: 900
     - name: "The Cosmic Void"
-      background: "img/10.webp"
+      background: "assets/void.jpg"
       snakeColors: ["#000000"]
       scoreThreshold: 1000
