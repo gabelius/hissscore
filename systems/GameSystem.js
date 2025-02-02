@@ -9,7 +9,7 @@ export const GameSystem = {
         currentLevel: 1,
         snake: [{x: 10, y: 10}],
         food: null,
-        direction: {x: 1, y: 0}],
+        direction: {x: 1, y: 0},
         score: 0,
         hearts: 3,
         isGameOver: false,
