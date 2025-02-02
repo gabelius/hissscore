@@ -4,27 +4,56 @@ export const GameWorldSystem = {
     // Physics methods
     getNextHeadPosition() {
         const head = GameSystem.state.snake[0];
-        return {
-            x: (head.x + GameSystem.state.direction.x + GAME.TILE_COUNT) % GAME.TILE_COUNT,
-            y: (head.y + GameSystem.state.direction.y + GAME.TILE_COUNT) % GAME.TILE_COUNT
+        const nextHead = {
+            x: head.x + GameSystem.state.direction.x,
+            y: head.y + GameSystem.state.direction.y
         };
+
+        // Handle wrapping around screen edges
+        nextHead.x = (nextHead.x + GAME.TILE_COUNT) % GAME.TILE_COUNT;
+        nextHead.y = (nextHead.y + GAME.TILE_COUNT) % GAME.TILE_COUNT;
+
+        return nextHead;
     },
 
-    moveSnake(head) {
-        // ...existing snake code...
+    moveSnake(nextHead) {
+        // Add new head to front of snake
+        GameSystem.state.snake.unshift({...nextHead});
+        
+        // Check if snake ate food
+        if (this.checkFoodCollision(nextHead)) {
+            GameSystem.state.score += 10;
+            this.spawnFood();
+        } else {
+            // Remove tail if no food eaten
+            GameSystem.state.snake.pop();
+        }
+    },
+
+    checkFoodCollision(position) {
+        const food = GameSystem.state.food;
+        if (!food) return false;
+        return position.x === food.x && position.y === food.y;
     },
 
     // World management
     spawnFood() {
+        if (!window.GAME) {
+            console.error('GAME object not initialized');
+            return;
+        }
+
         const spawnHeart = GameSystem.state.hearts < 3 && Math.random() < 0.3;
+        let x, y;
         do {
-            GameSystem.state.food = {
-                x: Math.floor(Math.random() * GAME.TILE_COUNT),
-                y: Math.floor(Math.random() * GAME.TILE_COUNT),
-                type: spawnHeart ? 'heart' : 'apple'
-            };
-        } while(GameSystem.state.snake.some(s => 
-            s.x === GameSystem.state.food.x && s.y === GameSystem.state.food.y));
+            x = Math.floor(Math.random() * GAME.TILE_COUNT);
+            y = Math.floor(Math.random() * GAME.TILE_COUNT);
+        } while(GameSystem.state.snake.some(s => s.x === x && s.y === y));
+
+        GameSystem.state.food = {
+            x, y,
+            type: spawnHeart ? 'heart' : 'apple'
+        };
     },
 
     // Auto features

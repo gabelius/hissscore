@@ -26,11 +26,48 @@ export const GameSystem = {
     },
 
     async init() {
-        const response = await fetch('config.yaml');
-        const yamlText = await response.text();
-        this.state.config = jsyaml.load(yamlText);
-        this.setupGame();
-        RenderSystem.setupThemes();
+        try {
+            // Load config first
+            const response = await fetch('config.yaml');
+            const yamlText = await response.text();
+            this.state.config = jsyaml.load(yamlText);
+            
+            // Initialize state
+            this.resetGameState();
+            
+            // Spawn initial food
+            GameWorldSystem.spawnFood();
+            
+            // Set up event listeners
+            this.setupEventListeners();
+            
+            // Initial render
+            RenderSystem.draw();
+            
+            console.log('Game initialized with state:', this.state);
+        } catch (error) {
+            console.error('Init failed:', error);
+            throw error;
+        }
+    },
+
+    setupEventListeners() {
+        // Game controls
+        document.addEventListener('keydown', this.handleKeydown.bind(this));
+        
+        // Button controls
+        const startBtn = document.getElementById('startBtn');
+        const autoBtn = document.getElementById('autoBtn');
+        
+        startBtn?.addEventListener('click', () => {
+            this.startGame();
+            startBtn.classList.add('active-mode');
+        });
+        
+        autoBtn?.addEventListener('click', () => {
+            this.toggleAutoMode();
+            autoBtn.classList.toggle('active-mode');
+        });
     },
 
     setupGame() {
@@ -54,14 +91,17 @@ export const GameSystem = {
     },
 
     startGame() {
-        console.log('Starting game...');
+        console.log('Starting game');
         if (this.state.isGameStarted) return;
         
         this.state.isGameStarted = true;
         this.state.isPaused = false;
         this.state.startTime = Date.now();
+        this.state.lastUpdate = performance.now();
+        
+        // Ensure initial state
         this.state.snake = [{x: 10, y: 10}];
-        GameWorldSystem.spawnFood();
+        this.state.direction = {x: 1, y: 0};
         
         // Start game loop
         requestAnimationFrame(this.gameLoop.bind(this));
@@ -69,25 +109,25 @@ export const GameSystem = {
     },
 
     gameLoop(timestamp) {
-        if (!this.state.isGameStarted || this.state.isGameOver) {
+        if (!this.state.isGameStarted || this.state.isGameOver || this.state.isPaused) {
+            requestAnimationFrame(this.gameLoop.bind(this));
             return;
         }
 
-        if (timestamp - this.state.lastUpdate > this.state.updateInterval) {
-            // Update game state
-            if (this.state.isAutoMode) {
-                GameWorldSystem.autoMove();
-            }
+        if (timestamp - this.state.lastUpdate >= this.state.updateInterval) {
+            console.log('Game tick', this.state.direction);
             
+            // Update snake position
             const nextHead = GameWorldSystem.getNextHeadPosition();
+            
+            // Check collision with self
             if (GameWorldSystem.checkCollision(nextHead)) {
                 this.handleCollision();
-                return;
+            } else {
+                GameWorldSystem.moveSnake(nextHead);
             }
-
-            GameWorldSystem.moveSnake(nextHead);
             
-            // Update display
+            // Draw updated state
             RenderSystem.draw();
             this.state.lastUpdate = timestamp;
         }

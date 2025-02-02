@@ -1,8 +1,15 @@
 import { GameSystem } from './GameSystem.js';
-import { GAME } from '../script.js';
+// Remove GAME import, it will be available globally
 
 export const RenderSystem = {
     draw() {
+        if (!window.GAME?.ctx) {
+            console.error('No canvas context');
+            return;
+        }
+        
+        console.log('Drawing with state:', GameSystem.state);
+        
         this.clearCanvas();
         this.drawSnake();
         this.drawFood();

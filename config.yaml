@@ -35,42 +35,42 @@ snakeFacts:
 # Level Names
 levels:
     - name: "The Green Meadow"
-      background: "assets/meadow.jpg"
+      background: "img/1.webp"
       snakeColors: ["#4CAF50", "#81C784", "#A5D6A7"]
       scoreThreshold: 50
     - name: "The Desert Mirage"
-      background: "assets/desert.jpg"
+      background: "img/2.webp"
       snakeColors: ["#FFB74D", "#FFE0B2", "#FFCC80"]
       scoreThreshold: 100
     - name: "The Mystic Forest"
-      background: "assets/forest.jpg"
+      background: "img/3.webp"
       snakeColors: ["#228B22"]
       scoreThreshold: 300
     - name: "The Arctic Tundra"
-      background: "assets/tundra.jpg"
+      background: "img/4.webp"
       snakeColors: ["#00FFFF"]
       scoreThreshold: 400
     - name: "The Molten Core"
-      background: "assets/core.jpg"
+      background: "img/5.webp"
       snakeColors: ["#FF4500"]
       scoreThreshold: 500
     - name: "The Starry Night"
-      background: "assets/starry.jpg"
+      background: "img/6.webp"
       snakeColors: ["#1E90FF"]
       scoreThreshold: 600
     - name: "The Ocean Depths"
-      background: "assets/ocean.jpg"
+      background: "img/7.webp"
       snakeColors: ["#008080"]
       scoreThreshold: 700
     - name: "The Golden Sands"
-      background: "assets/sands.jpg"
+      background: "img/8.webp"
       snakeColors: ["#FFD700"]
       scoreThreshold: 800
     - name: "The Thunder Plains"
-      background: "assets/plains.jpg"
+      background: "img/9.webp"
       snakeColors: ["#800080"]
       scoreThreshold: 900
     - name: "The Cosmic Void"
-      background: "assets/void.jpg"
+      background: "img/10.webp"
       snakeColors: ["#000000"]
       scoreThreshold: 1000
