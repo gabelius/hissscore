@@ -1,5 +1,7 @@
 # Smart Snake Game
 
+A modern implementation of the classic Snake game with additional features.
+
 ## Core Systems
 - GameSystem: State & logic
 - RenderSystem: Graphics
@@ -8,13 +10,17 @@
 - EventSystem: Input handling
 
 ## Features
-- Manual/Auto mode
-- 3 lives system
-- Level progression
-- Background themes
-- Sound effects
+- 🎮 Manual and Auto play modes
+- ❤️ Three lives system
+- 🎨 Multiple color themes (Rainbow, Pastel, Neon, Grayscale)
+- 🌓 Light/Dark mode toggle
+- 🔊 Sound effects with mute option
+- ⚡ Three speed levels
+- 📱 Touch controls for mobile
+- 🏆 Score tracking
 
 ## Setup
+1. Ensure all assets are present:
 ```
 /assets
 ├── audio/*.wav
