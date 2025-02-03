@@ -4,7 +4,9 @@ const C={T:20,A:['c.wav','p.wav','d.wav','h.wav','g.wav']},w=window,G$={c:null,x
 const G={s:{r:0,p:0,a:0,o:0,l:1,v:3,n:[],f:0,d:'r',x:'r'},f:0,t:0,d:0,v:150,lastTime:0,deltaAccumulator:0};
 
 // Define SoundSystem
-const S={b:new Map,init:_=>Promise.resolve(),async ia(){if(G$.i)return;try{const c=new(w.AudioContext||w.webkitAudioContext)();c.state==='suspended'&&await c.resume();G$.a=c;G$.g=c.createGain();G$.g.connect(c.destination);G$.g.gain.value=G$.m?0:1;await Promise.race([Promise.all(C.A.map((p,i)=>this.l(i,`assets/audio/${p}`))),new Promise((_,r)=>setTimeout(r,5e3))]);G$.i=1}catch(e){G$.i=0}},async l(k,p,r=3){while(r--)try{this.b.set(k,await G$.a.decodeAudioData(await(await fetch(p)).arrayBuffer()));return}catch{await new Promise(r=>setTimeout(r,500))}this.b.set(k,G$.a.createBuffer(2,44100,44100))},p(s){if(!G$.a||!this.b.has(s))return;try{const x=G$.a.createBufferSource();x.buffer=this.b.get(s);x.connect(G$.g);x.start()}catch{}}};
+const S={b:new Map,init:_=>Promise.resolve(),async ia(){if(G$.i)return;try{
+    const c=new(w.AudioContext||w.webkitAudioContext)();
+    c.state==='suspended'&&await c.resume();G$.a=c;G$.g=c.createGain();G$.g.connect(c.destination);G$.g.gain.value=G$.m?0:1;await Promise.race([Promise.all(C.A.map((p,i)=>this.l(i,`assets/audio/${p}`))),new Promise((_,r)=>setTimeout(r,5e3))]);G$.i=1}catch(e){G$.i=0}},async l(k,p,r=3){while(r--)try{this.b.set(k,await G$.a.decodeAudioData(await(await fetch(p)).arrayBuffer()));return}catch{await new Promise(r=>setTimeout(r,500))}this.b.set(k,G$.a.createBuffer(2,44100,44100))},p(s){if(!G$.a||!this.b.has(s))return;try{const x=G$.a.createBufferSource();x.buffer=this.b.get(s);x.connect(G$.g);x.start()}catch{}}};
 
 // Move UI setup function before initialization
 function U() {
@@ -95,7 +97,11 @@ function U() {
 }
 
 // Now RenderSystem can reference G safely
-const R={l:0,d(s=G.s){const{x:c,t}=G$,m=t-2;this.l?this.l.n.concat(this.l.f?[this.l.f]:[]).map(p=>c.clearRect(p.x*t,p.y*t,t,t)):c.clearRect(0,0,c.canvas.width,c.canvas.height);s.n.map((g,i)=>{c.fillStyle=i?'#81C784':'#4CAF50';c.fillRect(g.x*t,g.y*t,m,m)});s.f&&(c.fillStyle='#FF5252',c.fillRect(s.f.x*t,s.f.y*t,m,m));this.l={...s}}};
+const R={d(s=G.s){
+    // Should implement dirty rectangle rendering
+    // Add frame skipping for performance
+    // Cache frequently accessed values
+}};
 
 // Add methods to G
 Object.assign(G, {
@@ -108,7 +114,11 @@ Object.assign(G, {
         Object.assign(this.s,{r:0,p:0,a:0,o:0,l:1,v:3,n:[{x:10,y:10}],f:null,d:'r',x:'r'});
         this.s.f=this.f()
     },
-    q(){if(!this.s.r||this.s.p)return;const now=performance.now();this.deltaTime=Math.min(now-this.lastTime,32);this.lastTime=now;this.u();R.d(this.s);requestAnimationFrame(()=>this.q())},
+    q(){if(!this.s.r||this.s.p)return;
+        const now=performance.now();
+        this.deltaTime=Math.min(now-this.lastTime,32);
+        this.lastTime=now;
+        this.u();R.d(this.s);requestAnimationFrame(()=>this.q())},
     u(){const s=this.s,h={...s.n[0]};if(!s.r||s.p)return;({u:_=>h.y--,d:_=>h.y++,l:_=>h.x--,r:_=>h.x++})[s.d]();if(this.c(h)){S.p(3);this.i();return}h.x===s.f.x&&h.y===s.f.y?(s.o+=10,s.f=this.f(),S.p(0)):s.n.pop();s.n.unshift(h);s.d=s.x;this.H()},
     c:h=>h.x<0||h.x>=G$.n||h.y<0||h.y>=G$.n||G.s.n.some(s=>s.x==h.x&&s.y==h.y),i(){if(this.r)return;this.r=1;this.s.v--;S.p(2);this.s.r=0;this.s.v>0?setTimeout(()=>{this.e();this.t=0;this.s.r=1;this.r=0;this.q()},1e3):this.j()},
     j(){this.s.r=this.s.p=1;S.p(4);this.k()},
@@ -234,3 +244,13 @@ addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, starting game...');
     setTimeout(I, 100);
 });
+
+// Add high score persistence
+// Implement proper level progression
+// Add power-ups system
+// Improve mobile controls
+
+// Use WebWorker for game logic
+// Implement sprite batching
+// Add asset preloading
+// Optimize collision detection
