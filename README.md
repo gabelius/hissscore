@@ -7,7 +7,7 @@ A modern implementation of the classic Snake game with enhanced features and pro
 ### Core Mechanics
 - 10 unique levels with increasing difficulty
 - Snake grows after collecting 2 food items
-- 3 lives per game (no refills)
+- 3 lives per game (refills after level 5 with hearts generating 20% of the time as an extra food item for 10 seconds)
 - Auto-play mode available
 - Start/Pause functionality
 
