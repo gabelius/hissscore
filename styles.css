@@ -9,6 +9,77 @@
     --star-filled: #FFC107;
 }
 
+/* Level-specific backgrounds */
+[data-level="1"] #gameCanvas {
+    background-image: linear-gradient(45deg, var(--shadow) 0.5px, transparent 0.5px);
+    background-size: 20px 20px;
+}
+
+[data-level="2"] #gameCanvas {
+    background-image:
+        linear-gradient(90deg, var(--shadow) 1px, transparent 1px),
+        linear-gradient(0deg, var(--shadow) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+[data-level="3"] #gameCanvas {
+    background-image:
+        radial-gradient(circle at 20px 20px, var(--shadow) 2px, transparent 2px);
+    background-size: 40px 40px;
+}
+
+[data-level="4"] #gameCanvas {
+    background-image:
+        repeating-linear-gradient(45deg, var(--shadow) 0, var(--shadow) 2px, transparent 2px, transparent 8px);
+}
+
+[data-level="5"] #gameCanvas {
+    background-image:
+        linear-gradient(45deg, transparent 48%, var(--shadow) 48%, var(--shadow) 52%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, var(--shadow) 48%, var(--shadow) 52%, transparent 52%);
+    background-size: 40px 40px;
+}
+
+[data-level="6"] #gameCanvas {
+    background-image:
+        radial-gradient(var(--shadow) 1px, transparent 1px),
+        radial-gradient(var(--shadow) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+}
+
+[data-level="7"] #gameCanvas {
+    background-image:
+        linear-gradient(30deg, var(--shadow) 12%, transparent 12.5%, transparent 87%, var(--shadow) 87.5%, var(--shadow)),
+        linear-gradient(150deg, var(--shadow) 12%, transparent 12.5%, transparent 87%, var(--shadow) 87.5%, var(--shadow));
+    background-size: 80px 140px;
+}
+
+[data-level="8"] #gameCanvas {
+    background-image:
+        linear-gradient(var(--shadow) 2px, transparent 2px),
+        linear-gradient(90deg, var(--shadow) 2px, transparent 2px),
+        linear-gradient(var(--shadow) 1px, transparent 1px),
+        linear-gradient(90deg, var(--shadow) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 12px 12px, 12px 12px;
+    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+}
+
+[data-level="9"] #gameCanvas {
+    background-image:
+        repeating-linear-gradient(45deg, var(--shadow) 25%, transparent 25%, transparent 75%, var(--shadow) 75%, var(--shadow)),
+        repeating-linear-gradient(45deg, var(--shadow) 25%, transparent 25%, transparent 75%, var(--shadow) 75%, var(--shadow));
+    background-position: 0 0, 25px 25px;
+    background-size: 50px 50px;
+}
+
+[data-level="10"] #gameCanvas {
+    background-image:
+        radial-gradient(circle at center, var(--shadow) 0, transparent 70%),
+        repeating-radial-gradient(circle at center, var(--shadow) 0, var(--shadow) 3px, transparent 3px, transparent 8px);
+    background-size: 100% 100%, 40px 40px;
+}
+
 /* Themes */
 [data-theme="dark"] {
     --primary: #BB86FC;

@@ -2,6 +2,7 @@ class SoundManager {
     constructor() {
         this.context = new (window.AudioContext || window.webkitAudioContext)();
         this.sounds = new Map();
+        this.isMuted = true; // Start muted by default
         this.initSounds();
     }
 
@@ -30,8 +31,13 @@ class SoundManager {
         }
     }
 
+    toggleMute() {
+        this.isMuted = !this.isMuted;
+        return this.isMuted;
+    }
+
     play(soundName, duration = 0.1) {
-        if (!this.sounds.has(soundName)) return;
+        if (this.isMuted || !this.sounds.has(soundName)) return;
         const oscillators = this.sounds.get(soundName);
         
         oscillators.forEach(({ gain }, i) => {
@@ -40,7 +46,6 @@ class SoundManager {
             gain.gain.linearRampToValueAtTime(0.1, time + 0.01);
             gain.gain.linearRampToValueAtTime(0, time + duration);
             
-            // Delay each frequency in sequence slightly
             if (i > 0) {
                 gain.gain.setValueAtTime(0, time + (i * duration * 0.5));
                 gain.gain.linearRampToValueAtTime(0.1, time + 0.01 + (i * duration * 0.5));
@@ -50,92 +55,11 @@ class SoundManager {
     }
 }
 
-class SnakeGame {
-    constructor() {
-        this.canvas = document.getElementById('gameCanvas');
-        this.soundManager = new SoundManager();
-        this.ctx = this.canvas.getContext('2d');
-        this.gridSize = 20;
-        this.canvas.width = Math.floor(window.innerWidth * 0.8);
-        this.canvas.height = Math.floor(window.innerHeight * 0.6);
-        
-        // Game state
-        this.score = 0;
-        this.lives = 3;
-        this.level = 1;
-        this.baseSpeed = 200;
-        this.isGameOver = false;
-        this.isPaused = true;
-        this.isAutoMode = false;
-        this.direction = 'right';
-        this.nextDirection = 'right';
-        this.foodCount = 0;
-        this.ghostSegment = null;
-        this.particles = [];
-        this.livesLost = 0;
-        this.levelTime = 0;
-        this.levelStartTime = Date.now();
-        
-        // Snake and food initialization
-        this.snake = [
-            { x: 5, y: 5 },
-            { x: 4, y: 5 },
-            { x: 3, y: 5 }
-        ];
-        this.food = { x: 10, y: 10 };
-        
-        // Game design
-        this.foodIcons = ['restaurant', 'apple', 'egg', 'cake', 'pizza'];
-        this.currentFoodIcon = 0;
-        this.snakeDesigns = {
-            1: { color: '#4CAF50', effect: 'none' },
-            2: { color: '#2196F3', effect: 'pulse' },
-            3: { color: '#9C27B0', effect: 'shimmer' },
-            4: { color: '#FF9800', effect: 'circuit' },
-            5: { color: '#E91E63', effect: 'pulse' },
-            6: { color: '#3F51B5', effect: 'shimmer' },
-            7: { color: '#009688', effect: 'circuit' },
-            8: { color: '#FF5722', effect: 'pulse' },
-            9: { color: '#673AB7', effect: 'shimmer' },
-            10: { color: '#F44336', effect: 'circuit' }
-        };
-        
-        this.setupEventListeners();
-        this.updateLivesDisplay();
-        this.initializeGame();
-    }
-
-    // Access methods for AutoPlayer
-    getSnake() { return [...this.snake]; }
-    getFood() { return { ...this.food }; }
-    getGridSize() { return this.gridSize; }
-    getCanvasSize() { return { width: this.canvas.width, height: this.canvas.height }; }
-    getCurrentDirection() { return this.direction; }
-    setNextDirection(dir) { this.nextDirection = dir; }
-
-    handleCanvasClick(e) {
-        if (this.isAutoMode) return;
-        const rect = this.canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        this.handleDirectionalInput(x, y);
-    }
-
-    handleCanvasTouch(e) {
-        if (this.isAutoMode) return;
-        const rect = this.canvas.getBoundingClientRect();
-        const touch = e.changedTouches[0];
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
-        this.handleDirectionalInput(x, y);
-    }
-
-    handleDirectionalInput(x, y) {
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-        const deltaX = x - centerX;
-        const deltaY = y - centerY;
-
+class WallGenerator {
+    constructor(level, width, height, gridSize) {
+        this.level = level;
+        this.width = Math.floor(width / gridSize);
+        this.height = Math.floor(height / gridSize);
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
             this.nextDirection = deltaX > 0 ? 'right' : 'left';
         } else {
@@ -169,25 +93,24 @@ class SnakeGame {
     setupEventListeners() {
         document.addEventListener('keydown', (e) => this.handleKeyPress(e));
         
-        const touchButtons = ['upBtn', 'downBtn', 'leftBtn', 'rightBtn'];
-        touchButtons.forEach(btnId => {
-            const btn = document.getElementById(btnId);
-            if (btn) {
-                ['touchstart', 'mousedown'].forEach(event => {
-                    btn.addEventListener(event, () => {
-                        if (!this.isAutoMode) {
-                            this.nextDirection = btnId.replace('Btn', '');
-                        }
-                    });
-                });
-            }
+        // Touch events for swipe controls
+        this.canvas.addEventListener('touchstart', (e) => this.handleTouchStart(e));
+        this.canvas.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+        this.canvas.addEventListener('touchcancel', () => this.handleTouchCancel());
+
+        // Sound toggle button
+        const soundBtn = document.createElement('button');
+        soundBtn.id = 'soundBtn';
+        soundBtn.className = 'material-btn';
+        soundBtn.innerHTML = '<span class="material-icons">volume_off</span>';
+        document.querySelector('.controls').appendChild(soundBtn);
+
+        soundBtn.addEventListener('click', () => {
+            const isMuted = this.soundManager.toggleMute();
+            soundBtn.innerHTML = `<span class="material-icons">${isMuted ? 'volume_off' : 'volume_up'}</span>`;
         });
 
-        // Add canvas click and touch events
-        this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
-        this.canvas.addEventListener('touchstart', (e) => this.handleCanvasTouch(e));
-
-        // Add game control button events
+        // Game control button events
         document.getElementById('startBtn').addEventListener('click', () => {
             if (this.isGameOver) {
                 this.restartGame();
@@ -208,6 +131,10 @@ class SnakeGame {
             document.getElementById('autoBtn').classList.toggle('active');
         });
 
+        document.getElementById('themeBtn').addEventListener('click', () => {
+            this.generateTheme();
+        });
+
         document.getElementById('nextLevelBtn').addEventListener('click', () => {
             this.startNextLevel();
         });
@@ -215,6 +142,29 @@ class SnakeGame {
         document.getElementById('restartBtn').addEventListener('click', () => {
             this.restartGame();
         });
+    }
+
+    generateRandomColor() {
+        const hue = Math.floor(Math.random() * 360);
+        return `hsl(${hue}, 70%, 50%)`;
+    }
+
+    generateTheme() {
+        this.themeClickCount = (this.themeClickCount + 1) % 5;
+        if (this.themeClickCount === 0) {
+            document.documentElement.style.setProperty('--primary', '#2196F3');
+            document.documentElement.style.setProperty('--background', '#f0f0f0');
+            document.documentElement.style.setProperty('--surface', '#ffffff');
+            return;
+        }
+
+        const primary = this.generateRandomColor();
+        const background = `hsl(${Math.random() * 360}, 20%, 20%)`;
+        const surface = `hsl(${Math.random() * 360}, 15%, 25%)`;
+        
+        document.documentElement.style.setProperty('--primary', primary);
+        document.documentElement.style.setProperty('--background', background);
+        document.documentElement.style.setProperty('--surface', surface);
     }
 
     updateLivesDisplay() {
@@ -228,28 +178,115 @@ class SnakeGame {
         }
     }
 
+    handleTouchStart(e) {
+        if (this.isAutoMode) return;
+        const touch = e.touches[0];
+        this.touchStart = { x: touch.clientX, y: touch.clientY };
+    }
+
+    handleTouchEnd(e) {
+        if (this.isAutoMode || !this.touchStart) return;
+        const touch = e.changedTouches[0];
+        const deltaX = touch.clientX - this.touchStart.x;
+        const deltaY = touch.clientY - this.touchStart.y;
+        
+        // Minimum swipe distance
+        if (Math.abs(deltaX) < 30 && Math.abs(deltaY) < 30) return;
+
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            this.nextDirection = deltaX > 0 ? 'right' : 'left';
+        } else {
+            this.nextDirection = deltaY > 0 ? 'down' : 'up';
+        }
+        
+        this.touchStart = null;
+    }
+
+    handleTouchCancel() {
+        this.touchStart = null;
+    }
+
     initializeGame() {
         this.levelStartTime = Date.now();
         this.levelTime = 0;
         this.direction = 'right';
         this.nextDirection = 'right';
-        this.snake = [
-            { x: 5, y: 5 },
-            { x: 4, y: 5 },
-            { x: 3, y: 5 }
-        ];
+        this.snake = [{ x: 5, y: 5 }]; // Single segment
         this.ghostSegment = null;
         this.particles = [];
         this.generateFood();
+        this.generateWalls();
+        document.body.setAttribute('data-level', this.level.toString());
         this.updateUI();
+    }
+
+    generateWalls() {
+        this.walls.clear();
+        const width = Math.floor(this.canvas.width / this.gridSize);
+        const height = Math.floor(this.canvas.height / this.gridSize);
+
+        if (this.level === 1) return; // No walls in level 1
+
+        if (this.level === 2) {
+            // Side walls
+            for (let y = 0; y < height; y++) {
+                this.walls.add(`0,${y}`);
+                this.walls.add(`${width-1},${y}`);
+            }
+            return;
+        }
+
+        // Level 3-10: Procedural walls
+        const complexity = (this.level - 2) / 8; // 0.125 to 1
+        const wallCount = Math.floor((width * height) * 0.1 * complexity);
+        
+        for (let i = 0; i < wallCount; i++) {
+            if (Math.random() < complexity) {
+                // Create wall patterns
+                const startX = Math.floor(Math.random() * (width - 4)) + 2;
+                const startY = Math.floor(Math.random() * (height - 4)) + 2;
+                const length = Math.floor(Math.random() * 5) + 2;
+                const isHorizontal = Math.random() < 0.5;
+
+                for (let j = 0; j < length; j++) {
+                    const x = isHorizontal ? startX + j : startX;
+                    const y = isHorizontal ? startY : startY + j;
+                    if (x < width - 1 && y < height - 1) {
+                        // Don't place walls near snake spawn or current food
+                        if (Math.abs(x - this.snake[0].x) > 2 &&
+                            Math.abs(y - this.snake[0].y) > 2 &&
+                            Math.abs(x - this.food.x) > 1 &&
+                            Math.abs(y - this.food.y) > 1) {
+                            this.walls.add(`${x},${y}`);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     generateFood() {
         do {
             this.food.x = Math.floor(Math.random() * (this.canvas.width / this.gridSize));
             this.food.y = Math.floor(Math.random() * (this.canvas.height / this.gridSize));
-        } while (this.snake.some(segment => segment.x === this.food.x && segment.y === this.food.y));
+        } while (
+            this.snake.some(segment => segment.x === this.food.x && segment.y === this.food.y) ||
+            this.walls.has(`${this.food.x},${this.food.y}`)
+        );
         this.currentFoodIcon = Math.floor(Math.random() * this.foodIcons.length);
+    }
+
+    startNextLevel() {
+        this.level++;
+        if (this.level > 10) {
+            this.endGame();
+            return;
+        }
+        
+        document.getElementById('levelComplete').classList.add('hidden');
+        document.body.setAttribute('data-level', this.level.toString());
+        this.initializeGame();
+        this.baseSpeed = Math.max(50, 200 * Math.pow(0.9, this.level - 1));
     }
 
     calculateStars() {
@@ -391,6 +428,51 @@ class SnakeGame {
         this.updateUI();
     }
 
+    generateWalls() {
+        this.walls.clear();
+        const width = Math.floor(this.canvas.width / this.gridSize);
+        const height = Math.floor(this.canvas.height / this.gridSize);
+
+        if (this.level === 1) return; // No walls in level 1
+
+        if (this.level === 2) {
+            // Side walls
+            for (let y = 0; y < height; y++) {
+                this.walls.add(`0,${y}`);
+                this.walls.add(`${width-1},${y}`);
+            }
+            return;
+        }
+
+        // Level 3-10: Procedural walls
+        const complexity = (this.level - 2) / 8; // 0.125 to 1
+        const wallCount = Math.floor((width * height) * 0.1 * complexity);
+        
+        for (let i = 0; i < wallCount; i++) {
+            if (Math.random() < complexity) {
+                // Create wall patterns
+                const startX = Math.floor(Math.random() * (width - 4)) + 2;
+                const startY = Math.floor(Math.random() * (height - 4)) + 2;
+                const length = Math.floor(Math.random() * 5) + 2;
+                const isHorizontal = Math.random() < 0.5;
+
+                for (let j = 0; j < length; j++) {
+                    const x = isHorizontal ? startX + j : startX;
+                    const y = isHorizontal ? startY : startY + j;
+                    if (x < width - 1 && y < height - 1) {
+                        // Don't place walls near snake spawn or current food
+                        if (Math.abs(x - this.snake[0].x) > 2 &&
+                            Math.abs(y - this.snake[0].y) > 2 &&
+                            Math.abs(x - this.food.x) > 1 &&
+                            Math.abs(y - this.food.y) > 1) {
+                            this.walls.add(`${x},${y}`);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     addParticles(x, y, color = '#ffffff', count = 10) {
         for (let i = 0; i < count; i++) {
             const angle = (Math.PI * 2 * i) / count;
@@ -482,6 +564,18 @@ class SnakeGame {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw walls
+        this.ctx.fillStyle = '#666666';
+        this.walls.forEach(wall => {
+            const [x, y] = wall.split(',').map(Number);
+            this.ctx.fillRect(
+                x * this.gridSize,
+                y * this.gridSize,
+                this.gridSize,
+                this.gridSize
+            );
+        });
 
         // Draw particles
         this.updateParticles();
