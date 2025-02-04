@@ -1,12 +1,19 @@
 class SoundManager {
     constructor() {
-        this.context = new (window.AudioContext || window.webkitAudioContext)();
         this.sounds = new Map();
         this.isMuted = true; // Start muted by default
-        this.initSounds();
+        try {
+            this.context = new (window.AudioContext || window.webkitAudioContext)();
+            this.initSounds();
+        } catch (e) {
+            console.error('Audio initialization failed:', e);
+            this.context = null;
+        }
     }
 
     async initSounds() {
+        if (!this.context) return;
+        
         const sounds = {
             eat: [220, 440, 880],      // Ascending sequence
             die: [440, 220, 110],      // Descending sequence
@@ -37,7 +44,7 @@ class SoundManager {
     }
 
     play(soundName, duration = 0.1) {
-        if (this.isMuted || !this.sounds.has(soundName)) return;
+        if (this.isMuted || !this.sounds.has(soundName) || !this.context) return;
         const oscillators = this.sounds.get(soundName);
         
         oscillators.forEach(({ gain }, i) => {
@@ -60,42 +67,34 @@ class WallGenerator {
         this.level = level;
         this.width = Math.floor(width / gridSize);
         this.height = Math.floor(height / gridSize);
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            this.nextDirection = deltaX > 0 ? 'right' : 'left';
-        } else {
-            this.nextDirection = deltaY > 0 ? 'down' : 'up';
-        }
     }
 
-    handleKeyPress(e) {
-        if (this.isAutoMode) return;
-
-        const keys = {
-            'ArrowUp': 'up', 'w': 'up', 'W': 'up',
-            'ArrowDown': 'down', 's': 'down', 'S': 'down',
-            'ArrowLeft': 'left', 'a': 'left', 'A': 'left',
-            'ArrowRight': 'right', 'd': 'right', 'D': 'right'
-        };
-
-        if (keys[e.key]) {
-            const newDirection = keys[e.key];
-            const opposites = {
-                'up': 'down', 'down': 'up',
-                'left': 'right', 'right': 'left'
-            };
-
-            if (opposites[this.direction] !== newDirection) {
-                this.nextDirection = newDirection;
-            }
-        }
-    }
-
-    setupEventListeners() {
-        document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+    generate(snake, food) {
+        const walls = new Set();
         
-        // Touch events for swipe controls
-        this.canvas.addEventListener('touchstart', (e) => this.handleTouchStart(e));
-        this.canvas.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+        if (this.level === 1) return walls;
+
+        if (this.level === 2) {
+            for (let y = 0; y < this.height; y++) {
+                walls.add(`0,${y}`);
+                walls.add(`${this.width-1},${y}`);
+            }
+            return walls;
+        }
+
+        const complexity = (this.level - 2) / 8;
+        const wallCount = Math.floor((this.width * this.height) * 0.1 * complexity);
+        
+        for (let i = 0; i < wallCount; i++) {
+            if (Math.random() < complexity) {
+                const startX = Math.floor(Math.random() * (this.width - 4)) + 2;
+                const startY = Math.floor(Math.random() * (this.height - 4)) + 2;
+                const length = Math.floor(Math.random() * 5) + 2;
+                const isHorizontal = Math.random() < 0.5;
+
+                for (let j = 0; j < length; j++) {
+                    const x = isHorizontal ? startX + j : startX;
+                    const y = isHorizontal ? startY : startY + j;
         this.canvas.addEventListener('touchcancel', () => this.handleTouchCancel());
 
         // Sound toggle button
