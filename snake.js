@@ -1,6 +1,59 @@
+class SoundManager {
+    constructor() {
+        this.context = new (window.AudioContext || window.webkitAudioContext)();
+        this.sounds = new Map();
+        this.initSounds();
+    }
+
+    async initSounds() {
+        const sounds = {
+            eat: [220, 440, 880],      // Ascending sequence
+            die: [440, 220, 110],      // Descending sequence
+            gameOver: [220, 185, 165, 110], // Descending melody
+            powerup: [440, 660, 880],   // Quick ascending
+            levelUp: [440, 660, 880, 1320] // Victory arpeggio
+        };
+
+        for (const [name, frequencies] of Object.entries(sounds)) {
+            const oscillators = frequencies.map((freq, i) => {
+                const osc = this.context.createOscillator();
+                const gain = this.context.createGain();
+                osc.type = name === 'powerup' ? 'sine' : 'square';
+                osc.frequency.value = freq;
+                gain.gain.value = 0;
+                osc.connect(gain);
+                gain.connect(this.context.destination);
+                osc.start();
+                return { oscillator: osc, gain };
+            });
+            this.sounds.set(name, oscillators);
+        }
+    }
+
+    play(soundName, duration = 0.1) {
+        if (!this.sounds.has(soundName)) return;
+        const oscillators = this.sounds.get(soundName);
+        
+        oscillators.forEach(({ gain }, i) => {
+            const time = this.context.currentTime;
+            gain.gain.setValueAtTime(0, time);
+            gain.gain.linearRampToValueAtTime(0.1, time + 0.01);
+            gain.gain.linearRampToValueAtTime(0, time + duration);
+            
+            // Delay each frequency in sequence slightly
+            if (i > 0) {
+                gain.gain.setValueAtTime(0, time + (i * duration * 0.5));
+                gain.gain.linearRampToValueAtTime(0.1, time + 0.01 + (i * duration * 0.5));
+                gain.gain.linearRampToValueAtTime(0, time + duration + (i * duration * 0.5));
+            }
+        });
+    }
+}
+
 class SnakeGame {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
+        this.soundManager = new SoundManager();
         this.ctx = this.canvas.getContext('2d');
         this.gridSize = 20;
         this.canvas.width = Math.floor(window.innerWidth * 0.8);
@@ -212,6 +265,21 @@ class SnakeGame {
         document.getElementById('livesLeft').textContent = this.lives;
         document.getElementById('finalLength').textContent = this.snake.length;
 
+        // Play level complete sound
+        this.soundManager.play('levelUp', 0.4);
+        
+        // Add celebration particles around the snake
+        this.snake.forEach((segment, index) => {
+            if (index % 2 === 0) {  // Add particles to every other segment
+                this.addParticles(
+                    segment.x * this.gridSize + this.gridSize/2,
+                    segment.y * this.gridSize + this.gridSize/2,
+                    '#FFD700',  // Golden particles
+                    10
+                );
+            }
+        });
+
         const starElements = document.querySelectorAll('.star-rating .star');
         starElements.forEach((star, index) => {
             star.classList.remove('filled');
@@ -292,13 +360,23 @@ class SnakeGame {
         if (head.x === this.food.x && head.y === this.food.y) {
             this.foodCount++;
             this.score += 10;
-            this.addParticles(this.food.x * this.gridSize, this.food.y * this.gridSize);
+            
+            const foodX = this.food.x * this.gridSize;
+            const foodY = this.food.y * this.gridSize;
+            
+            // Special effects for every 5th food
+            if (this.foodCount % 5 === 0) {
+                this.soundManager.play('powerup', 0.3);
+                this.addParticles(foodX, foodY, '#FFD700', 20); // Golden particles
+                this.score += 20; // Bonus points
+            } else {
+                this.soundManager.play('eat', 0.15);
+                this.addParticles(foodX, foodY, '#F44336', 15);
+            }
             
             if (this.foodCount % 2 === 0) {
-                // Keep the current length on second food
                 this.ghostSegment = null;
             } else {
-                // Remove ghost segment and pop on first food
                 this.ghostSegment = null;
                 this.snake.pop();
             }
@@ -313,13 +391,17 @@ class SnakeGame {
         this.updateUI();
     }
 
-    addParticles(x, y) {
-        for (let i = 0; i < 10; i++) {
+    addParticles(x, y, color = '#ffffff', count = 10) {
+        for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 * i) / count;
+            const speed = 5 + Math.random() * 5;
             this.particles.push({
                 x, y,
-                vx: (Math.random() - 0.5) * 10,
-                vy: (Math.random() - 0.5) * 10,
-                life: 1
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 1,
+                color: color,
+                size: 2 + Math.random() * 2
             });
         }
     }
@@ -404,10 +486,12 @@ class SnakeGame {
         // Draw particles
         this.updateParticles();
         this.particles.forEach(p => {
-            this.ctx.fillStyle = `rgba(255, 255, 255, ${p.life})`;
+            this.ctx.fillStyle = p.color;
+            this.ctx.globalAlpha = p.life;
             this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             this.ctx.fill();
+            this.ctx.globalAlpha = 1;
         });
 
         // Draw food with material icon and background
@@ -465,6 +549,19 @@ class SnakeGame {
         this.lives--;
         this.livesLost++;
         this.updateLivesDisplay();
+        
+        // Play death sound
+        this.soundManager.play('die', 0.3);
+        
+        // Add explosion particles at snake head position
+        const head = this.snake[0];
+        this.addParticles(
+            head.x * this.gridSize + this.gridSize/2,
+            head.y * this.gridSize + this.gridSize/2,
+            this.snakeDesigns[this.level].color,
+            25
+        );
+        
         if (this.lives <= 0) {
             this.endGame();
         } else {
@@ -475,6 +572,29 @@ class SnakeGame {
     endGame() {
         this.isGameOver = true;
         this.isPaused = true;
+        
+        // Play game over sound
+        this.soundManager.play('gameOver', 0.5);
+        
+        // Create multiple particle bursts
+        const center = {
+            x: (this.canvas.width / 2),
+            y: (this.canvas.height / 2)
+        };
+        
+        // Three waves of particles with different colors
+        const colors = ['#F44336', '#FFD700', this.snakeDesigns[this.level].color];
+        colors.forEach((color, i) => {
+            setTimeout(() => {
+                this.addParticles(
+                    center.x + (Math.random() - 0.5) * 100,
+                    center.y + (Math.random() - 0.5) * 100,
+                    color,
+                    30
+                );
+            }, i * 200);
+        });
+        
         document.getElementById('gameOver').classList.remove('hidden');
         document.getElementById('finalScore').textContent = this.score;
         document.getElementById('finalLevel').textContent = this.level;
