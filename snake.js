@@ -1,4 +1,57 @@
 class SnakeGame {
+    constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.gridSize = 20;
+        this.canvas.width = Math.floor(window.innerWidth * 0.8);
+        this.canvas.height = Math.floor(window.innerHeight * 0.6);
+        
+        // Game state
+        this.score = 0;
+        this.lives = 3;
+        this.level = 1;
+        this.baseSpeed = 200;
+        this.isGameOver = false;
+        this.isPaused = true;
+        this.isAutoMode = false;
+        this.direction = 'right';
+        this.nextDirection = 'right';
+        this.foodCount = 0;
+        this.ghostSegment = null;
+        this.particles = [];
+        this.livesLost = 0;
+        this.levelTime = 0;
+        this.levelStartTime = Date.now();
+        
+        // Snake and food initialization
+        this.snake = [
+            { x: 5, y: 5 },
+            { x: 4, y: 5 },
+            { x: 3, y: 5 }
+        ];
+        this.food = { x: 10, y: 10 };
+        
+        // Game design
+        this.foodIcons = ['restaurant', 'apple', 'egg', 'cake', 'pizza'];
+        this.currentFoodIcon = 0;
+        this.snakeDesigns = {
+            1: { color: '#4CAF50', effect: 'none' },
+            2: { color: '#2196F3', effect: 'pulse' },
+            3: { color: '#9C27B0', effect: 'shimmer' },
+            4: { color: '#FF9800', effect: 'circuit' },
+            5: { color: '#E91E63', effect: 'pulse' },
+            6: { color: '#3F51B5', effect: 'shimmer' },
+            7: { color: '#009688', effect: 'circuit' },
+            8: { color: '#FF5722', effect: 'pulse' },
+            9: { color: '#673AB7', effect: 'shimmer' },
+            10: { color: '#F44336', effect: 'circuit' }
+        };
+        
+        this.setupEventListeners();
+        this.updateLivesDisplay();
+        this.initializeGame();
+    }
+
     // Access methods for AutoPlayer
     getSnake() { return [...this.snake]; }
     getFood() { return { ...this.food }; }
@@ -68,7 +121,75 @@ class SnakeGame {
             const btn = document.getElementById(btnId);
             if (btn) {
                 ['touchstart', 'mousedown'].forEach(event => {
-                    btn.addEventListener(event, (e) => {
+                    btn.addEventListener(event, () => {
+                        if (!this.isAutoMode) {
+                            this.nextDirection = btnId.replace('Btn', '');
+                        }
+                    });
+                });
+            }
+        });
+
+        // Add canvas click and touch events
+        this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
+        this.canvas.addEventListener('touchstart', (e) => this.handleCanvasTouch(e));
+
+        // Add game control button events
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if (this.isGameOver) {
+                this.restartGame();
+                return;
+            }
+            this.isPaused = !this.isPaused;
+            document.getElementById('startBtn').innerHTML = this.isPaused ?
+                '<span class="material-icons">play_arrow</span>' :
+                '<span class="material-icons">pause</span>';
+            if (!this.isPaused) {
+                this.levelStartTime = Date.now() - (this.levelTime * 1000);
+                this.gameLoop();
+            }
+        });
+
+        document.getElementById('autoBtn').addEventListener('click', () => {
+            this.isAutoMode = !this.isAutoMode;
+            document.getElementById('autoBtn').classList.toggle('active');
+        });
+
+        document.getElementById('nextLevelBtn').addEventListener('click', () => {
+            this.startNextLevel();
+        });
+
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            this.restartGame();
+        });
+    }
+
+    updateLivesDisplay() {
+        const livesContainer = document.getElementById('lives');
+        livesContainer.innerHTML = '';
+        for (let i = 0; i < this.lives; i++) {
+            const heart = document.createElement('span');
+            heart.className = 'material-icons';
+            heart.textContent = 'favorite';
+            livesContainer.appendChild(heart);
+        }
+    }
+
+    initializeGame() {
+        this.levelStartTime = Date.now();
+        this.levelTime = 0;
+        this.direction = 'right';
+        this.nextDirection = 'right';
+        this.snake = [
+            { x: 5, y: 5 },
+            { x: 4, y: 5 },
+            { x: 3, y: 5 }
+        ];
+        this.ghostSegment = null;
+        this.particles = [];
+        this.generateFood();
+        this.updateUI();
+    }
 
     generateFood() {
         do {
@@ -354,7 +475,20 @@ class SnakeGame {
         this.updateLivesDisplay();
         this.initializeGame();
     }
+
+    checkCollision(head) {
+        // Check wall collision
+        if (head.x < 0 || head.x >= this.canvas.width / this.gridSize ||
+            head.y < 0 || head.y >= this.canvas.height / this.gridSize) {
+            return true;
+        }
+
+        // Check self collision
+        return this.snake.some(segment => segment.x === head.x && segment.y === head.y);
+    }
 }
 
-// Initialize game
-const game = new SnakeGame();
+// Initialize game when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.game = new SnakeGame();
+});
