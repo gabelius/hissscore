@@ -223,6 +223,17 @@ class SnakeGame {
         });
 
         document.getElementById('levelComplete').classList.remove('hidden');
+        
+        // Auto-progress in auto mode after 5 seconds
+        if (this.isAutoMode) {
+            setTimeout(() => {
+                this.startNextLevel();
+                if (!this.isGameOver) {
+                    this.isPaused = false;
+                    this.gameLoop();
+                }
+            }, 5000);
+        }
     }
 
     startNextLevel() {
@@ -283,17 +294,19 @@ class SnakeGame {
             this.score += 10;
             this.addParticles(this.food.x * this.gridSize, this.food.y * this.gridSize);
             
-            if (this.foodCount % 2 === 1) {
-                // First food of pair - create ghost segment
-                this.ghostSegment = this.snake[this.snake.length - 1];
-            } else {
-                // Second food - solidify ghost segment
+            if (this.foodCount % 2 === 0) {
+                // Keep the current length on second food
                 this.ghostSegment = null;
+            } else {
+                // Remove ghost segment and pop on first food
+                this.ghostSegment = null;
+                this.snake.pop();
             }
             
             this.generateFood();
             this.checkLevelProgress();
         } else {
+            this.ghostSegment = null;
             this.snake.pop();
         }
 
@@ -397,16 +410,24 @@ class SnakeGame {
             this.ctx.fill();
         });
 
-        // Draw food with material icon
+        // Draw food with material icon and background
         this.ctx.save();
+        const foodX = this.food.x * this.gridSize + this.gridSize/2;
+        const foodY = this.food.y * this.gridSize + this.gridSize/2;
+        
+        // Draw background circle
+        this.ctx.beginPath();
+        this.ctx.arc(foodX, foodY, this.gridSize/2, 0, Math.PI * 2);
+        this.ctx.fillStyle = 'rgba(244, 67, 54, 0.2)';
+        this.ctx.fill();
+        
+        // Draw food icon
         this.ctx.fillStyle = '#F44336';
         this.ctx.shadowColor = 'rgba(255, 0, 0, 0.5)';
         this.ctx.shadowBlur = 10;
-        this.ctx.font = `${this.gridSize}px 'Material Icons'`;
+        this.ctx.font = `${Math.floor(this.gridSize * 1.2)}px 'Material Icons'`;
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-        const foodX = this.food.x * this.gridSize + this.gridSize/2;
-        const foodY = this.food.y * this.gridSize + this.gridSize/2;
         this.ctx.fillText(this.foodIcons[this.currentFoodIcon], foodX, foodY);
         this.ctx.restore();
 
