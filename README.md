@@ -1,63 +1,75 @@
-# Snake Game
+Snake Game Specs
 
-A modern implementation of the classic Snake game with enhanced features and progressive difficulty.
+----------------------------------------
+Core Mechanics:
+----------------------------------------
+- Levels: 10 total; each level requires snake length = previous level's length + 10 (Level 1 = 10, Level 2 = 20, … Level 10 = 100).
+- Growth: Snake grows after every 2 food items.
+- Lives: 3 lives per game. After level 5, hearts spawn with a 20% chance as extra food for 10 seconds to refill a life.
+- Auto-play: Toggle between manual and AI-controlled navigation.
+- Start/Pause: Standard controls.
 
-## Game Features
+----------------------------------------
+Star Rating (Per Level):
+----------------------------------------
+- 3 Stars: Complete level without losing any lives.
+- 2 Stars: Complete level with 1 life lost.
+- 1 Star: Complete level with 2 lives lost and if the level takes >100 seconds.
 
-### Core Mechanics
-- 10 unique levels with increasing difficulty
-- Snake grows after collecting 2 food items
-- 3 lives per game (refills after level 5 with hearts generating 20% of the time as an extra food item for 10 seconds)
-- Auto-play mode available
-- Start/Pause functionality
+----------------------------------------
+Visual Features:
+----------------------------------------
+- Level-Specific Snake Designs:
+  1. Neon: Glowing pulse effect.
+  2. Cyber: Circuit pattern.
+  3. Crystal: Shimmer effect.
+  4. Energy: Particle trails.
+  5. Plasma: Wave patterns.
+  6. Digital: Matrix segments.
+  7. Laser: Beam connections.
+  8. Hologram: Transparency.
+  9. Quantum: Phase shifting.
+  10. Ultimate: Combined visual effects.
+- Growth Effects: A ghost segment appears after the first food collection and solidifies after the second; particle effects occur on food collection.
 
-### Level System
-- Each level requires snake length of previous length + 10 segments
-- Level 1: 10 segments required
-- Level 2: 20 segments required
-- And so on until Level 10
+----------------------------------------
+Controls:
+----------------------------------------
+- Keyboard: Arrow keys or WASD.
+- Touch: On-screen directional buttons.
+- Mouse: Click in desired direction.
+- Auto-Mode: AI-controlled navigation when toggled.
 
-### Star Rating System
-Per level rating based on:
-- ⭐⭐⭐ - Complete level without losing lives
-- ⭐⭐ - Complete level with 1 life lost
-- ⭐ - Complete level with 2 lives lost and >100 seconds
+----------------------------------------
+Themes:
+----------------------------------------
+- Available Themes: Default, Dark, Forest (toggle via palette button).
 
-### Visual Features
-Level-specific snake designs:
-1. Neon Snake - Glowing pulse effect
-2. Cyber Snake - Circuit patterns
-3. Crystal Snake - Shimmering effect
-4. Energy Snake - Particle trails
-5. Plasma Snake - Wave patterns
-6. Digital Snake - Matrix segments
-7. Laser Snake - Beam connections
-8. Hologram Snake - Transparency
-9. Quantum Snake - Phase shifting
-10. Ultimate Snake - Combined effects
+----------------------------------------
+Technical Details:
+----------------------------------------
+- Rendering: Pure HTML5 Canvas.
+- UI: Material Design.
+- Layout: Responsive and mobile-optimized.
+- Performance: Efficient collision detection and smooth animations.
+- Code Structure: Modular design with separate files for key components:
+    • engine.js – Core game loop and level progression.
+    • snake.js – Snake behavior (movement, growth, collision).
+    • food.js – Food generation (including hearts/power-ups).
+    • level.js – Level requirements and management.
+    • ui.js – UI interactions (start/pause, theme toggle, star rating display).
+    • input.js – Unified input handling (keyboard, touch, mouse, auto-mode).
+    • renderer.js – Canvas drawing routines and animations.
+all js files should be as independent as possible to allow for individual files to be debugged and developed independently. this is very important.
+----------------------------------------
+Notes:
+----------------------------------------
+- The spec is designed to be concise for efficient development.
+- Expand individual modules as needed based on project complexity.
 
-### Growth Mechanics
-- Ghost segment appears after first food collection
-- Segment solidifies after second food collection
-- Particle effects on food collection
-
-### Controls
-- Keyboard: Arrow keys or WASD
-- Touch: On-screen directional buttons
-- Mouse: Click in desired direction
-- Auto mode: AI-controlled navigation
-
-### Themes
-- Default theme
-- Dark theme
-- Forest theme
-- Toggle with palette button
-
-## Technical Features
-- Pure HTML5 Canvas rendering
-- Material Design UI
-- Responsive layout
-- Mobile-optimized viewport
-- Efficient collision detection
-- Smooth animations
-- Progressive difficulty
+the viewport of the game should be fixed
+the game should support arrow keys and wasd keys for moving the snake
+the game should support touch swipe gestures.
+there should be a mute toggle button for sounds which should be muted by default
+the sounds should be generated by API
+remember - efficient and error freere constrained
