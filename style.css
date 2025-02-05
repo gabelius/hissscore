@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <title>Snake Game</title>
-    <style>
+
         :root {
             --primary-color: #2196F3;
             --background-color: #fafafa;
@@ -110,41 +103,3 @@
             color: #FFD700;
             font-size: 24px;
         }
-    </style>
-</head>
-<body>
-    <div class="game-info">
-        <div>Level: <span id="level">1</span></div>
-        <div>Lives: <span id="lives">3</span></div>
-        <div>Score: <span id="score">0</span></div>
-    </div>
-    
-    <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
-    </div>
-
-    <div class="controls">
-        <button id="startBtn">Start</button>
-        <button id="pauseBtn">Pause</button>
-        <button id="autoPlayBtn">Auto Play</button>
-        <button id="themeBtn">Theme</button>
-    </div>
-
-    <div class="mobile-controls">
-        <button id="leftBtn">←</button>
-        <button id="upBtn">↑</button>
-        <button id="rightBtn">→</button>
-        <button id="emptyBtn"></button>
-        <button id="downBtn">↓</button>
-        <button id="emptyBtn2"></button>
-    </div>
-
-    <div class="stars">
-        <span class="star">★</span>
-        <span class="star">★</span>
-        <span class="star">★</span>
-    </div>
-
-    <script type="module" src="js/engine.js"></script>
-</body>
-</html>
