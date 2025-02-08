@@ -5,11 +5,14 @@
     --text-color: #ffffff;
     --glow-color: rgba(0, 255, 157, 0.5);
     --glass-bg: rgba(255, 255, 255, 0.1);
-    --header-height: 80px;
-    --controls-height: 90px;
-    --button-size: 60px;
+    --header-height: min(80px, 10vh);
+    --controls-height: min(90px, 12vh);
+    --button-size: clamp(40px, 8vmin, 60px);
     --button-size-mobile: 45px;
     --spacing: 10px;
+    --min-game-size: 300px;
+    --max-game-size: 800px;
+    --game-padding: clamp(10px, 2vw, 20px);
 }
 
 html, body {
@@ -24,12 +27,12 @@ html, body {
 
 .game-wrapper {
     display: grid;
-    grid-template-rows: auto 1fr auto;
-    gap: var(--spacing);
-    max-width: 1200px;
-    height: 100vh;
+    grid-template-rows: auto minmax(var(--min-game-size), 1fr) auto;
+    gap: var(--game-padding);
+    width: min(100%, var(--max-game-size));
+    height: 100dvh; /* Use dynamic viewport height */
     margin: 0 auto;
-    padding: var(--spacing);
+    padding: var(--game-padding);
     box-sizing: border-box;
 }
 
@@ -77,15 +80,21 @@ h1 {
 
 .game-container {
     width: 100%;
+    height: 100%;
     aspect-ratio: 16/9;
-    max-height: calc(100vh - var(--header-height) - var(--controls-height));
-    margin: 0 auto;
+    margin: auto;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 canvas {
     width: 100%;
     height: 100%;
+    object-fit: contain;
+    max-width: var(--max-game-size);
+    max-height: calc(100vh - var(--header-height) - var(--controls-height));
     border: 2px solid var(--primary-color);
     border-radius: 10px;
     box-shadow: 0 0 20px var(--glow-color);
@@ -100,6 +109,8 @@ canvas {
     color: var(--text-color);
     cursor: pointer;
     transition: transform 0.3s ease;
+    min-width: 40px;
+    min-height: 40px;
 }
 
 .hex-button:hover {
@@ -110,8 +121,8 @@ canvas {
 .controls {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    padding: 15px;
+    gap: clamp(5px, 2vw, 15px);
+    padding: clamp(5px, 1.5vh, 15px);
     flex-wrap: wrap;
 }
 
@@ -136,36 +147,43 @@ canvas {
         --spacing: 5px;
     }
 
-    .game-wrapper { padding: var(--spacing); }
+    .game-wrapper { 
+        padding: var(--spacing); 
+        grid-template-rows: auto 1fr auto;
+    }
     .header h1 { font-size: 1.5rem; }
     .info-item { font-size: 0.9rem; }
     .mobile-controls { 
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
+        grid-template-columns: repeat(3, var(--button-size));
+        justify-content: center;
+        gap: clamp(5px, 2vw, 15px);
         padding: 20px;
     }
 }
 
 @media screen and (orientation: landscape) and (max-height: 600px) {
     .game-wrapper {
-        grid-template-rows: none;
-        grid-template-columns: 150px 1fr 50px;
-        gap: var(--spacing);
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: 1fr;
+        height: 100dvh;
     }
 
     .header {
-        width: 140px;
-        padding: 5px;
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        padding: calc(var(--game-padding) / 2);
+        height: 100%;
     }
 
     .controls {
-        width: 45px;
         flex-direction: column;
-        padding: 5px;
+        height: 100%;
+        padding: calc(var(--game-padding) / 2);
     }
 
     .game-container {
+        margin: 0;
         max-height: none;
         height: 100%;
         aspect-ratio: auto;
