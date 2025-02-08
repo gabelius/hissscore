@@ -141,3 +141,71 @@ canvas {
     background-color: #2d5a27;
     color: #e0e0e0;
 }
+/* Add these styles */
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    min-width: 300px;
+    margin: 10px 0;
+}
+
+.info-item {
+    min-width: 80px;
+    text-align: center;
+}
+
+.game-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.game-container {
+    flex: 1;
+    margin: 20px 0;
+    position: relative;
+    min-height: 300px;
+}
+
+.controls {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Media queries for responsive design */
+@media screen and (max-width: 768px) {
+    .game-wrapper {
+        padding: 10px;
+    }
+    
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .info-item {
+        font-size: 0.9rem;
+    }
+    
+    .hex-button {
+        padding: 8px;
+        margin: 5px;
+    }
+}
+
+@media screen and (max-height: 600px) {
+    .game-wrapper {
+        padding: 5px;
+    }
+    
+    .game-container {
+        min-height: 200px;
+    }
+}
