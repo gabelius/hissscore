@@ -61,6 +61,19 @@ Technical Details:
     • input.js – Unified input handling (keyboard, touch, mouse, auto-mode).
     • renderer.js – Canvas drawing routines and animations.
 all js files should be as independent as possible to allow for individual files to be debugged and developed independently. this is very important.
+
+----------------------------------------
+UI Updates (Latest):
+----------------------------------------
+- Modern futuristic design with glassmorphism effects
+- Neon color scheme with gradient accents
+- Hexagonal button design
+- Orbitron font for cyber aesthetic
+- Responsive grid layout
+- Animated glow effects
+- HUD-style overlay
+- Added mute toggle button
+
 ----------------------------------------
 Notes:
 ----------------------------------------

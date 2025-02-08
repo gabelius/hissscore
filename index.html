@@ -5,36 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap">
     <title>Snake Game</title>
 </head>
-<body>
-    <header class="header">
-        <h1>Snake Game</h1>
-    </header>
-    <div class="game-info">
-        <div>Level: <span id="level">1</span></div>
-        <div>Lives: <span id="lives">3</span></div>
-        <div>Score: <span id="score">0</span></div>
-    </div>
-    
-    <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
-    </div>
+<body class="theme-cyber">
+    <div class="game-wrapper">
+        <header class="header glass-effect">
+            <h1>SNAKE.IO</h1>
+            <div class="game-info glass-effect">
+                <div class="info-item"><i class="fas fa-layer-group"></i> Level <span id="level">1</span></div>
+                <div class="info-item"><i class="fas fa-heart"></i> Lives <span id="lives">3</span></div>
+                <div class="info-item"><i class="fas fa-star"></i> Score <span id="score">0</span></div>
+            </div>
+        </header>
 
-    <div class="controls">
-        <button id="startBtn"><i class="fas fa-play"></i></button>
-        <button id="pauseBtn"><i class="fas fa-pause"></i></button>
-        <button id="autoPlayBtn"><i class="fas fa-robot"></i></button>
-        <button id="themeBtn"><i class="fas fa-palette"></i></button>
-    </div>
+        <div class="game-container glass-effect">
+            <canvas id="gameCanvas"></canvas>
+            <div class="hud-overlay"></div>
+        </div>
 
-    <div class="mobile-controls">
-        <button id="upBtn"><i class="fas fa-arrow-up"></i></button>
-        <button id="leftBtn"><i class="fas fa-arrow-left"></i></button>
-        <button id="downBtn"><i class="fas fa-arrow-down"></i></button>
-        <button id="rightBtn"><i class="fas fa-arrow-right"></i></button>
-    </div>
+        <div class="controls glass-effect">
+            <button id="startBtn" class="hex-button"><i class="fas fa-play"></i></button>
+            <button id="pauseBtn" class="hex-button"><i class="fas fa-pause"></i></button>
+            <button id="autoPlayBtn" class="hex-button"><i class="fas fa-robot"></i></button>
+            <button id="themeBtn" class="hex-button"><i class="fas fa-palette"></i></button>
+            <button id="muteBtn" class="hex-button"><i class="fas fa-volume-mute"></i></button>
+        </div>
 
+        <div class="mobile-controls glass-effect">
+            <button id="upBtn" class="hex-button"><i class="fas fa-arrow-up"></i></button>
+            <button id="leftBtn" class="hex-button"><i class="fas fa-arrow-left"></i></button>
+            <button id="downBtn" class="hex-button"><i class="fas fa-arrow-down"></i></button>
+            <button id="rightBtn" class="hex-button"><i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
     <script type="module" src="js/engine.js"></script>
 </body>
 </html>
