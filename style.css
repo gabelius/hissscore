@@ -160,6 +160,7 @@ canvas {
         --game-padding: clamp(5px, 2vw, 15px); /* reduced padding */
     }
     .game-wrapper {
+        height: 80vh; /* restrict vertical height */
         flex-direction: column;
         padding: var(--game-padding);
         gap: var(--game-padding);
@@ -173,5 +174,16 @@ canvas {
     .controls {
         flex-wrap: wrap;
         gap: 5px;
+    }
+    
+    /* Prevent game-info and controls from stretching */
+    .game-info,
+    .controls {
+        flex: 0 0 auto;
+    }
+    
+    /* Ensure game-container occupies the remaining space */
+    .game-container {
+        flex: 1 1 auto;
     }
 }
