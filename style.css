@@ -5,14 +5,8 @@
     --text-color: #ffffff;
     --glow-color: rgba(0, 255, 157, 0.5);
     --glass-bg: rgba(255, 255, 255, 0.1);
-    --header-height: min(80px, 10vh);
-    --controls-height: min(90px, 12vh);
-    --button-size: clamp(40px, 8vmin, 60px);
-    --button-size-mobile: 45px;
-    --spacing: 10px;
-    --min-game-size: 300px;
-    --max-game-size: 800px;
-    --game-padding: clamp(10px, 2vw, 20px);
+    --button-size: min(45px, 8vmin);
+    --game-padding: clamp(8px, 2vw, 20px);
 }
 
 html, body {
@@ -26,33 +20,21 @@ html, body {
 }
 
 .game-wrapper {
-    /* Default mobile layout: vertical order */
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(var(--min-game-size), 1fr) auto;
-    gap: var(--game-padding);
-    width: min(100%, var(--max-game-size));
-    height: 100dvh; /* Use dynamic viewport height */
-    margin: 0 auto;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
     padding: var(--game-padding);
     box-sizing: border-box;
-}
-
-.glass-effect {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    gap: var(--game-padding);
 }
 
 .header {
-    padding: 20px;
-    text-align: center;
+    flex: 0 0 auto;
+    padding: 10px;
 }
 
 h1 {
-    font-size: 2.5em;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
     margin: 0;
     background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
     -webkit-background-clip: text;
@@ -63,43 +45,42 @@ h1 {
 .game-info {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
-    padding: 15px;
-    margin-top: 20px;
+    padding: 10px;
+    margin-top: 10px;
 }
 
 .info-item {
-    flex: 1;
-    min-width: 100px;
-    text-align: center;
+    font-size: clamp(0.8rem, 2.5vw, 1.2rem);
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-size: 1.2em;
-    white-space: nowrap;
+    gap: 5px;
 }
 
 .game-container {
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 16/9;
-    margin: auto;
+    flex: 1;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 0; /* Important for flex container */
 }
 
 canvas {
-    width: 100%;
-    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 16/9;
     object-fit: contain;
-    max-width: var(--max-game-size);
-    max-height: calc(100vh - var(--header-height) - var(--controls-height));
     border: 2px solid var(--primary-color);
     border-radius: 10px;
     box-shadow: 0 0 20px var(--glow-color);
+}
+
+.controls {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
 }
 
 .hex-button {
@@ -110,115 +91,45 @@ canvas {
     border: none;
     color: var(--text-color);
     cursor: pointer;
-    transition: transform 0.3s ease;
-    min-width: 40px;
-    min-height: 40px;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hex-button:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 15px var(--glow-color);
 }
 
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: clamp(5px, 2vw, 15px);
-    padding: clamp(5px, 1.5vh, 15px);
-    flex-wrap: wrap;
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.mobile-controls {
-    display: none;
-}
-
-@keyframes glow {
-    from { box-shadow: 0 0 10px var(--glow-color); }
-    50% { box-shadow: 0 0 20px var(--glow-color); }
-    to { box-shadow: 0 0 10px var(--glow-color); }
-}
-
-.active { animation: glow 2s infinite; }
-
-/* Combined media queries */
-@media screen and (max-width: 768px) {
-    :root {
-        --button-size: var(--button-size-mobile);
-        --header-height: 60px;
-        --controls-height: 70px;
-        --spacing: 5px;
-    }
-
-    .game-wrapper { 
-        padding: var(--spacing); 
-        grid-template-rows: auto 1fr auto;
-    }
-    .header h1 { font-size: 1.5rem; }
-    .info-item { font-size: 0.9rem; }
-    .mobile-controls { 
-        display: grid;
-        grid-template-columns: repeat(3, var(--button-size));
-        justify-content: center;
-        gap: clamp(5px, 2vw, 15px);
-        padding: 20px;
-    }
-}
-
-@media screen and (orientation: landscape) and (max-height: 600px) {
+@media (orientation: landscape) and (max-height: 600px) {
     .game-wrapper {
-        grid-template-columns: auto 1fr auto;
-        grid-template-rows: 1fr;
-        height: 100dvh;
+        flex-direction: row;
     }
-
+    
     .header {
-        writing-mode: vertical-lr;
-        transform: rotate(180deg);
-        padding: calc(var(--game-padding) / 2);
-        height: 100%;
+        width: 80px;
     }
-
+    
+    .game-container {
+        flex: 1;
+    }
+    
     .controls {
         flex-direction: column;
-        height: 100%;
-        padding: calc(var(--game-padding) / 2);
-    }
-
-    .game-container {
-        margin: 0;
-        max-height: none;
-        height: 100%;
-        aspect-ratio: auto;
     }
 }
 
-/* Wide screen layout: show HUD (header) left, game canvas center, controls as a right sidebar */
-@media screen and (min-width: 1024px) {
+@media (min-width: 1024px) {
     .game-wrapper {
-        grid-template-columns: 1fr 2fr 1fr;
-        grid-template-rows: 1fr;
-        gap: var(--game-padding);
-    }
-    /* Place header (with game info) on the left */
-    .header {
-        grid-column: 1;
-        grid-row: 1;
-        text-align: left;
-        /* Optionally, ensure header occupies available vertical space */
-        align-self: center;
-    }
-    /* Center the game container */
-    .game-container {
-        grid-column: 2;
-        grid-row: 1;
-        margin: 0;
-    }
-    /* Position controls on the right in a vertical column */
-    .controls {
-        grid-column: 3;
-        grid-row: 1;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        width: min(100%, 1200px);
+        margin: 0 auto;
     }
 }
