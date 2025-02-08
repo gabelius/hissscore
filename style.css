@@ -26,7 +26,9 @@ html, body {
 }
 
 .game-wrapper {
+    /* Default mobile layout: vertical order */
     display: grid;
+    grid-template-columns: 1fr;
     grid-template-rows: auto minmax(var(--min-game-size), 1fr) auto;
     gap: var(--game-padding);
     width: min(100%, var(--max-game-size));
@@ -187,5 +189,36 @@ canvas {
         max-height: none;
         height: 100%;
         aspect-ratio: auto;
+    }
+}
+
+/* Wide screen layout: show HUD (header) left, game canvas center, controls as a right sidebar */
+@media screen and (min-width: 1024px) {
+    .game-wrapper {
+        grid-template-columns: 1fr 2fr 1fr;
+        grid-template-rows: 1fr;
+        gap: var(--game-padding);
+    }
+    /* Place header (with game info) on the left */
+    .header {
+        grid-column: 1;
+        grid-row: 1;
+        text-align: left;
+        /* Optionally, ensure header occupies available vertical space */
+        align-self: center;
+    }
+    /* Center the game container */
+    .game-container {
+        grid-column: 2;
+        grid-row: 1;
+        margin: 0;
+    }
+    /* Position controls on the right in a vertical column */
+    .controls {
+        grid-column: 3;
+        grid-row: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 }
