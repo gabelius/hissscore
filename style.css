@@ -36,8 +36,9 @@ html, body {
 }
 
 h1 {
-    position: fixed;
+    position: relative;
     top: 10px;
+    text-align: center;
     left: 50%;
     transform: translateX(-50%);
     z-index: 9999;
@@ -53,6 +54,8 @@ h1 {
     display: flex;
     justify-content: space-between;
     padding: 10px;
+    padding-left:50px;
+    padding-right:50px;
     margin-top: 10px;
 }
 
@@ -86,7 +89,7 @@ canvas {
     flex: 0 0 auto;
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 50px;
     padding: 10px;
 }
 
@@ -136,11 +139,18 @@ canvas {
     /* Removed fixed height from controls */
     .controls {
         flex-direction: column;
+        gap: 50px;
     }
     
     /* Updated game-info to expand within header */
     .game-info {
         flex-direction: column;
+        padding:10px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+    h1 {
+        display:none
     }
 }
 
