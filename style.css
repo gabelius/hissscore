@@ -126,11 +126,42 @@ canvas {
     .controls {
         flex-direction: column;
     }
+    
+    /* New rule: stack game info elements vertically */
+    .game-info {
+        flex-direction: column;
+    }
 }
 
 @media (min-width: 1024px) {
     .game-wrapper {
         width: min(100%, 1200px);
         margin: 0 auto;
+    }
+    .controls {
+        gap: 15px; /* increased spacing for desktop */
+    }
+}
+
+// New mobile optimizations
+@media (max-width: 768px) {
+    :root {
+        --button-size: min(40px, 8vmin); /* smaller buttons */
+        --game-padding: clamp(5px, 2vw, 15px); /* reduced padding */
+    }
+    .game-wrapper {
+        flex-direction: column;
+        padding: var(--game-padding);
+        gap: var(--game-padding);
+    }
+    h1 {
+        font-size: clamp(1.2rem, 5vw, 2rem);
+    }
+    canvas {
+        max-height: 60vh;
+    }
+    .controls {
+        flex-wrap: wrap;
+        gap: 5px;
     }
 }
