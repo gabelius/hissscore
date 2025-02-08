@@ -184,59 +184,69 @@ canvas {
 /* Add landscape media query */
 @media screen and (max-height: 600px) {
     .game-wrapper {
-        /* Change to horizontal layout for landscape */
         grid-template-rows: none;
         grid-template-columns: auto 1fr auto;
         gap: 5px;
         padding: 5px;
+        height: 100vh;
+        overflow: hidden;
     }
     
     .header {
         padding: 5px;
-    }
-
-    h1 {
-        font-size: 1.2em;
-    }
-
-    .game-info {
-        margin-top: 5px;
-        padding: 5px;
+        width: 150px;
+        display: flex;
         flex-direction: column;
-        gap: 5px;
+        justify-content: flex-start;
     }
 
-    .info-item {
-        font-size: 0.8em;
-        min-width: auto;
-        padding: 2px;
-    }
-    
     .game-container {
         max-height: none;
         height: 100%;
         aspect-ratio: auto;
+        margin: 0;
     }
 
     .controls {
         padding: 5px;
         flex-direction: column;
         gap: 5px;
+        width: 50px;
+        align-self: center;
+        position: relative;
+        z-index: 10;
     }
 
     .hex-button {
         width: 40px;
         height: 40px;
+        margin: 2px 0;
     }
 }
 
 /* Add specific landscape orientation query */
 @media screen and (orientation: landscape) and (max-height: 500px) {
     .game-wrapper {
-        grid-template-columns: 200px 1fr 60px;
+        grid-template-columns: 150px 1fr 50px;
+        max-height: 100vh;
     }
     
     .header {
-        width: 180px;
+        width: 140px;
+    }
+
+    .game-info {
+        font-size: 0.8em;
+        padding: 3px;
+    }
+
+    .controls {
+        width: 45px;
+        padding: 3px;
+    }
+
+    .hex-button {
+        width: 35px;
+        height: 35px;
     }
 }
