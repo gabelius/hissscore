@@ -21,7 +21,7 @@ html, body {
 }
 
 .game-wrapper {
-    height: 100dvh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     padding: var(--game-padding);
