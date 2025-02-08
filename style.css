@@ -5,33 +5,31 @@
     --text-color: #ffffff;
     --glow-color: rgba(0, 255, 157, 0.5);
     --glass-bg: rgba(255, 255, 255, 0.1);
-}
-
-body {
-    margin: 0;
-    font-family: 'Orbitron', sans-serif;
-    background: linear-gradient(135deg, #0a0a20 0%, #1a1a3a 100%);
-    color: var(--text-color);
-    min-height: 100vh;
-    padding: 20px;
+    --header-height: 80px;
+    --controls-height: 90px;
+    --button-size: 60px;
+    --button-size-mobile: 45px;
+    --spacing: 10px;
 }
 
 html, body {
-  overflow: hidden;
-  height: 100%; /* Ensures that the body fills the viewport */
-  margin: 0;
-  padding: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(135deg, var(--background-color) 0%, #1a1a3a 100%);
+    color: var(--text-color);
 }
 
-/* Update game-wrapper layout for better landscape support */
 .game-wrapper {
     display: grid;
     grid-template-rows: auto 1fr auto;
-    gap: 10px;
+    gap: var(--spacing);
     max-width: 1200px;
+    height: 100vh;
     margin: 0 auto;
-    height: 100vh;  /* Change from min-height to height */
-    padding: 10px;
+    padding: var(--spacing);
     box-sizing: border-box;
 }
 
@@ -80,7 +78,7 @@ h1 {
 .game-container {
     width: 100%;
     aspect-ratio: 16/9;
-    max-height: calc(100vh - 250px);
+    max-height: calc(100vh - var(--header-height) - var(--controls-height));
     margin: 0 auto;
     position: relative;
 }
@@ -94,14 +92,14 @@ canvas {
 }
 
 .hex-button {
+    width: var(--button-size);
+    height: var(--button-size);
     background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    width: 60px;
-    height: 60px;
     border: none;
     color: var(--text-color);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .hex-button:hover {
@@ -119,134 +117,57 @@ canvas {
 
 .mobile-controls {
     display: none;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    padding: 20px;
-}
-
-@media (max-width: 768px) {
-    .mobile-controls {
-        display: grid;
-    }
-    
-    .hex-button {
-        width: 50px;
-        height: 50px;
-    }
 }
 
 @keyframes glow {
-    0% { box-shadow: 0 0 10px var(--glow-color); }
+    from { box-shadow: 0 0 10px var(--glow-color); }
     50% { box-shadow: 0 0 20px var(--glow-color); }
-    100% { box-shadow: 0 0 10px var(--glow-color); }
+    to { box-shadow: 0 0 10px var(--glow-color); }
 }
 
-.active {
-    animation: glow 2s infinite;
-}
+.active { animation: glow 2s infinite; }
 
-.theme-dark {
-    background-color: #333;
-    color: white;
-}
-
-.theme-forest {
-    background-color: #2d5a27;
-    color: #e0e0e0;
-}
-
+/* Combined media queries */
 @media screen and (max-width: 768px) {
-    .game-wrapper {
-        padding: 10px;
-        gap: 10px;
-    }
-    
-    .header h1 {
-        font-size: 1.5rem;
-    }
-    
-    .info-item {
-        font-size: 0.9rem;
-        min-width: 80px;
-        gap: 5px;
-    }
-    
-    .hex-button {
-        width: 45px;
-        height: 45px;
+    :root {
+        --button-size: var(--button-size-mobile);
+        --header-height: 60px;
+        --controls-height: 70px;
+        --spacing: 5px;
     }
 
-    .game-container {
-        max-height: calc(100vh - 200px);
+    .game-wrapper { padding: var(--spacing); }
+    .header h1 { font-size: 1.5rem; }
+    .info-item { font-size: 0.9rem; }
+    .mobile-controls { 
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        padding: 20px;
     }
 }
 
-/* Add landscape media query */
-@media screen and (max-height: 600px) {
+@media screen and (orientation: landscape) and (max-height: 600px) {
     .game-wrapper {
         grid-template-rows: none;
-        grid-template-columns: auto 1fr auto;
-        gap: 5px;
-        padding: 5px;
-        height: 100vh;
-        overflow: hidden;
+        grid-template-columns: 150px 1fr 50px;
+        gap: var(--spacing);
     }
-    
+
     .header {
+        width: 140px;
         padding: 5px;
-        width: 150px;
-        display: flex;
+    }
+
+    .controls {
+        width: 45px;
         flex-direction: column;
-        justify-content: flex-start;
+        padding: 5px;
     }
 
     .game-container {
         max-height: none;
         height: 100%;
         aspect-ratio: auto;
-        margin: 0;
-    }
-
-    .controls {
-        padding: 5px;
-        flex-direction: column;
-        gap: 5px;
-        width: 50px;
-        align-self: center;
-        position: relative;
-        z-index: 10;
-    }
-
-    .hex-button {
-        width: 40px;
-        height: 40px;
-        margin: 2px 0;
-    }
-}
-
-/* Add specific landscape orientation query */
-@media screen and (orientation: landscape) and (max-height: 500px) {
-    .game-wrapper {
-        grid-template-columns: 150px 1fr 50px;
-        max-height: 100vh;
-    }
-    
-    .header {
-        width: 140px;
-    }
-
-    .game-info {
-        font-size: 0.8em;
-        padding: 3px;
-    }
-
-    .controls {
-        width: 45px;
-        padding: 3px;
-    }
-
-    .hex-button {
-        width: 35px;
-        height: 35px;
     }
 }
