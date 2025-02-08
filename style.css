@@ -16,6 +16,13 @@ body {
     padding: 20px;
 }
 
+html, body {
+  overflow: hidden;
+  height: 100%; /* Ensures that the body fills the viewport */
+  margin: 0;
+  padding: 0;
+}
+
 .game-wrapper {
     display: grid;
     grid-template-rows: auto auto 1fr auto;
