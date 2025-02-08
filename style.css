@@ -20,7 +20,11 @@ html, body {
     max-width: 100%;
     max-height: 100%;
 }
-
+.header {
+      
+    text-align: center;
+    
+}
 .game-wrapper {
     height: 90vh;
     display: flex;
@@ -30,10 +34,7 @@ html, body {
     gap: var(--game-padding);
 }
 
-.header {
-    flex: 0 0 auto;
-    padding: 10px;
-}
+
 
 h1 {
     position: relative;
@@ -57,6 +58,12 @@ h1 {
     display: flex;
     align-items: center;
     gap: 5px;
+}
+
+.info-item span {
+    display: inline-block;
+    min-width: 2ch; /* adjust value as needed for larger numbers */
+    text-align: center;
 }
 
 .game-container {
@@ -119,10 +126,9 @@ canvas {
     
     /* Modified header to occupy full viewport height */
     .header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100vh;
+      
+        display: none;
+        
     }
     
     .game-container {
@@ -144,6 +150,13 @@ canvas {
     }
     h1 {
         display:none;
+    }
+    
+    .game-info .info-item {
+        flex-direction: column;
+        text-align: left;
+        min-width: 2ch;
+        gap: 2px; /* adjust as needed */
     }
 }
 
@@ -169,9 +182,7 @@ canvas {
         padding: var(--game-padding);
         gap: var(--game-padding);
     }
-    h1 {
-        font-size: clamp(1.2rem, 5vw, 2rem);
-    }
+   
     canvas {
         max-height: 60vh;
     }
@@ -189,5 +200,11 @@ canvas {
     /* Ensure game-container occupies the remaining space */
     .game-container {
         flex: 1 1 auto;
+    }
+
+    .header {
+      
+        text-align: center;
+        
     }
 }
