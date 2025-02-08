@@ -18,10 +18,11 @@ html, body {
     background: linear-gradient(135deg, var(--background-color) 0%, #1a1a3a 100%);
     color: var(--text-color);
     max-width: 100%;
+    max-height: 90%;
 }
 
 .game-wrapper {
-    height: 100vh;
+    height: 90vh;
     display: flex;
     flex-direction: column;
     padding: var(--game-padding);
