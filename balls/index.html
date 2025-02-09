@@ -42,11 +42,11 @@ Summary:
       }
       #ball-counter {
         top: 10px;
-        left: 10px;
+        left: 100px;
       }
       #results {
         bottom: 10px;
-        left: 10px;
+        left: 100px;
       }
       #simulation-variables {
         top: 10px;
@@ -160,6 +160,7 @@ Summary:
       muteToggle.addEventListener("click", () => {
         isMuted = !isMuted;
         muteToggle.innerText = isMuted ? "Mute" : "Unmute";
+        console.log(`Sound is now ${isMuted ? "muted" : "unmuted"}`);
       });
 
       // Global collision counter listener
@@ -205,8 +206,9 @@ Summary:
         updateBallCounter();
         // Play sound when a new ball is created
         if (!isMuted) {
+          console.log("Playing sound for new ball creation");
           collisionSound.currentTime = 0; // Reset sound to start
-          collisionSound.play();
+          collisionSound.play().catch(error => console.error("Sound play error:", error));
         }
         return ball;
       }
