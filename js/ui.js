@@ -23,10 +23,10 @@ export class UI {
         this.currentTheme = (this.currentTheme + 1) % this.themes.length;
         const theme = this.themes[this.currentTheme];
         
-        // Remove all theme classes
+        // Remove theme classes from body
         document.body.classList.remove('theme-dark', 'theme-forest');
         
-        // Add new theme class if not default
+        // Add theme class if not default
         if (theme !== 'default') {
             document.body.classList.add(`theme-${theme}`);
         }
@@ -38,55 +38,37 @@ export class UI {
     }
 
     loseLife() {
-        this.lives--;
+        this.lives = Math.max(0, this.lives - 1);
         this.updateUI();
     }
 
     gainLife() {
-        if (this.lives < 3) {
-            this.lives++;
-            this.updateUI();
-        }
+        this.lives++;
+        this.updateUI();
     }
 
     updateUI() {
-        const scoreElement = document.getElementById('score');
-        const livesElement = document.getElementById('lives');
-        
-        if (scoreElement) {
-            scoreElement.textContent = this.score;
-        }
-        
-        if (livesElement) {
-            livesElement.textContent = this.lives;
-        }
+        // Update score and lives if elements exist
+        const scoreEl = document.getElementById('score');
+        if (scoreEl) scoreEl.textContent = this.score;
+        const livesEl = document.getElementById('lives');
+        if (livesEl) livesEl.textContent = this.lives;
     }
 
     showMessage(message, duration = 2000) {
-        const messageDiv = document.createElement('div');
-        messageDiv.style.position = 'absolute';
-        messageDiv.style.top = '50%';
-        messageDiv.style.left = '50%';
-        messageDiv.style.transform = 'translate(-50%, -50%)';
-        messageDiv.style.padding = '20px';
-        messageDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        messageDiv.style.color = 'white';
-        messageDiv.style.borderRadius = '8px';
-        messageDiv.style.fontSize = '24px';
-        messageDiv.style.zIndex = '1000';
-        messageDiv.textContent = message;
-
-        document.querySelector('.game-container').appendChild(messageDiv);
-
-        setTimeout(() => {
-            messageDiv.remove();
-        }, duration);
+        // Create a temporary overlay message
+        const overlay = document.createElement('div');
+        overlay.className = 'ui-message';
+        overlay.textContent = message;
+        document.body.appendChild(overlay);
+        setTimeout(() => document.body.removeChild(overlay), duration);
     }
 
     updateStars(stars) {
-        const starElements = document.querySelectorAll('.star');
-        starElements.forEach((star, index) => {
-            star.style.opacity = index < stars ? '1' : '0.3';
-        });
+        // If a star element exists, update its count (dummy implementation)
+        const starsEl = document.getElementById('stars');
+        if (starsEl) {
+            starsEl.textContent = '★'.repeat(stars);
+        }
     }
 }

@@ -1,5 +1,20 @@
-Snake Game Specs
+#### Snake Game
 
+A modern, neon-themed Snake game with auto-play and cool visual effects.
+
+**Features:**
+- Multiple level designs with dynamic effects.
+- Responsive controls (keyboard, mouse, touch).
+- Auto-play mode triggered after inactivity.
+- Score animations and sparkle effects.
+
+**Usage:**
+1. Open `index.html` in a modern browser.
+2. Use the provided controls to start, pause, and change themes.
+3. Enjoy the game!
+
+----------------------------------------
+Snake Game Specs
 ----------------------------------------
 Core Mechanics:
 ----------------------------------------
