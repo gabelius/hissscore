@@ -210,7 +210,7 @@ Summary:
           ball.render.fillStyle = "#ff0000";  // turn red
           ball.custom.status = "red";
         } else if (ball.custom.status === "yellow") {  // 30% chance to turn red
-          if (Math.random() < 0.3) {
+          if (Math.random() < 1) {
             ball.render.fillStyle = "#ff0000";  // turn red
             ball.custom.status = "red";
             console.log(`Yellow Ball ID: ${ball.id} turned red`);
