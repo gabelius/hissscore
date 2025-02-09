@@ -199,9 +199,9 @@ Summary:
 
       function toggleColor(ball) {
         // Stop toggling if ball is yellow
-        if (!ball.custom) return;
+       // if (!ball.custom) return;
         // Log current status
-        console.log(`Ball ID: ${ball.id}, Current Status: ${ball.custom.status}`);
+       // console.log(`Ball ID: ${ball.id}, Current Status: ${ball.custom.status}`);
         // Toggle the color
         if (ball.custom.status === "red") {
           ball.render.fillStyle = "#0000ff";  // turn blue
@@ -209,14 +209,13 @@ Summary:
         } else if (ball.custom.status === "blue") {
           ball.render.fillStyle = "#ff0000";  // turn red
           ball.custom.status = "red";
-        } 
-         if (ball.custom.status === "yellow") {  // 30% chance to turn red
-          if (Math.random() < 1) {
-            ball.render.fillStyle = "#ff0000";  // turn red
-            ball.custom.status = "red";
-            console.log(`Yellow Ball ID: ${ball.id} turned red`);
-          }
-        }
+        } else {  // 30% chance to turn red
+          
+          ball.render.fillStyle = "#ff0000";  // turn red
+          ball.custom.status = "red";
+          console.log(`Yellow Ball ID: ${ball.id} turned red`);
+        
+      }
         // Schedule next toggle after 5 seconds (5000ms)
         ball._toggleTimer = setTimeout(() => toggleColor(ball), 5000);
       }
@@ -393,8 +392,8 @@ Summary:
               ballB.render.fillStyle = "#ffff00";
               ballA.custom.status = "yellow";
               ballB.custom.status = "yellow";
-              if (ballA._toggleTimer) { clearTimeout(ballA._toggleTimer); ballA._toggleTimer = null; }
-              if (ballB._toggleTimer) { clearTimeout(ballB._toggleTimer); ballB._toggleTimer = null; }
+              //if (ballA._toggleTimer) { clearTimeout(ballA._toggleTimer); ballA._toggleTimer = null; }
+              //if (ballB._toggleTimer) { clearTimeout(ballB._toggleTimer); ballB._toggleTimer = null; }
             }
           }
         });
