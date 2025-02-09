@@ -35,24 +35,33 @@ Summary:
     <div id="ball-counter" style="position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
       Balls: 0
     </div>
+    <!-- Results area now includes a countdown display -->
+    <div id="results" style="position: fixed; top: 50px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
+      Results will appear here...
+    </div>
+    <!-- New area to display important simulation variables -->
+    <div id="simulation-variables" style="position: fixed; top: 150px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
+      Variables will appear here...
+    </div>
     <script>
       // Matter.js module aliases
       const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
       // Constants
-      const width = 800;
-      const height = 600;
-      const containerRadius = 250;
-      const ballRadius = 7;
+      // Use responsive canvas dimensions for mobile display
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const containerRadius = Math.min(width, height) * 0.4;
+      const ballRadius = 12;
       const initialBallCount = 1;
       const MAX_BALLS = 500;
       const containerX = width / 2;
       const containerY = height / 2;
       // New speed and force constants
-      const INITIAL_SPEED = 5;
-      const CHILD_RED_MULTIPLIER = 1.4;
-      const CHILD_YELLOW_MULTIPLIER = 1.2;
-      const REPEL_FORCE = 0.02;
+      const INITIAL_SPEED = 15;
+      const CHILD_RED_MULTIPLIER = 1;
+      const CHILD_YELLOW_MULTIPLIER = 1;
+      const REPEL_FORCE = 0.002;
 
       // Create engine and world
       const engine = Engine.create();
@@ -99,6 +108,7 @@ Summary:
       // Ball creation
       const balls = [];
       let totalCreated = initialBallCount; // global counter for created balls
+      let collisionCount = 0; // global collision counter
 
       function updateBallCounter() {
         const counter = document.getElementById("ball-counter");
@@ -106,6 +116,11 @@ Summary:
           counter.innerText = "Balls: " + balls.length;
         }
       }
+
+      // Global collision counter listener
+      Events.on(engine, 'collisionStart', function(event) {
+        collisionCount += event.pairs.length;
+      });
 
       function toggleColor(ball) {
         // Stop toggling if ball is yellow
@@ -128,7 +143,7 @@ Summary:
         if (duplicates >= 1) return null;
         
         const ball = Bodies.circle(x, y, ballRadius, {
-          restitution: 1.2,
+          restitution: 1.0,
           friction: 0,
           frictionAir: 0,
           label: 'ball',
@@ -308,6 +323,77 @@ Summary:
           }
         }
         updateBallCounter();
+      }
+
+      // New global countdown variable (in seconds)
+      let countdown = 60;
+      
+      // Update results display to include countdown
+      function updateResults() {
+        let countRed = 0, countBlue = 0, countYellow = 0;
+        balls.forEach(ball => {
+          if (ball.render.fillStyle === "#ff0000") countRed++;
+          else if (ball.render.fillStyle === "#0000ff") countBlue++;
+          else if (ball.render.fillStyle === "#ffff00") countYellow++;
+        });
+        const resultsEl = document.getElementById("results");
+        if (resultsEl) {
+          resultsEl.innerText = `Results (last minute):
+Red: ${countRed}
+Blue: ${countBlue}
+Yellow: ${countYellow}
+Collisions: ${collisionCount}
+Next refresh in: ${countdown} seconds`;
+        }
+      }
+      
+      // New function: Update simulation variables display
+      function updateVariables() {
+        const varsEl = document.getElementById("simulation-variables");
+        if (varsEl) {
+          varsEl.innerText = `Canvas size: ${width} x ${height}
+INITIAL_SPEED: ${INITIAL_SPEED}
+CHILD_RED_MULTIPLIER: ${CHILD_RED_MULTIPLIER}
+CHILD_YELLOW_MULTIPLIER: ${CHILD_YELLOW_MULTIPLIER}
+REPEL_FORCE: ${REPEL_FORCE}`;
+        }
+      }
+      
+      // Remove previous 60-second setInterval and replace with a 1-second updater:
+      setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+          updateResults();
+          restartSimulation();
+          countdown = 60;
+        }
+        updateResults();
+        updateVariables();
+      }, 1000);
+
+      function restartSimulation() {
+        // Remove all ball bodies
+        balls.forEach(ball => World.remove(world, ball));
+        balls.length = 0;
+        totalCreated = initialBallCount;
+        collisionCount = 0;
+        updateBallCounter();
+        // Create a new initial hero ball
+        let placed = false;
+        while (!placed) {
+          const x = containerX + (Math.random() - 0.5) * (containerRadius - ballRadius * 3);
+          const y = containerY + (Math.random() - 0.5) * (containerRadius - ballRadius * 3);
+          if (Math.hypot(x - containerX, y - containerY) < containerRadius - ballRadius * 3) {
+            const angle = Math.random() * 2 * Math.PI;
+            createBall(
+              x,
+              y,
+              { x: Math.cos(angle) * INITIAL_SPEED, y: Math.sin(angle) * INITIAL_SPEED },
+              "#ff0000"  // hero ball is red
+            );
+            placed = true;
+          }
+        }
       }
 
       // Run cleanup periodically
