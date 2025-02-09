@@ -1,13 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<title>Balls Game</title>
-	<link rel="stylesheet" href="style.css">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+<title>2D Ball Simulation</title>
+<style>
+body { margin: 0; overflow: hidden; }
+canvas { display: block; }
+</style>
 </head>
 <body>
-	<script src="game.js"></script>
+<canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+const radius = 200;
+const ballRadius = 2.5; // 5px diameter, 2.5px radius
+
+let balls = [];
+
+function createBall(x, y, vx, vy) {
+  return { x, y, vx, vy, radius: ballRadius };
+}
+
+function generateBalls() {
+  // Generate balls along the circle's edge
+  const angle = Math.random() * 2 * Math.PI;
+  const x = centerX + radius * Math.cos(angle);
+  const y = centerY + radius * Math.sin(angle);
+
+  // Initial velocity (adjust as needed)
+  const vx = Math.cos(angle + Math.PI/2) * 2; // Tangential velocity
+  const vy = Math.sin(angle + Math.PI/2) * 2;
+
+  balls.push(createBall(x, y, vx, vy));
+}
+
+
+function drawCircle() {
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function drawBalls() {
+  balls.forEach(ball => {
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+  });
+}
+
+function updateBalls() {
+  balls.forEach(ball => {
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+
+    // Collision with the circle walls
+    const dx = ball.x - centerX;
+    const dy = ball.y - centerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance + ball.radius > radius) {
+      const nx = dx / distance; // Normal vector
+      const ny = dy / distance;
+
+      // Reflect the velocity (simple reflection)
+      ball.vx -= 2 * (ball.vx * nx + ball.vy * ny) * nx;
+      ball.vy -= 2 * (ball.vx * nx + ball.vy * ny) * ny;
+
+       // Prevent ball from getting stuck outside the circle
+      ball.x = centerX + (radius - ball.radius) * nx;
+      ball.y = centerY + (radius - ball.radius) * ny;
+    }
+
+    // Ball-to-ball collision detection (basic)
+    for (let i = 0; i < balls.length; i++) {
+        for (let j = i + 1; j < balls.length; j++) {
+            const b1 = balls[i];
+            const b2 = balls[j];
+            const dx = b2.x - b1.x;
+            const dy = b2.y - b1.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < b1.radius + b2.radius) {
+                //Basic Collision response (needs improvement, but doubles balls)
+                balls.push(createBall(b1.x, b1.y, b1.vx, b1.vy));
+                balls.push(createBall(b2.x, b2.y, b2.vx, b2.vy));
+                balls.splice(i,1);
+                balls.splice(j-1,1);
+                return; //To avoid concurrent modification of the balls array.
+            }
+        }
+    }
+
+
+  });
+}
+
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+  drawCircle();
+  drawBalls();
+  updateBalls();
+  requestAnimationFrame(gameLoop); // Call itself again for animation
+}
+
+// Generate initial balls (you can adjust the number)
+for (let i = 0; i < 5; i++) {
+  generateBalls();
+}
+
+// Generate a new ball every second (adjust as needed)
+setInterval(generateBalls, 1000);
+
+gameLoop(); // Start the game loop
+
+</script>
 </body>
 </html>
