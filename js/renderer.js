@@ -7,6 +7,7 @@ export class Renderer {
         this.setupEffects();
         this.foodLastPosition = null; // ensure this is defined
         this.sparkles = []; // added array for sparkle events
+        this.lastFlashedThreshold = 0; // new property to track last flash threshold
     }
 
     setupEffects() {
@@ -371,13 +372,24 @@ export class Renderer {
         }
     }
 
-    // New helper to animate a flashing score across the canvas on round figures (e.g., 100, 200, etc.)
+    // Updated helper to check if the current score matches a trigger threshold and fire flash
+    checkScoreThreshold(score) {
+        const thresholds = [10, 20, 50];
+        if (thresholds.includes(score)) {
+            this.animateScoreFlash(score);
+        }
+    }
+
     animateScoreFlash(score) {
+        console.log("Flashing score animation triggered for:", score);
         const duration = 2000; // animation lasts 2 seconds
         const startTime = Date.now();
         const ctx = this.ctx;
         const canvasWidth = this.canvas.width;
         const canvasHeight = this.canvas.height;
+        // Define start and end positions so text travels fully across the canvas.
+        const startX = -100;
+        const endX = canvasWidth + 100;
 
         const animate = () => {
             const elapsed = Date.now() - startTime;
@@ -385,8 +397,8 @@ export class Renderer {
             if (progress > 1) return;
             ctx.save();
             ctx.globalAlpha = 1 - progress; // fade out over time
-            // Horizontal movement from left to right
-            const x = canvasWidth * progress - 100; // adjust offset based on text width
+            // Compute x moving from startX to endX
+            const x = startX + (endX - startX) * progress;
             const y = canvasHeight / 2;
             // Neon gradient for text
             const gradient = ctx.createLinearGradient(x, y - 50, x, y + 50);
