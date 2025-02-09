@@ -1,113 +1,107 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>2D Ball Simulation</title>
-<style>
-body { margin: 0; overflow: hidden; }
-canvas { display: block; }
-button { position: absolute; top: 10px; right: 10px; }
-</style>
-<script src="p2.min.js"></script>
-</head>
-<body>
-<canvas id="canvas"></canvas>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Matter.js Circle Simulation</title>
+    <!-- Load Matter.js from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="world"></canvas>
+    <script>
+      // module aliases
+      const { Engine, Render, Runner, World, Bodies } = Matter;
 
-<script>
-window.addEventListener('load', function() {
+      // create an engine and world
+      const engine = Engine.create();
+      const world = engine.world;
 
-    console.log('p2 version check:', p2); // Debug p2 availability
+      // set canvas dimensions
+      const width = 800;
+      const height = 600;
 
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
+      // create a renderer and bind it to our canvas
+      const render = Render.create({
+        element: document.body,
+        engine: engine,
+        canvas: document.getElementById("world"),
+        options: {
+          width: width,
+          height: height,
+          wireframes: false,
+          background: "#fafafa",
+        },
+      });
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+      Render.run(render);
+      const runner = Runner.create();
+      Runner.run(runner, engine);
 
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = 180; // Increased radius
-    console.log('Using circle radius:', radius);
-    const ballRadius = 15; // Increased ball radius
+      // Container (circle) parameters
+      const containerX = width / 2;
+      const containerY = height / 2;
+      const containerRadius = 250;
 
-    const world = new p2.World({ gravity: [0, -9.82] });
+      // Create the container walls using small static segments
+      const segments = 40;
+      const wallThickness = 30;
+      const walls = [];
 
-    const planeMaterial = new p2.Material();
-    const ballMaterial = new p2.Material();
-
-    // Add planes in a circle to confine the ball inside:
-    const segments = 16; // Increase segments for smoother boundary
-    const planes = [];
-    for (let i = 0; i < segments; i++) {
-        const angle = i * (2 * Math.PI / segments);
-        const planeBody = new p2.Body({ position: [centerX, centerY], angle: angle, type: p2.Body.STATIC });
-        const planeShape = new p2.Plane({});
-        planeShape.material = planeMaterial; // Moved inside the loop
-        planeBody.addShape(planeShape);
-        world.addBody(planeBody);
-        planes.push({ body: planeBody, angle: angle });
-    }
-
-    // Adjust restitution so the ball bounces off planes:
-    world.addContactMaterial(new p2.ContactMaterial(planeMaterial, ballMaterial, { restitution: 0.9, friction: 0 }));
-
-    // Assign the planeMaterial to each planeShape, and ballMaterial to the ball:
-    const ballShape = new p2.Circle({ radius: ballRadius });
-    ballShape.material = ballMaterial; // Assign material right after creation
-    const ballBody = new p2.Body({
-        mass: 1,
-        position: [centerX, centerY + 50], // More offset
-        velocity: [10, 0], // Increased initial velocity
-        damping: 0, // No damping
-        angularDamping: 0 // No angular damping
-    });
-    ballBody.addShape(ballShape);
-    world.addBody(ballBody);
-
-    console.log(`Initial Ball Position: (${ballBody.position[0]}, ${ballBody.position[1]})`);
-    console.log(`Initial Ball Velocity: (${ballBody.velocity[0]}, ${ballBody.velocity[1]})`);
-
-    function animate() {
-        world.step(1 / 60);
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        ctx.stroke();
-
-        // Draw radial lines
-        ctx.strokeStyle = 'black';
-        planes.forEach(plane => {
-            const x1 = centerX + Math.cos(plane.angle) * radius;
-            const y1 = centerY + Math.sin(plane.angle) * radius;
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.lineTo(x1, y1);
-            ctx.stroke();
+      for (let i = 0; i < segments; i++) {
+        const theta = (i / segments) * 2 * Math.PI;
+        const nextTheta = ((i + 1) / segments) * 2 * Math.PI;
+        const midTheta = (theta + nextTheta) / 2;
+        const x = containerX + containerRadius * Math.cos(midTheta);
+        const y = containerY + containerRadius * Math.sin(midTheta);
+        // The length of each wall segment approximates the arc length 
+        const wallLength = (2 * Math.PI * containerRadius) / segments;
+        // Use midTheta as the rotation angle for a tangent wall segment
+        const wall = Bodies.rectangle(x, y, wallThickness, wallLength, {
+          isStatic: true,
+          angle: midTheta,
+          render: { fillStyle: "#2e2b44" },
         });
+        walls.push(wall);
+      }
+      World.add(world, walls);
 
-        // Draw small solid black circle at the center
-        ctx.fillStyle = 'black';
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI); // Small circle with radius 5
-        ctx.fill();
+      // Create many small balls to bounce inside the container
+      const balls = [];
+      const ballRadius = 10;
+      const ballCount = 50;
 
-        ctx.fillStyle = 'black';
-        ctx.beginPath();
-        ctx.arc(ballBody.position[0], ballBody.position[1], ballRadius, 0, 2 * Math.PI);
-        ctx.fill();
+      for (let i = 0; i < ballCount; i++) {
+        let placed = false;
+        // Ensure each ball is placed within the container
+        while (!placed) {
+          const x = containerX + (Math.random() - 0.5) * (containerRadius - ballRadius * 2);
+          const y = containerY + (Math.random() - 0.5) * (containerRadius - ballRadius * 2);
+          if (Math.hypot(x - containerX, y - containerY) < containerRadius - ballRadius * 2) {
+            const ball = Bodies.circle(x, y, ballRadius, {
+              restitution: 0.9,
+              friction: 0.005,
+              render: { fillStyle: "#ff6f61" },
+            });
+            balls.push(ball);
+            placed = true;
+          }
+        }
+      }
+      World.add(world, balls);
 
-        console.log(`Ball Position: (${ballBody.position[0]}, ${ballBody.position[1]})`);
-        console.log(`Ball Velocity: (${ballBody.velocity[0]}, ${ballBody.velocity[1]})`);
-
-        setTimeout(() => {
-            requestAnimationFrame(animate);
-        }, 500); // Delay next frame by 500ms
-    }
-
-    animate();
-
-}); // End of window.addEventListener('load')
-</script>
-
-</body>
+      // Adjust view to show entire scene
+      Render.lookAt(render, {
+        min: { x: 0, y: 0 },
+        max: { x: width, y: height },
+      });
+    </script>
+  </body>
 </html>
