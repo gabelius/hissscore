@@ -9,6 +9,7 @@ Summary:
 - Red hero balls continuously toggle their color every 6 seconds: red turns blue, then blue turns back to red.
 - When two blue balls collide, they both turn yellow and their toggling stops.
 - A cleanup routine periodically removes balls that exceed speed limits or move out of bounds.
+- Panels are positioned to avoid overlap and a night mode color scheme is used.
 -->
 <!DOCTYPE html>
 <html>
@@ -23,26 +24,60 @@ Summary:
         margin: 0;
         padding: 0;
         overflow: hidden;
+        background-color: #121212;
+        color: #ffffff;
       }
       canvas {
         display: block;
+        background-color: #1e1e1e; /* Night mode background color */
+      }
+      #ball-counter, #results, #simulation-variables, #sound-control {
+        position: fixed;
+        background: rgba(0, 0, 0, 0.7);
+        color: #ffffff;
+        padding: 10px;
+        font-family: 'Arial', sans-serif; /* Modern font */
+        font-size: 14px; /* Adjusted font size */
+        border-radius: 5px; /* Rounded corners for modern look */
+      }
+      #ball-counter {
+        top: 10px;
+        left: 10px;
+      }
+      #results {
+        bottom: 10px;
+        left: 10px;
+      }
+      #simulation-variables {
+        top: 10px;
+        right: 10px;
+        display: none; /* Hide the variables panel */
+      }
+      #sound-control {
+        bottom: 10px;
+        right: 10px;
       }
     </style>
   </head>
   <body>
     <canvas id="world"></canvas>
     <!-- Ball counter element -->
-    <div id="ball-counter" style="position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
+    <div id="ball-counter">
       Balls: 0
     </div>
     <!-- Results area now includes a countdown display -->
-    <div id="results" style="position: fixed; top: 50px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
+    <div id="results">
       Results will appear here...
     </div>
     <!-- New area to display important simulation variables -->
-    <div id="simulation-variables" style="position: fixed; top: 150px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
+    <div id="simulation-variables">
       Variables will appear here...
     </div>
+    <!-- Sound control element -->
+    <div id="sound-control">
+      <button id="mute-toggle">Unmute</button>
+    </div>
+    <audio id="collision-sound" src="collision.mp3?" preload="auto"></audio>
     <script>
       // Matter.js module aliases
       const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
@@ -58,7 +93,7 @@ Summary:
       const containerX = width / 2;
       const containerY = height / 2;
       // New speed and force constants
-      const INITIAL_SPEED = 15;
+      const INITIAL_SPEED = 10;
       const CHILD_RED_MULTIPLIER = 1;
       const CHILD_YELLOW_MULTIPLIER = 1;
       const REPEL_FORCE = 0.002;
@@ -77,7 +112,7 @@ Summary:
           width: width,
           height: height,
           wireframes: false,
-          background: "#fafafa"
+          background: "#1e1e1e"  // Night mode background color
         }
       });
 
@@ -116,6 +151,16 @@ Summary:
           counter.innerText = "Balls: " + balls.length;
         }
       }
+
+      // Sound control
+      let isMuted = true;
+      const collisionSound = document.getElementById("collision-sound");
+      const muteToggle = document.getElementById("mute-toggle");
+
+      muteToggle.addEventListener("click", () => {
+        isMuted = !isMuted;
+        muteToggle.innerText = isMuted ? "Mute" : "Unmute";
+      });
 
       // Global collision counter listener
       Events.on(engine, 'collisionStart', function(event) {
@@ -158,6 +203,11 @@ Summary:
         balls.push(ball);
         World.add(world, ball);
         updateBallCounter();
+        // Play sound when a new ball is created
+        if (!isMuted) {
+          collisionSound.currentTime = 0; // Reset sound to start
+          collisionSound.play();
+        }
         return ball;
       }
 
@@ -338,8 +388,7 @@ Summary:
         });
         const resultsEl = document.getElementById("results");
         if (resultsEl) {
-          resultsEl.innerText = `Results (last minute):
-Red: ${countRed}
+          resultsEl.innerText = `Red: ${countRed}
 Blue: ${countBlue}
 Yellow: ${countYellow}
 Collisions: ${collisionCount}
