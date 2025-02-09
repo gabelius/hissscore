@@ -77,5 +77,5 @@ UI Updates (Latest):
 ----------------------------------------
 Notes:
 ----------------------------------------
-I stream on YouTube at https://youtube.com/HissScore
+I stream on YouTube at https://youtube.com/@HissScore
 Please send a pull request if you are interested in collaborating.
