@@ -2,33 +2,52 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Matter.js Circle Simulation</title>
-    <!-- Load Matter.js from a CDN -->
     <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
     <style>
-      html,
-      body {
+      html, body {
         margin: 0;
         padding: 0;
         overflow: hidden;
+      }
+      canvas {
+        display: block;
       }
     </style>
   </head>
   <body>
     <canvas id="world"></canvas>
+    <!-- Ball counter element -->
+    <div id="ball-counter" style="position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
+      Balls: 0
+    </div>
     <script>
-      // module aliases
-      const { Engine, Render, Runner, World, Bodies } = Matter;
+      // Matter.js module aliases
+      const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
-      // create an engine and world
-      const engine = Engine.create();
-      const world = engine.world;
-
-      // set canvas dimensions
+      // Constants
       const width = 800;
       const height = 600;
+      const containerRadius = 250;
+      const ballRadius = 10;
+      const initialBallCount = 1;
+      const MAX_BALLS = 500;
+      const containerX = width / 2;
+      const containerY = height / 2;
+      // New speed and force constants
+      const INITIAL_SPEED = 10;
+      const CHILD_RED_MULTIPLIER = 1.2;
+      const CHILD_YELLOW_MULTIPLIER = 0.8;
+      const REPEL_FORCE = 0.002;
 
-      // create a renderer and bind it to our canvas
+      // Create engine and world
+      const engine = Engine.create();
+      const world = engine.world;
+      engine.world.gravity.y = 0;
+
+      // Create renderer
       const render = Render.create({
         element: document.body,
         engine: engine,
@@ -37,70 +56,255 @@
           width: width,
           height: height,
           wireframes: false,
-          background: "#fafafa",
-        },
+          background: "#fafafa"
+        }
       });
 
-      Render.run(render);
-      const runner = Runner.create();
-      Runner.run(runner, engine);
-
-      // Container (circle) parameters
-      const containerX = width / 2;
-      const containerY = height / 2;
-      const containerRadius = 250;
-
-      // Create the container walls using small static segments
-      const segments = 40;
-      const wallThickness = 30;
+      // Create walls
+      const segments = 500;
+      const wallThickness = 40;
       const walls = [];
 
       for (let i = 0; i < segments; i++) {
         const theta = (i / segments) * 2 * Math.PI;
         const nextTheta = ((i + 1) / segments) * 2 * Math.PI;
         const midTheta = (theta + nextTheta) / 2;
+
         const x = containerX + containerRadius * Math.cos(midTheta);
         const y = containerY + containerRadius * Math.sin(midTheta);
-        // The length of each wall segment approximates the arc length 
         const wallLength = (2 * Math.PI * containerRadius) / segments;
-        // Use midTheta as the rotation angle for a tangent wall segment
-        const wall = Bodies.rectangle(x, y, wallThickness, wallLength, {
+
+        const wall = Bodies.rectangle(x, y, wallLength, wallThickness, {
           isStatic: true,
           angle: midTheta,
-          render: { fillStyle: "#2e2b44" },
+          label: 'wall',
+          render: { fillStyle: "#ff0" }
         });
         walls.push(wall);
       }
       World.add(world, walls);
 
-      // Create many small balls to bounce inside the container
+      // Ball creation
       const balls = [];
-      const ballRadius = 10;
-      const ballCount = 50;
+      let totalCreated = initialBallCount; // global counter for created balls
 
-      for (let i = 0; i < ballCount; i++) {
+      function updateBallCounter() {
+        const counter = document.getElementById("ball-counter");
+        if (counter) {
+          counter.innerText = "Balls: " + balls.length;
+        }
+      }
+
+      function toggleColor(ball) {
+        // Stop toggling if ball is yellow
+        if (!ball.custom || ball.custom.status === "yellow") return;
+        // Toggle the color
+        if (ball.custom.status === "red") {
+          ball.render.fillStyle = "#0000ff";  // turn blue
+          ball.custom.status = "blue";
+        } else if (ball.custom.status === "blue") {
+          ball.render.fillStyle = "#ff0000";  // turn red
+          ball.custom.status = "red";
+        }
+        // Schedule next toggle after 6 seconds (6000ms)
+        ball._toggleTimer = setTimeout(() => toggleColor(ball), 6000);
+      }
+
+      function createBall(x, y, velocity = { x: 0, y: 0 }, color = "#ff6f61") {
+        // Prevent creation if already 2 balls exist at the exact same position
+        let duplicates = balls.filter(b => b.position.x === x && b.position.y === y).length;
+        if (duplicates >= 1) return null;
+        
+        const ball = Bodies.circle(x, y, ballRadius, {
+          restitution: 1.2,
+          friction: 0,
+          frictionAir: 0,
+          label: 'ball',
+          render: { fillStyle: color }
+        });
+        Body.setVelocity(ball, velocity);
+        // Set up continuous toggling for red balls
+        if (color === "#ff0000") {
+          ball.custom = { status: "red" };
+          ball._toggleTimer = setTimeout(() => toggleColor(ball), 6000);
+        }
+        balls.push(ball);
+        World.add(world, ball);
+        updateBallCounter();
+        return ball;
+      }
+
+      // Create initial balls (create the hero ball with red color)
+      for (let i = 0; i < initialBallCount; i++) {
         let placed = false;
-        // Ensure each ball is placed within the container
         while (!placed) {
-          const x = containerX + (Math.random() - 0.5) * (containerRadius - ballRadius * 2);
-          const y = containerY + (Math.random() - 0.5) * (containerRadius - ballRadius * 2);
-          if (Math.hypot(x - containerX, y - containerY) < containerRadius - ballRadius * 2) {
-            const ball = Bodies.circle(x, y, ballRadius, {
-              restitution: 0.9,
-              friction: 0.005,
-              render: { fillStyle: "#ff6f61" },
-            });
-            balls.push(ball);
+          const x = containerX + (Math.random() - 0.5) * (containerRadius - ballRadius * 3);
+          const y = containerY + (Math.random() - 0.5) * (containerRadius - ballRadius * 3);
+
+          if (Math.hypot(x - containerX, y - containerY) < containerRadius - ballRadius * 3) {
+            const angle = Math.random() * 2 * Math.PI;
+            createBall(
+              x,
+              y,
+              {
+                x: Math.cos(angle) * INITIAL_SPEED,
+                y: Math.sin(angle) * INITIAL_SPEED
+              },
+              "#ff0000"  // hero ball is red
+            );
             placed = true;
           }
         }
       }
-      World.add(world, balls);
 
-      // Adjust view to show entire scene
+      // Helper to generate a random hex color different from excludeColor
+      function generateDifferentColor(excludeColor) {
+        let color;
+        do {
+          color = "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, "0");
+        } while (color.toLowerCase() === excludeColor.toLowerCase());
+        return color;
+      }
+      
+      // Modified collision event listener: Only create one child per hero ball collision,
+      // every 10th ball becomes a hero (red), otherwise yellow ball is created with 0.8x speed.
+      Events.on(engine, 'collisionStart', function(event) {
+        if (balls.length >= MAX_BALLS) return;
+        const processedHeroes = new Set();  // Track hero balls processed in this event
+        event.pairs.forEach(pair => {
+          const { bodyA, bodyB } = pair;
+          // Identify the ball and wall from the pair
+          const ball = bodyA.label === 'ball' ? bodyA : (bodyB.label === 'ball' ? bodyB : null);
+          const wall = bodyA.label === 'wall' ? bodyA : (bodyB.label === 'wall' ? bodyB : null);
+          if (ball && wall) {
+            // Only process hero ball (red) if not already processed
+            if (ball.render.fillStyle === "#ff0000" && !processedHeroes.has(ball.id)) {
+              processedHeroes.add(ball.id);
+              const currentSpeed = Math.hypot(ball.velocity.x, ball.velocity.y);
+              // Determine ball color and speed multiplier
+              totalCreated++;
+              const newColor = (totalCreated % 10 === 0) ? "#ff0000" : "#ffff00";
+              const multiplier = (newColor === "#ffff00") ? CHILD_YELLOW_MULTIPLIER : CHILD_RED_MULTIPLIER;
+              const newSpeed = currentSpeed * multiplier;
+              const inward = { x: containerX - ball.position.x, y: containerY - ball.position.y };
+              const length = Math.hypot(inward.x, inward.y);
+              const direction = { x: inward.x / length, y: inward.y / length };
+              // Create child ball with the computed color and velocity
+              const childBall = Bodies.circle(ball.position.x, ball.position.y, ballRadius, {
+                restitution: 1.0,
+                friction: 0,
+                frictionAir: 0,
+                label: 'ball',
+                render: { fillStyle: newColor }
+              });
+              Body.setVelocity(childBall, { x: direction.x * newSpeed, y: direction.y * newSpeed });
+              balls.push(childBall);
+              World.add(world, childBall);
+              updateBallCounter();
+            }
+          }
+        });
+      });
+
+      // New collision event listener to repel yellow balls on wall collision
+      Events.on(engine, 'collisionStart', function(event) {
+        event.pairs.forEach(pair => {
+          // Identify a yellow ball and a wall from the pair
+          let yellowBall = null;
+          let wall = null;
+          if (pair.bodyA.label === 'ball' && pair.bodyA.render.fillStyle === "#ffff00" && pair.bodyB.label === 'wall') {
+            yellowBall = pair.bodyA;
+            wall = pair.bodyB;
+          } else if (pair.bodyB.label === 'ball' && pair.bodyB.render.fillStyle === "#ffff00" && pair.bodyA.label === 'wall') {
+            yellowBall = pair.bodyB;
+            wall = pair.bodyA;
+          }
+          if (yellowBall && wall) {
+            // Compute inward direction from ball position toward container center
+            const dx = containerX - yellowBall.position.x;
+            const dy = containerY - yellowBall.position.y;
+            const distance = Math.hypot(dx, dy);
+            const forceMagnitude = REPEL_FORCE; // tweak as needed
+            const force = {
+              x: (dx / distance) * forceMagnitude,
+              y: (dy / distance) * forceMagnitude
+            };
+            Body.applyForce(yellowBall, yellowBall.position, force);
+          }
+        });
+      });
+
+      // New collision event listener to repel colliding red and yellow balls
+      Events.on(engine, 'collisionStart', function(event) {
+        event.pairs.forEach(pair => {
+          if (pair.bodyA.label === 'ball' && pair.bodyB.label === 'ball') {
+            const colorA = pair.bodyA.render.fillStyle;
+            const colorB = pair.bodyB.render.fillStyle;
+            // Process only red and yellow balls
+            if ((colorA === "#ff0000" || colorA === "#ffff00") && (colorB === "#ff0000" || colorB === "#ffff00")) {
+              const dx = pair.bodyB.position.x - pair.bodyA.position.x;
+              const dy = pair.bodyB.position.y - pair.bodyA.position.y;
+              const distance = Math.hypot(dx, dy);
+              if (distance > 0) {
+                const unit = { x: dx / distance, y: dy / distance };
+                // Apply repelling force: bodyA is pushed opposite to the direction from A to B, bodyB is pushed in that direction
+                const force = { x: unit.x * REPEL_FORCE, y: unit.y * REPEL_FORCE };
+                Body.applyForce(pair.bodyA, pair.bodyA.position, { x: -force.x, y: -force.y });
+                Body.applyForce(pair.bodyB, pair.bodyB.position, force);
+              }
+            }
+          }
+        });
+      });
+
+      // New collision event listener to turn blue balls to yellow upon colliding with another blue ball
+      Events.on(engine, 'collisionStart', function(event) {
+        event.pairs.forEach(pair => {
+          if (pair.bodyA.label === 'ball' && pair.bodyB.label === 'ball') {
+            const ballA = pair.bodyA, ballB = pair.bodyB;
+            if (ballA.custom && ballB.custom && ballA.custom.status === "blue" && ballB.custom.status === "blue") {
+              // Update both balls to yellow and stop toggling
+              ballA.render.fillStyle = "#ffff00";
+              ballB.render.fillStyle = "#ffff00";
+              ballA.custom.status = "yellow";
+              ballB.custom.status = "yellow";
+              if (ballA._toggleTimer) { clearTimeout(ballA._toggleTimer); ballA._toggleTimer = null; }
+              if (ballB._toggleTimer) { clearTimeout(ballB._toggleTimer); ballB._toggleTimer = null; }
+            }
+          }
+        });
+      });
+
+      // Cleanup function
+      function cleanup() {
+        for (let i = balls.length - 1; i >= 0; i--) {
+          const ball = balls[i];
+          const speed = Math.hypot(ball.velocity.x, ball.velocity.y);
+          const distanceFromCenter = Math.hypot(
+            ball.position.x - containerX,
+            ball.position.y - containerY
+          );
+
+          if (speed > 20 || distanceFromCenter > containerRadius - ballRadius) {
+            World.remove(world, ball);
+            balls.splice(i, 1);
+          }
+        }
+        updateBallCounter();
+      }
+
+      // Run cleanup periodically
+      setInterval(cleanup, 1000);
+
+      // Start the simulation
+      Render.run(render);
+      const runner = Runner.create();
+      Runner.run(runner, engine);
+
+      // Adjust the view
       Render.lookAt(render, {
         min: { x: 0, y: 0 },
-        max: { x: width, y: height },
+        max: { x: width, y: height }
       });
     </script>
   </body>
