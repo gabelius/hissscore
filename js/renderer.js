@@ -374,8 +374,10 @@ export class Renderer {
 
     // Updated helper to check if the current score matches a trigger threshold and fire flash
     checkScoreThreshold(score) {
+        console.log("Checking score threshold for:", score);
         const thresholds = [10, 20, 50];
         if (thresholds.includes(score)) {
+            console.log("Threshold met for score:", score);
             this.animateScoreFlash(score);
         }
     }
