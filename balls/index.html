@@ -89,16 +89,18 @@ Summary:
       const width = window.innerWidth;
       const height = window.innerHeight;
       const containerRadius = Math.min(width, height) * 0.4;
-      const ballRadius = 12;
+      const ballRadius = 8;
       const initialBallCount = 1;
       const MAX_BALLS = 500;
       const containerX = width / 2;
       const containerY = height / 2;
       // New speed and force constants
-      const INITIAL_SPEED = 10;
+      const INITIAL_SPEED = 5; // decreased speed from 10 to 5
       const CHILD_RED_MULTIPLIER = 1;
       const CHILD_YELLOW_MULTIPLIER = 1;
       const REPEL_FORCE = 0.002;
+      const boundaryShapes = ["square", "star", "hexagon"];
+      let currentShapeIndex = 0;
 
       // Create engine and world
       const engine = Engine.create();
@@ -121,26 +123,55 @@ Summary:
       // Create walls
       const segments = 500;
       const wallThickness = 40;
-      const walls = [];
+      const walls = []; // keep the global walls array
 
-      for (let i = 0; i < segments; i++) {
-        const theta = (i / segments) * 2 * Math.PI;
-        const nextTheta = ((i + 1) / segments) * 2 * Math.PI;
-        const midTheta = (theta + nextTheta) / 2;
-
-        const x = containerX + containerRadius * Math.cos(midTheta);
-        const y = containerY + containerRadius * Math.sin(midTheta);
-        const wallLength = (2 * Math.PI * containerRadius) / segments;
-
-        const wall = Bodies.rectangle(x, y, wallLength, wallThickness, {
-          isStatic: true,
-          angle: midTheta,
-          label: 'wall',
-          render: { fillStyle: "#ff0" }
-        });
-        walls.push(wall);
+      function createBoundaryWalls(shape) {
+        // Remove any existing walls
+        if (walls.length) {
+          walls.forEach(w => World.remove(world, w));
+          walls.length = 0;
+        }
+        if (shape === "square") {
+          const half = containerRadius;
+          walls.push(Bodies.rectangle(containerX, containerY - half, containerRadius * 2, wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
+          walls.push(Bodies.rectangle(containerX, containerY + half, containerRadius * 2, wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
+          walls.push(Bodies.rectangle(containerX - half, containerY, wallThickness, containerRadius * 2, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
+          walls.push(Bodies.rectangle(containerX + half, containerY, wallThickness, containerRadius * 2, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
+        } else if (shape === "hexagon") {
+          const sides = 6;
+          for (let i = 0; i < sides; i++) {
+            const theta = (2 * Math.PI / sides) * i;
+            const nextTheta = (2 * Math.PI / sides) * (i + 1);
+            const midTheta = (theta + nextTheta) / 2;
+            const wallLength = (2 * Math.PI * containerRadius) / sides; // approximate
+            const x = containerX + containerRadius * Math.cos(midTheta);
+            const y = containerY + containerRadius * Math.sin(midTheta);
+            walls.push(Bodies.rectangle(x, y, wallLength, wallThickness, { isStatic: true, angle: midTheta, label: "wall", render: { fillStyle: "#ff0" } }));
+          }
+        } else if (shape === "star") {
+          const points = 10;
+          const outerRadius = containerRadius;
+          const innerRadius = containerRadius * 0.5;
+          const vertices = [];
+          for (let i = 0; i < points; i++) {
+            const angle = (2 * Math.PI / points) * i;
+            const r = (i % 2 === 0) ? outerRadius : innerRadius;
+            vertices.push({ x: containerX + r * Math.cos(angle), y: containerY + r * Math.sin(angle) });
+          }
+          for (let i = 0; i < points; i++) {
+            const start = vertices[i];
+            const end = vertices[(i + 1) % points];
+            const mid = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 };
+            const dx = end.x - start.x, dy = end.y - start.y;
+            const length = Math.hypot(dx, dy);
+            const angle = Math.atan2(dy, dx);
+            walls.push(Bodies.rectangle(mid.x, mid.y, length, wallThickness, { isStatic: true, angle: angle, label: "wall", render: { fillStyle: "#ff0" } }));
+          }
+        }
+        World.add(world, walls);
       }
-      World.add(world, walls);
+
+      createBoundaryWalls(boundaryShapes[currentShapeIndex]);
 
       // Ball creation
       const balls = [];
@@ -443,6 +474,9 @@ REPEL_FORCE: ${REPEL_FORCE}`;
         totalCreated = initialBallCount;
         collisionCount = 0;
         updateBallCounter();
+        // Update boundary shape
+        currentShapeIndex = (currentShapeIndex + 1) % boundaryShapes.length;
+        createBoundaryWalls(boundaryShapes[currentShapeIndex]);
         // Create a new initial hero ball
         let placed = false;
         while (!placed) {
