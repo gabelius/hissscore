@@ -4,12 +4,12 @@ Summary:
 - A hero ball (red) is initially created.
 - On collision between a hero ball and a wall, a child ball is spawned:
     * Every 10th spawned ball is a hero (red) ball; others are yellow.
-- Yellow balls are repelled by wall collisions.
-- Red and yellow balls repel each other when they collide.
-- Red hero balls continuously toggle their color every 6 seconds: red turns blue, then blue turns back to red.
-- When two blue balls collide, they both turn yellow and their toggling stops.
+- Yellow balls have a 40% chance every 5 seconds to turn red.
+- Red balls continuously toggle between red and blue every 5 seconds.
+- When two blue balls collide, they both turn yellow and stop toggling.
+- All balls maintain a constant speed throughout the simulation.
 - A cleanup routine periodically removes balls that exceed speed limits or move out of bounds.
-- Panels are positioned to avoid overlap and a night mode color scheme is used.
+- Panels display ball count, simulation variables, results, and sound control.
 -->
 <!DOCTYPE html>
 <html>
@@ -281,7 +281,7 @@ Summary:
               // If the spawned ball is red, initialize toggling
               if(newColor === "#ff0000") {
                 childBall.custom = { status: "red" };
-                childBall._toggleTimer = setTimeout(() => toggleColor(childBall), 6000);
+                childBall._toggleTimer = setTimeout(() => toggleColor(childBall), 5000);
               }
               balls.push(childBall);
               World.add(world, childBall);
@@ -364,7 +364,7 @@ Summary:
       Events.on(engine, 'beforeUpdate', function() {
         balls.forEach(ball => {
           const speed = Math.hypot(ball.velocity.x, ball.velocity.y);
-          if (speed !== INITIAL_SPEED) {
+          if (speed > 0 && speed !== INITIAL_SPEED) {  // prevent division by zero
             const scale = INITIAL_SPEED / speed;
             Body.setVelocity(ball, { x: ball.velocity.x * scale, y: ball.velocity.y * scale });
           }
