@@ -209,7 +209,8 @@ Summary:
         } else if (ball.custom.status === "blue") {
           ball.render.fillStyle = "#ff0000";  // turn red
           ball.custom.status = "red";
-        } else if (ball.custom.status === "yellow") {  // 30% chance to turn red
+        } 
+         if (ball.custom.status === "yellow") {  // 30% chance to turn red
           if (Math.random() < 1) {
             ball.render.fillStyle = "#ff0000";  // turn red
             ball.custom.status = "red";
