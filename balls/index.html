@@ -4,7 +4,7 @@ Summary:
 - A hero ball (red) is initially created.
 - On collision between a hero ball and a wall, a child ball is spawned:
     * Every 10th spawned ball is a hero (red) ball; others are yellow.
-- Yellow balls have a 40% chance every 5 seconds to turn red.
+- Yellow balls have a 30% chance every 5 seconds to turn red.
 - Red balls continuously toggle between red and blue every 5 seconds.
 - When two blue balls collide, they both turn yellow and stop toggling.
 - All balls maintain a constant speed throughout the simulation.
@@ -80,7 +80,7 @@ Summary:
     <div id="sound-control">
       <button id="mute-toggle">Unmute</button>
     </div>
-    <audio id="collision-sound" src="collision.mp3?" preload="auto"></audio>
+    <audio id="collision-sound" src="collision.mp3" preload="auto"></audio>
     <script>
       // Matter.js module aliases
       const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
@@ -100,7 +100,7 @@ Summary:
       const CHILD_RED_MULTIPLIER = 1;
       const CHILD_YELLOW_MULTIPLIER = 1;
       const REPEL_FORCE = 0.002;
-      const boundaryShapes = ["square", "star", "hexagon", "circle"];
+      const boundaryShapes = ["star", "circle"];
       let currentShapeIndex = Math.floor(Math.random() * boundaryShapes.length);
 
       // Create engine and world
@@ -116,7 +116,7 @@ Summary:
         options: {
           width: width,
           height: height,
-          wireframes: false,
+          wireframes: true,  // Enable wireframe mode
           background: "#1e1e1e"  // Night mode background color
         }
       });
@@ -132,25 +132,7 @@ Summary:
           walls.forEach(w => World.remove(world, w));
           walls.length = 0;
         }
-        if (shape === "square") {
-          const half = containerRadius + wallThickness / 2;
-          walls.push(Bodies.rectangle(containerX, containerY - half, containerRadius * 2 + wallThickness, wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
-          walls.push(Bodies.rectangle(containerX, containerY + half, containerRadius * 2 + wallThickness, wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
-          walls.push(Bodies.rectangle(containerX - half, containerY, wallThickness, containerRadius * 2 + wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
-          walls.push(Bodies.rectangle(containerX + half, containerY, wallThickness, containerRadius * 2 + wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
-        } else if (shape === "hexagon") {
-          const sides = 6;
-          const angleStep = (2 * Math.PI) / sides;
-          for (let i = 0; i < sides; i++) {
-            const theta = angleStep * i;
-            const nextTheta = angleStep * (i + 1);
-            const midTheta = (theta + nextTheta) / 2;
-            const x = containerX + containerRadius * Math.cos(midTheta);
-            const y = containerY + containerRadius * Math.sin(midTheta);
-            const wallLength = 2 * containerRadius * Math.sin(angleStep / 2);
-            walls.push(Bodies.rectangle(x, y, wallLength, wallThickness, { isStatic: true, angle: midTheta, label: "wall", render: { fillStyle: "#ff0" } }));
-          }
-        } else if (shape === "star") {
+        if (shape === "star") {
           const points = 10;
           const outerRadius = containerRadius;
           const innerRadius = containerRadius * 0.5;
@@ -170,12 +152,17 @@ Summary:
             walls.push(Bodies.rectangle(mid.x, mid.y, length, wallThickness, { isStatic: true, angle: angle, label: "wall", render: { fillStyle: "#ff0" } }));
           }
         } else if (shape === "circle") {
-          const circle = Bodies.circle(containerX, containerY, containerRadius, {
-            isStatic: true,
-            label: "wall",
-            render: { fillStyle: "transparent", strokeStyle: "#ff0", lineWidth: wallThickness }
-          });
-          walls.push(circle);
+          const segments = 400;
+          const angleStep = (2 * Math.PI) / segments;
+          for (let i = 0; i < segments; i++) {
+            const theta = angleStep * i;
+            const nextTheta = angleStep * (i + 1);
+            const midTheta = (theta + nextTheta) / 2;
+            const x = containerX + containerRadius * Math.cos(midTheta);
+            const y = containerY + containerRadius * Math.sin(midTheta);
+            const wallLength = 2 * containerRadius * Math.sin(angleStep / 2);
+            walls.push(Bodies.rectangle(x, y, wallLength, wallThickness, { isStatic: true, angle: midTheta, label: "wall", render: { fillStyle: "#ff0" } }));
+          }
         }
         World.add(world, walls);
       }
@@ -213,6 +200,8 @@ Summary:
       function toggleColor(ball) {
         // Stop toggling if ball is yellow
         if (!ball.custom) return;
+        // Log current status
+        console.log(`Ball ID: ${ball.id}, Current Status: ${ball.custom.status}`);
         // Toggle the color
         if (ball.custom.status === "red") {
           ball.render.fillStyle = "#0000ff";  // turn blue
@@ -220,9 +209,10 @@ Summary:
         } else if (ball.custom.status === "blue") {
           ball.render.fillStyle = "#ff0000";  // turn red
           ball.custom.status = "red";
-        } else if (ball.custom.status === "yellow" && Math.random() < 0.4) {
+        } else if (ball.custom.status === "yellow" && Math.random() < 0.3) {  // 30% chance to turn red
           ball.render.fillStyle = "#ff0000";  // turn red
           ball.custom.status = "red";
+          console.log(`Ball ID: ${ball.id} turned red`);
         }
         // Schedule next toggle after 5 seconds (5000ms)
         ball._toggleTimer = setTimeout(() => toggleColor(ball), 5000);
@@ -429,6 +419,7 @@ Summary:
           );
 
           if (speed > 20 || distanceFromCenter > containerRadius - ballRadius) {
+            console.debug(`Removing ball at position (${ball.position.x}, ${ball.position.y}) with speed ${speed}`);
             World.remove(world, ball);
             balls.splice(i, 1);
           }
