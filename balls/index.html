@@ -19,6 +19,7 @@ Summary:
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Matter.js Circle Simulation</title>
     <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <style>
       html, body {
         margin: 0;
@@ -26,36 +27,37 @@ Summary:
         overflow: hidden;
         background-color: #121212;
         color: #ffffff;
+        font-family: 'Roboto', sans-serif;  /* Changed font */
       }
       canvas {
         display: block;
         background-color: #1e1e1e; /* Night mode background color */
       }
+      /* Center panels horizontally using left:50% + transform */
       #ball-counter, #results, #simulation-variables, #sound-control {
         position: fixed;
         background: rgba(0, 0, 0, 0.7);
         color: #ffffff;
         padding: 10px;
-        font-family: 'Arial', sans-serif; /* Modern font */
-        font-size: 14px; /* Adjusted font size */
-        border-radius: 5px; /* Rounded corners for modern look */
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        border-radius: 5px;
+        left: 50%;               /* Center horizontally */
+        transform: translateX(-50%);
       }
+      /* Adjust vertical positions */
       #ball-counter {
         top: 10px;
-        left: 100px;
       }
       #results {
         bottom: 10px;
-        left: 100px;
       }
       #simulation-variables {
         top: 10px;
-        right: 10px;
         display: none; /* Hide the variables panel */
       }
       #sound-control {
         bottom: 10px;
-        right: 10px;
       }
     </style>
   </head>
