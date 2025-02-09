@@ -25,6 +25,7 @@ class Engine {
         this.isRunning = false;
         this.isAutoPlay = false;
         this.idleTimerId = null; // new property for idle timer
+        this.gameStartTime = 0; // new property for tracking game start time
 
         this.setupEventListeners();
         this.startIdleTimer(); // start idle timer on load
@@ -84,6 +85,7 @@ class Engine {
     toggleGame() {
         this.isRunning = !this.isRunning;
         if (this.isRunning) {
+            this.gameStartTime = performance.now(); // set game start time
             this.lastTime = performance.now();
             requestAnimationFrame((time) => this.gameLoop(time));
         } else {
@@ -200,7 +202,19 @@ class Engine {
 
     gameOver() {
         this.isRunning = false;
-        alert(`Game Over! Final Score: ${this.ui.score}`);
+        // Compute time spent in seconds
+        const timeSpent = Math.floor((performance.now() - this.gameStartTime) / 1000);
+        // Draw overlay on canvas
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = '24px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(`Game Over! Score: ${this.ui.score}`, this.canvas.width / 2, this.canvas.height / 2 - 30);
+        this.ctx.fillText(`Level: ${this.level.currentLevel}`, this.canvas.width / 2, this.canvas.height / 2);
+        this.ctx.fillText(`Time: ${timeSpent} sec`, this.canvas.width / 2, this.canvas.height / 2 + 30);
+        
+        // ...existing reset code...
         this.snake.reset();
         this.food.spawn(this.snake.segments);
         this.ui.reset();
