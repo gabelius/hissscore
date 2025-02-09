@@ -5,123 +5,109 @@
 <style>
 body { margin: 0; overflow: hidden; }
 canvas { display: block; }
+button { position: absolute; top: 10px; right: 10px; }
 </style>
+<script src="p2.min.js"></script>
 </head>
 <body>
 <canvas id="canvas"></canvas>
+
 <script>
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+window.addEventListener('load', function() {
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    console.log('p2 version check:', p2); // Debug p2 availability
 
-const centerX = canvas.width / 2;
-const centerY = canvas.height / 2;
-const radius = 200;
-const ballRadius = 2.5; // 5px diameter, 2.5px radius
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
 
-let balls = [];
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-function createBall(x, y, vx, vy) {
-  return { x, y, vx, vy, radius: ballRadius };
-}
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 180; // Increased radius
+    console.log('Using circle radius:', radius);
+    const ballRadius = 15; // Increased ball radius
 
-function generateBalls() {
-  // Generate balls along the circle's edge
-  const angle = Math.random() * 2 * Math.PI;
-  const x = centerX + radius * Math.cos(angle);
-  const y = centerY + radius * Math.sin(angle);
+    const world = new p2.World({ gravity: [0, -9.82] });
 
-  // Initial velocity (adjust as needed)
-  const vx = Math.cos(angle + Math.PI/2) * 2; // Tangential velocity
-  const vy = Math.sin(angle + Math.PI/2) * 2;
+    const planeMaterial = new p2.Material();
+    const ballMaterial = new p2.Material();
 
-  balls.push(createBall(x, y, vx, vy));
-}
-
-
-function drawCircle() {
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-  ctx.strokeStyle = 'black';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-}
-
-function drawBalls() {
-  balls.forEach(ball => {
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
-    ctx.fillStyle = 'red';
-    ctx.fill();
-  });
-}
-
-function updateBalls() {
-  balls.forEach(ball => {
-    ball.x += ball.vx;
-    ball.y += ball.vy;
-
-    // Collision with the circle walls
-    const dx = ball.x - centerX;
-    const dy = ball.y - centerY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance + ball.radius > radius) {
-      const nx = dx / distance; // Normal vector
-      const ny = dy / distance;
-
-      // Reflect the velocity (simple reflection)
-      ball.vx -= 2 * (ball.vx * nx + ball.vy * ny) * nx;
-      ball.vy -= 2 * (ball.vx * nx + ball.vy * ny) * ny;
-
-       // Prevent ball from getting stuck outside the circle
-      ball.x = centerX + (radius - ball.radius) * nx;
-      ball.y = centerY + (radius - ball.radius) * ny;
+    // Add planes in a circle to confine the ball inside:
+    const segments = 16; // Increase segments for smoother boundary
+    const planes = [];
+    for (let i = 0; i < segments; i++) {
+        const angle = i * (2 * Math.PI / segments);
+        const planeBody = new p2.Body({ position: [centerX, centerY], angle: angle, type: p2.Body.STATIC });
+        const planeShape = new p2.Plane({});
+        planeShape.material = planeMaterial; // Moved inside the loop
+        planeBody.addShape(planeShape);
+        world.addBody(planeBody);
+        planes.push({ body: planeBody, angle: angle });
     }
 
-    // Ball-to-ball collision detection (basic)
-    for (let i = 0; i < balls.length; i++) {
-        for (let j = i + 1; j < balls.length; j++) {
-            const b1 = balls[i];
-            const b2 = balls[j];
-            const dx = b2.x - b1.x;
-            const dy = b2.y - b1.y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < b1.radius + b2.radius) {
-                //Basic Collision response (needs improvement, but doubles balls)
-                balls.push(createBall(b1.x, b1.y, b1.vx, b1.vy));
-                balls.push(createBall(b2.x, b2.y, b2.vx, b2.vy));
-                balls.splice(i,1);
-                balls.splice(j-1,1);
-                return; //To avoid concurrent modification of the balls array.
-            }
-        }
+    // Adjust restitution so the ball bounces off planes:
+    world.addContactMaterial(new p2.ContactMaterial(planeMaterial, ballMaterial, { restitution: 0.9, friction: 0 }));
+
+    // Assign the planeMaterial to each planeShape, and ballMaterial to the ball:
+    const ballShape = new p2.Circle({ radius: ballRadius });
+    ballShape.material = ballMaterial; // Assign material right after creation
+    const ballBody = new p2.Body({
+        mass: 1,
+        position: [centerX, centerY + 50], // More offset
+        velocity: [10, 0], // Increased initial velocity
+        damping: 0, // No damping
+        angularDamping: 0 // No angular damping
+    });
+    ballBody.addShape(ballShape);
+    world.addBody(ballBody);
+
+    console.log(`Initial Ball Position: (${ballBody.position[0]}, ${ballBody.position[1]})`);
+    console.log(`Initial Ball Velocity: (${ballBody.velocity[0]}, ${ballBody.velocity[1]})`);
+
+    function animate() {
+        world.step(1 / 60);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.stroke();
+
+        // Draw radial lines
+        ctx.strokeStyle = 'black';
+        planes.forEach(plane => {
+            const x1 = centerX + Math.cos(plane.angle) * radius;
+            const y1 = centerY + Math.sin(plane.angle) * radius;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(x1, y1);
+            ctx.stroke();
+        });
+
+        // Draw small solid black circle at the center
+        ctx.fillStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI); // Small circle with radius 5
+        ctx.fill();
+
+        ctx.fillStyle = 'black';
+        ctx.beginPath();
+        ctx.arc(ballBody.position[0], ballBody.position[1], ballRadius, 0, 2 * Math.PI);
+        ctx.fill();
+
+        console.log(`Ball Position: (${ballBody.position[0]}, ${ballBody.position[1]})`);
+        console.log(`Ball Velocity: (${ballBody.velocity[0]}, ${ballBody.velocity[1]})`);
+
+        setTimeout(() => {
+            requestAnimationFrame(animate);
+        }, 500); // Delay next frame by 500ms
     }
 
+    animate();
 
-  });
-}
-
-function gameLoop() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-  drawCircle();
-  drawBalls();
-  updateBalls();
-  requestAnimationFrame(gameLoop); // Call itself again for animation
-}
-
-// Generate initial balls (you can adjust the number)
-for (let i = 0; i < 5; i++) {
-  generateBalls();
-}
-
-// Generate a new ball every second (adjust as needed)
-setInterval(generateBalls, 1000);
-
-gameLoop(); // Start the game loop
-
+}); // End of window.addEventListener('load')
 </script>
+
 </body>
 </html>
