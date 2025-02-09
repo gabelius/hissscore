@@ -23,24 +23,28 @@ Summary:
         margin: 0;
         padding: 0;
         overflow: hidden;
+        /* Modern cyberpunk background */
+        background: linear-gradient(135deg, #0d0d2b, #15002b);
+        font-family: 'Orbitron', sans-serif;
       }
       canvas {
         display: block;
+        /* Add a futuristic drop-shadow for 3D effect */
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+        border-radius: 8px;
       }
     </style>
   </head>
   <body>
     <canvas id="world"></canvas>
-    <!-- Ball counter element -->
-    <div id="ball-counter" style="position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
+    <!-- Updated UI elements with modern cyberpunk style -->
+    <div id="ball-counter" style="position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.7); border: 1px solid #0ff; color: #0ff; padding: 8px 12px; border-radius: 4px;">
       Balls: 0
     </div>
-    <!-- Results area now includes a countdown display -->
-    <div id="results" style="position: fixed; top: 50px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
+    <div id="results" style="position: fixed; top: 50px; left: 10px; background: rgba(0,0,0,0.7); border: 1px solid #ff0080; color: #ff0080; padding: 8px 12px; border-radius: 4px;">
       Results will appear here...
     </div>
-    <!-- New area to display important simulation variables -->
-    <div id="simulation-variables" style="position: fixed; top: 150px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 5px; font-family: sans-serif;">
+    <div id="simulation-variables" style="position: fixed; top: 150px; left: 10px; background: rgba(0,0,0,0.7); border: 1px solid #00ff80; color: #00ff80; padding: 8px 12px; border-radius: 4px;">
       Variables will appear here...
     </div>
     <script>
@@ -57,11 +61,11 @@ Summary:
       const MAX_BALLS = 500;
       const containerX = width / 2;
       const containerY = height / 2;
-      // New speed and force constants
-      const INITIAL_SPEED = 15;
-      const CHILD_RED_MULTIPLIER = 1;
-      const CHILD_YELLOW_MULTIPLIER = 1;
-      const REPEL_FORCE = 0.002;
+      // New speed and force constants randomized between specified ranges
+      const INITIAL_SPEED = Math.random() * (20 - 10) + 10; // between 10 and 20
+      const CHILD_RED_MULTIPLIER = Math.random() * (1.4 - 0.8) + 0.8; // between 0.8 and 1.4
+      const CHILD_YELLOW_MULTIPLIER = Math.random() * (1.4 - 0.8) + 0.8; // between 0.8 and 1.4
+      const REPEL_FORCE = Math.random() * (0.005 - 0.001) + 0.001; // between 0.001 and 0.005
 
       // Create engine and world
       const engine = Engine.create();
@@ -147,7 +151,13 @@ Summary:
           friction: 0,
           frictionAir: 0,
           label: 'ball',
-          render: { fillStyle: color }
+          render: {
+            fillStyle: color,
+            // Extra properties for a more 3D, cyberpunk look:
+            strokeStyle: "#ffffff",
+            lineWidth: 2,
+            opacity: 0.95
+          }
         });
         Body.setVelocity(ball, velocity);
         // Set up continuous toggling for red balls
