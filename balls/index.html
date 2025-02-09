@@ -58,6 +58,7 @@ Summary:
       }
       #sound-control {
         bottom: 10px;
+        left:80%;  /* Adjust horizontal position */
       }
     </style>
   </head>
@@ -99,8 +100,8 @@ Summary:
       const CHILD_RED_MULTIPLIER = 1;
       const CHILD_YELLOW_MULTIPLIER = 1;
       const REPEL_FORCE = 0.002;
-      const boundaryShapes = ["square", "star", "hexagon"];
-      let currentShapeIndex = 0;
+      const boundaryShapes = ["square", "star", "hexagon", "circle"];
+      let currentShapeIndex = Math.floor(Math.random() * boundaryShapes.length);
 
       // Create engine and world
       const engine = Engine.create();
@@ -122,7 +123,7 @@ Summary:
 
       // Create walls
       const segments = 500;
-      const wallThickness = 40;
+      const wallThickness = 20;
       const walls = []; // keep the global walls array
 
       function createBoundaryWalls(shape) {
@@ -132,20 +133,21 @@ Summary:
           walls.length = 0;
         }
         if (shape === "square") {
-          const half = containerRadius;
-          walls.push(Bodies.rectangle(containerX, containerY - half, containerRadius * 2, wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
-          walls.push(Bodies.rectangle(containerX, containerY + half, containerRadius * 2, wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
-          walls.push(Bodies.rectangle(containerX - half, containerY, wallThickness, containerRadius * 2, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
-          walls.push(Bodies.rectangle(containerX + half, containerY, wallThickness, containerRadius * 2, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
+          const half = containerRadius + wallThickness / 2;
+          walls.push(Bodies.rectangle(containerX, containerY - half, containerRadius * 2 + wallThickness, wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
+          walls.push(Bodies.rectangle(containerX, containerY + half, containerRadius * 2 + wallThickness, wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
+          walls.push(Bodies.rectangle(containerX - half, containerY, wallThickness, containerRadius * 2 + wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
+          walls.push(Bodies.rectangle(containerX + half, containerY, wallThickness, containerRadius * 2 + wallThickness, { isStatic: true, label: "wall", render: { fillStyle: "#ff0" } }));
         } else if (shape === "hexagon") {
           const sides = 6;
+          const angleStep = (2 * Math.PI) / sides;
           for (let i = 0; i < sides; i++) {
-            const theta = (2 * Math.PI / sides) * i;
-            const nextTheta = (2 * Math.PI / sides) * (i + 1);
+            const theta = angleStep * i;
+            const nextTheta = angleStep * (i + 1);
             const midTheta = (theta + nextTheta) / 2;
-            const wallLength = (2 * Math.PI * containerRadius) / sides; // approximate
             const x = containerX + containerRadius * Math.cos(midTheta);
             const y = containerY + containerRadius * Math.sin(midTheta);
+            const wallLength = 2 * containerRadius * Math.sin(angleStep / 2);
             walls.push(Bodies.rectangle(x, y, wallLength, wallThickness, { isStatic: true, angle: midTheta, label: "wall", render: { fillStyle: "#ff0" } }));
           }
         } else if (shape === "star") {
@@ -167,6 +169,13 @@ Summary:
             const angle = Math.atan2(dy, dx);
             walls.push(Bodies.rectangle(mid.x, mid.y, length, wallThickness, { isStatic: true, angle: angle, label: "wall", render: { fillStyle: "#ff0" } }));
           }
+        } else if (shape === "circle") {
+          const circle = Bodies.circle(containerX, containerY, containerRadius, {
+            isStatic: true,
+            label: "wall",
+            render: { fillStyle: "transparent", strokeStyle: "#ff0", lineWidth: wallThickness }
+          });
+          walls.push(circle);
         }
         World.add(world, walls);
       }
@@ -192,7 +201,7 @@ Summary:
 
       muteToggle.addEventListener("click", () => {
         isMuted = !isMuted;
-        muteToggle.innerText = isMuted ? "Mute" : "Unmute";
+        muteToggle.innerText = isMuted ? "Unmute" : "Mute";  // reversed text assignment
         console.log(`Sound is now ${isMuted ? "muted" : "unmuted"}`);
       });
 
@@ -241,8 +250,8 @@ Summary:
         // Play sound when a new ball is created
         if (!isMuted) {
           console.log("Playing sound for new ball creation");
-          collisionSound.currentTime = 0; // Reset sound to start
-          collisionSound.play().catch(error => console.error("Sound play error:", error));
+          const soundClone = collisionSound.cloneNode(); // clone audio element to allow overlapping plays
+          soundClone.play().catch(error => console.error("Sound play error:", error));
         }
         return ball;
       }
@@ -319,6 +328,11 @@ Summary:
               balls.push(childBall);
               World.add(world, childBall);
               updateBallCounter();
+              if (!isMuted) {
+                console.log("Playing sound for new ball creation");
+                const soundClone = collisionSound.cloneNode(); // clone audio element to allow overlapping plays
+                soundClone.play().catch(error => console.error("Sound play error:", error));
+              }
             }
           }
         });
