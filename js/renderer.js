@@ -5,6 +5,8 @@ export class Renderer {
         this.gridSize = 20;
         this.effects = new Map();
         this.setupEffects();
+        this.foodLastPosition = null; // ensure this is defined
+        this.sparkles = []; // added array for sparkle events
     }
 
     setupEffects() {
@@ -66,6 +68,7 @@ export class Renderer {
         this.drawGrid();
         this.drawFood(food);
         this.drawSnake(snake, level);
+        this.drawSparkles(); // draw active sparkle events
     }
 
     clear() {
@@ -100,6 +103,19 @@ export class Renderer {
         } else {
             this.drawRegularFood(x, y);
         }
+
+        // Add pulsating glow effect
+        const t = Date.now() / 500; // pulsating period
+        const glow = Math.abs(Math.sin(t)) * 20; // glow intensity
+
+        this.ctx.save();
+        this.ctx.shadowColor = 'orange'; // glow color for food
+        this.ctx.shadowBlur = glow;
+        this.ctx.fillStyle = 'red'; // prominent food color
+        this.ctx.beginPath();
+        this.ctx.arc(x + this.gridSize / 2, y + this.gridSize / 2, this.gridSize / 2, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
     }
 
     drawRegularFood(x, y) {
@@ -170,10 +186,48 @@ export class Renderer {
         }
     }
 
+    // New helper to draw a rounded rectangle
+    drawRoundedRect(x, y, width, height, radius) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x + radius, y);
+        this.ctx.lineTo(x + width - radius, y);
+        this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        this.ctx.lineTo(x + width, y + height - radius);
+        this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        this.ctx.lineTo(x + radius, y + height);
+        this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        this.ctx.lineTo(x, y + radius);
+        this.ctx.quadraticCurveTo(x, y, x + radius, y);
+        this.ctx.closePath();
+        this.ctx.fill();
+    }
+
+    // New helper to darken a hex color by a percent (expects "#rrggbb" format)
+    darkenColor(c, percent) {
+        let num = parseInt(c.slice(1), 16),
+            amt = Math.floor(2.55 * percent),
+            r = (num >> 16) - amt,
+            g = ((num >> 8) & 0x00FF) - amt,
+            b = (num & 0x0000FF) - amt;
+        return "#" + (
+            0x1000000 +
+            (r < 0 ? 0 : r > 255 ? 255 : r) * 0x10000 +
+            (g < 0 ? 0 : g > 255 ? 255 : g) * 0x100 +
+            (b < 0 ? 0 : b > 255 ? 255 : b)
+        ).toString(16).slice(1);
+    }
+
     drawSnakeHead(x, y, direction) {
         const size = this.gridSize;
-        this.ctx.fillStyle = '#ffffff';
-        this.ctx.fillRect(x, y, size, size);
+        // Create a neon gradient for the head to simulate a cyberpunk 3D look
+        const gradient = this.ctx.createLinearGradient(x, y, x + size, y + size);
+        gradient.addColorStop(0, '#ffffff');
+        gradient.addColorStop(1, '#00ffff');
+        this.ctx.fillStyle = gradient;
+        this.ctx.shadowBlur = 10;
+        this.ctx.shadowColor = '#00ffff';
+        this.drawRoundedRect(x, y, size, size, size * 0.25);
+        this.ctx.shadowBlur = 0;
 
         // Draw eyes
         const eyeSize = size / 5;
@@ -206,13 +260,145 @@ export class Renderer {
         if (style === 'ghost') {
             this.drawGhostSegment(x, y);
         } else {
-            this.ctx.fillStyle = effect ? effect(x / size, y / size, time) : '#ffffff';
-            this.ctx.fillRect(x, y, size, size);
+            const baseColor = effect ? effect(x / size, y / size, time) : '#ffffff';
+            // Create a neon gradient based on the effect color
+            const gradient = this.ctx.createLinearGradient(x, y, x + size, y + size);
+            gradient.addColorStop(0, baseColor);
+            gradient.addColorStop(1, this.darkenColor(baseColor, 20)); // darken by 20%
+            this.ctx.fillStyle = gradient;
+            this.ctx.shadowBlur = 8;
+            this.ctx.shadowColor = '#00ffff';
+            this.drawRoundedRect(x, y, size, size, size * 0.25);
+            this.ctx.shadowBlur = 0;
         }
     }
 
     drawGhostSegment(x, y) {
         this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         this.ctx.fillRect(x, y, this.gridSize, this.gridSize);
+    }
+
+    animateFoodEaten() {
+        const duration = 300; // animation duration in ms
+        const startTime = Date.now();
+        const grid = this.gridSize; // default grid size
+
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = elapsed / duration;
+            if (progress < 1 && this.foodLastPosition) {
+                const alpha = 1 - progress;
+                this.ctx.save();
+                this.ctx.globalAlpha = alpha;
+                this.ctx.strokeStyle = 'yellow';
+                this.ctx.lineWidth = grid * progress;
+                this.ctx.beginPath();
+                this.ctx.arc(this.foodLastPosition.x + grid / 2, this.foodLastPosition.y + grid / 2, grid / 2 + grid * progress, 0, Math.PI * 2);
+                this.ctx.stroke();
+                this.ctx.restore();
+                requestAnimationFrame(animate);
+            }
+        };
+
+        animate();
+    }
+
+    // New helper to draw a star shape
+    drawStar(cx, cy, spikes, outerRadius, innerRadius, rotation = 0) {
+        const ctx = this.ctx;
+        let rot = Math.PI / 2 * 3 + rotation;
+        const step = Math.PI / spikes;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - outerRadius);
+        for (let i = 0; i < spikes; i++) {
+            let x = cx + Math.cos(rot) * outerRadius;
+            let y = cy + Math.sin(rot) * outerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+            x = cx + Math.cos(rot) * innerRadius;
+            y = cy + Math.sin(rot) * innerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+        }
+        ctx.lineTo(cx, cy - outerRadius);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    // Modified animateScoreSparkle to push a pulse event for concentric circles
+    animateScoreSparkle(position, score) {
+        const neonColors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00', '#ff0000'];
+        this.sparkles.push({
+            position: { ...position },
+            startTime: Date.now(),
+            duration: 1500,  // duration in ms
+            color: neonColors[Math.floor(Math.random() * neonColors.length)]
+        });
+    }
+
+    // Modified drawSparkles to draw radiating concentric circles with pulsating neon colors
+    drawSparkles() {
+        const now = Date.now();
+        for (let i = this.sparkles.length - 1; i >= 0; i--) {
+            const pulse = this.sparkles[i];
+            const elapsed = now - pulse.startTime;
+            const progress = elapsed / pulse.duration;
+            if (progress >= 1) {
+                this.sparkles.splice(i, 1);
+                continue;
+            }
+            const alpha = 1 - progress;
+            const baseRadius = this.gridSize * 1.5 * progress;
+            
+            this.ctx.save();
+            this.ctx.globalAlpha = alpha;
+            this.ctx.strokeStyle = pulse.color;
+            this.ctx.lineWidth = 4;
+            // Draw 3 concentric circles with increasing radii
+            for (let j = 0; j < 3; j++) {
+                const radius = baseRadius + j * (this.gridSize * 0.3);
+                this.ctx.beginPath();
+                this.ctx.arc(
+                    pulse.position.x * this.gridSize + this.gridSize / 2,
+                    pulse.position.y * this.gridSize + this.gridSize / 2,
+                    radius,
+                    0,
+                    Math.PI * 2
+                );
+                this.ctx.stroke();
+            }
+            this.ctx.restore();
+        }
+    }
+
+    // New helper to animate a flashing score across the canvas on round figures (e.g., 100, 200, etc.)
+    animateScoreFlash(score) {
+        const duration = 2000; // animation lasts 2 seconds
+        const startTime = Date.now();
+        const ctx = this.ctx;
+        const canvasWidth = this.canvas.width;
+        const canvasHeight = this.canvas.height;
+
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = elapsed / duration;
+            if (progress > 1) return;
+            ctx.save();
+            ctx.globalAlpha = 1 - progress; // fade out over time
+            // Horizontal movement from left to right
+            const x = canvasWidth * progress - 100; // adjust offset based on text width
+            const y = canvasHeight / 2;
+            // Neon gradient for text
+            const gradient = ctx.createLinearGradient(x, y - 50, x, y + 50);
+            gradient.addColorStop(0, "#ff00ff");
+            gradient.addColorStop(1, "#00ffff");
+            ctx.font = "bold 48px sans-serif";
+            ctx.fillStyle = gradient;
+            ctx.fillText(`Score: ${score}`, x, y);
+            ctx.restore();
+            requestAnimationFrame(animate);
+        };
+
+        animate();
     }
 }

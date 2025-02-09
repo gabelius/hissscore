@@ -176,8 +176,15 @@ class Engine {
 
     checkFoodCollection() {
         if (this.snake.checkFoodCollection(this.food.position)) {
+            // store the food's last position for animation
+            this.renderer.foodLastPosition = { ...this.food.position };
+            // trigger food eaten animation (circle effect)
+            this.renderer.animateFoodEaten();
+            // trigger score sparkle animation with score increment
+            const scoreIncrement = this.level.currentLevel * 10;
+            this.renderer.animateScoreSparkle(this.food.position, scoreIncrement);
+            this.ui.updateScore(scoreIncrement);
             this.food.spawn(this.snake.segments);
-            this.ui.updateScore(this.level.currentLevel * 10);
         }
     }
 
