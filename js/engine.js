@@ -24,8 +24,10 @@ class Engine {
         
         this.isRunning = false;
         this.isAutoPlay = false;
+        this.idleTimerId = null; // new property for idle timer
 
         this.setupEventListeners();
+        this.startIdleTimer(); // start idle timer on load
     }
 
     setCanvasSize() {
@@ -41,11 +43,42 @@ class Engine {
             if (!this.isAutoPlay) {
                 this.snake.setDirection(direction);
             }
+            this.resetIdleTimer();
         });
 
+        const btnIds = ['startBtn', 'pauseBtn', 'autoPlayBtn', 'themeBtn', 'muteBtn'];
+        btnIds.forEach(id => {
+            document.getElementById(id).addEventListener('click', () => {
+                this.resetIdleTimer();
+            });
+        });
+        
         document.getElementById('startBtn').addEventListener('click', () => this.toggleGame());
         document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
         document.getElementById('autoPlayBtn').addEventListener('click', () => this.toggleAutoPlay());
+    }
+
+    // New idle timer methods
+    startIdleTimer() {
+        this.clearIdleTimer();
+        this.idleTimerId = setTimeout(() => {
+            if (!this.isRunning) {
+                this.isAutoPlay = true;
+                this.toggleGame();
+            }
+        }, 5000);
+    }
+
+    resetIdleTimer() {
+        this.clearIdleTimer();
+        this.startIdleTimer();
+    }
+
+    clearIdleTimer() {
+        if (this.idleTimerId) {
+            clearTimeout(this.idleTimerId);
+            this.idleTimerId = null;
+        }
     }
 
     toggleGame() {
@@ -53,6 +86,8 @@ class Engine {
         if (this.isRunning) {
             this.lastTime = performance.now();
             requestAnimationFrame((time) => this.gameLoop(time));
+        } else {
+            this.startIdleTimer();
         }
     }
 
@@ -163,6 +198,7 @@ class Engine {
         this.food.spawn(this.snake.segments);
         this.ui.reset();
         this.level.reset();
+        this.startIdleTimer(); // start idle timer after game over
     }
 
     gameLoop(currentTime) {

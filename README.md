@@ -8,6 +8,7 @@ Core Mechanics:
 - Lives: 3 lives per game. After level 5, hearts spawn with a 20% chance as extra food for 10 seconds to refill a life.
 - Auto-play: Toggle between manual and AI-controlled navigation.
 - Start/Pause: Standard controls.
+- Idle Auto-Start: If no control button is pressed for 5 seconds, the game will auto start in auto mode. This behavior also occurs after a game ends.
 
 ----------------------------------------
 Star Rating (Per Level):
