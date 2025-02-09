@@ -170,7 +170,7 @@ Summary:
 
       function toggleColor(ball) {
         // Stop toggling if ball is yellow
-        if (!ball.custom || ball.custom.status === "yellow") return;
+        if (!ball.custom) return;
         // Toggle the color
         if (ball.custom.status === "red") {
           ball.render.fillStyle = "#0000ff";  // turn blue
@@ -178,9 +178,12 @@ Summary:
         } else if (ball.custom.status === "blue") {
           ball.render.fillStyle = "#ff0000";  // turn red
           ball.custom.status = "red";
+        } else if (ball.custom.status === "yellow" && Math.random() < 0.4) {
+          ball.render.fillStyle = "#ff0000";  // turn red
+          ball.custom.status = "red";
         }
-        // Schedule next toggle after 6 seconds (6000ms)
-        ball._toggleTimer = setTimeout(() => toggleColor(ball), 6000);
+        // Schedule next toggle after 5 seconds (5000ms)
+        ball._toggleTimer = setTimeout(() => toggleColor(ball), 5000);
       }
 
       function createBall(x, y, velocity = { x: 0, y: 0 }, color = "#ff6f61") {
@@ -195,12 +198,10 @@ Summary:
           label: 'ball',
           render: { fillStyle: color }
         });
-        Body.setVelocity(ball, velocity);
-        // Set up continuous toggling for red balls
-        if (color === "#ff0000") {
-          ball.custom = { status: "red" };
-          ball._toggleTimer = setTimeout(() => toggleColor(ball), 6000);
-        }
+        Body.setVelocity(ball, { x: velocity.x, y: velocity.y });
+        // Set up continuous toggling for red and yellow balls
+        ball.custom = { status: color === "#ff0000" ? "red" : "yellow" };
+        ball._toggleTimer = setTimeout(() => toggleColor(ball), 5000);
         balls.push(ball);
         World.add(world, ball);
         updateBallCounter();
@@ -355,6 +356,17 @@ Summary:
               if (ballA._toggleTimer) { clearTimeout(ballA._toggleTimer); ballA._toggleTimer = null; }
               if (ballB._toggleTimer) { clearTimeout(ballB._toggleTimer); ballB._toggleTimer = null; }
             }
+          }
+        });
+      });
+
+      // Ensure all balls have the same speed throughout
+      Events.on(engine, 'beforeUpdate', function() {
+        balls.forEach(ball => {
+          const speed = Math.hypot(ball.velocity.x, ball.velocity.y);
+          if (speed !== INITIAL_SPEED) {
+            const scale = INITIAL_SPEED / speed;
+            Body.setVelocity(ball, { x: ball.velocity.x * scale, y: ball.velocity.y * scale });
           }
         });
       });
