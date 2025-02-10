@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Like & Subscribe Banner</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif; /* Modern font */
+            background-color: transparent;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: linear-gradient(to right, #24292e, #1a1e21); /* Dark gradient background */
+            color: #e6e9ed; /* Light text color */
+            padding: 15px 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+            backdrop-filter: blur(5px); /* Subtle blur */
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer; /* Make clickable */
+            transition: transform 0.2s ease, filter 0.2s ease; /* Smooth transitions */
+        }
+
+        .item:hover {
+            transform: scale(1.05); /* Scale on hover */
+            filter: brightness(1.1); /* Brighten on hover */
+        }
+
+        .icon {
+            font-size: 1.8em;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); /* Subtle glow */
+            animation: shimmer 2s linear infinite; /* Shimmer animation */
+        }
+
+        .text {
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        @keyframes shimmer {
+            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+            50% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.6); }
+            100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
+        }
+
+        /* Mirror effect (subtle) */
+        .item {
+            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 500px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                padding: 10px 20px;
+                gap: 10px;
+            }
+
+            .item {
+                flex-direction: column; /* Stack icon and text */
+                align-items: center;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="item" id="likeButton">
+        <span class="icon">👍</span>
+        <span class="text">Like</span>
+    </div>
+    <div class="item" id="subscribeButton">
+        <span class="icon">🔔</span>
+        <span class="text">Subscribe</span>
+    </div>
+</div>
+
+<script>
+    const likeButton = document.getElementById('likeButton');
+    const subscribeButton = document.getElementById('subscribeButton');
+
+    likeButton.addEventListener('click', () => {
+        // Handle like click (e.g., change appearance, send event)
+        likeButton.classList.toggle('liked'); // Add/remove a "liked" class
+        // Example: Send a "like" event to your streaming platform
+        console.log("Liked!");
+    });
+
+    subscribeButton.addEventListener('click', () => {
+        // Handle subscribe click
+        subscribeButton.classList.toggle('subscribed'); // Add/remove a "subscribed" class
+        console.log("Subscribed!");
+    });
+
+
+</script>
+
+</body>
+</html>

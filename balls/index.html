@@ -10,7 +10,7 @@ Summary:
 - All balls maintain a constant speed throughout the simulation.
 - A cleanup routine periodically removes balls that exceed speed limits or move out of bounds.
 - Panels display ball count, simulation variables, results, and sound control.
-- the simulation resets every 60 seconds
+- The simulation resets every 60 seconds.
 -->
 <!DOCTYPE html>
 <html>
@@ -34,58 +34,70 @@ Summary:
         display: block;
         background-color: #1e1e1e; /* Night mode background color */
       }
-      /* Center panels horizontally using left:50% + transform */
-      #ball-counter, #results, #simulation-variables, #sound-control {
+      /* Remove specific styles for #ball-counter, #results, #simulation-variables, #sound-control and add unified styling */
+      /* New info panel styling */
+      #info-panel-right {
         position: fixed;
+        bottom: 10px;
+        left: 70%;
+        transform: translateX(-50%);
         background: rgba(0, 0, 0, 0.7);
         color: #ffffff;
         padding: 10px;
-        font-family: 'Roboto', sans-serif;
-        font-size: 14px;
+        font-family: 'Arial', sans-serif;
+        font-size: 20px;
         border-radius: 5px;
-        left: 50%;               /* Center horizontally */
+        text-align: center;
+        animation: shine 2s linear infinite;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      }
+      #info-panel-left {
+        position: fixed;
+        bottom: 10px;
+        left: 10%;
         transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: #ffffff;
+        padding: 10px;
+        font-family: 'Arial', sans-serif;
+        font-size: 20px;
+        border-radius: 5px;
+        text-align: center;
+        animation: shine 2s linear infinite;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
       }
-      /* Adjust vertical positions */
-      #ball-counter {
-        top: 10px;
+      #info-panel div {
+        margin: 3px 0;
       }
-      #results {
-        bottom: 10px;
-      }
-      #simulation-variables {
-        top: 10px;
-        display: none; /* Hide the variables panel */
-      }
-      #sound-control {
-        bottom: 10px;
-        left:80%;  /* Adjust horizontal position */
+      /* Added keyframes from OBS overlay */
+      @keyframes shine {
+        0% {
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+        50% {
+          text-shadow: 0 0 10px rgba(255, 255, 255, 1);
+        }
+        100% {
+          text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
       }
     </style>
   </head>
   <body>
     <canvas id="world"></canvas>
-    <!-- Ball counter element -->
-    <div id="ball-counter">
-      Balls: 0
-    </div>
-    <!-- Results area now includes a countdown display -->
-    <div id="results">
-      Results will appear here...
-    </div>
-    <!-- New area to display important simulation variables -->
-    <div id="simulation-variables">
-      Variables will appear here...
-    </div>
-    <!-- Sound control element -->
-    <div id="sound-control">
-      <button id="mute-toggle">Unmute</button>
+    <!-- Unified info panel element -->
+    <div id="info-panel-left">
+      <div id="ball-counter">Balls: 0</div>
+      <div id="results">Results will appear here...</div>
+   </div>
+    <div id="info-panel-right">
+      <div id="simulation-variables">Variables will appear here...</div>
+      <div id="sound-control"><button id="mute-toggle">Unmute</button></div>
     </div>
     <audio id="collision-sound" src="collision.mp3" preload="auto"></audio>
     <script>
       // Matter.js module aliases
       const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
-
       // Constants
       // Use responsive canvas dimensions for mobile display
       const width = window.innerWidth;
@@ -103,7 +115,6 @@ Summary:
       const REPEL_FORCE = 0.002;
       const boundaryShapes = ["star", "circle"];
       let currentShapeIndex = Math.floor(Math.random() * boundaryShapes.length);
-
       // Create engine and world
       const engine = Engine.create();
       const world = engine.world;
@@ -121,12 +132,10 @@ Summary:
           background: "#1e1e1e"  // Night mode background color
         }
       });
-
       // Create walls
       const segments = 500;
       const wallThickness = 20;
       const walls = []; // keep the global walls array
-
       function createBoundaryWalls(shape) {
         // Remove any existing walls
         if (walls.length) {
@@ -167,18 +176,15 @@ Summary:
         }
         World.add(world, walls);
       }
-
       createBoundaryWalls(boundaryShapes[currentShapeIndex]);
-
       // Ball creation
       const balls = [];
       let totalCreated = initialBallCount; // global counter for created balls
       let collisionCount = 0; // global collision counter
-
       function updateBallCounter() {
         const counter = document.getElementById("ball-counter");
         if (counter) {
-          counter.innerText = "Balls: " + balls.length;
+          counter.innerText = "Balls: " + balls.length + " Collisions: " + collisionCount ;
         }
       }
 
@@ -186,23 +192,16 @@ Summary:
       let isMuted = true;
       const collisionSound = document.getElementById("collision-sound");
       const muteToggle = document.getElementById("mute-toggle");
-
       muteToggle.addEventListener("click", () => {
         isMuted = !isMuted;
         muteToggle.innerText = isMuted ? "Unmute" : "Mute";  // reversed text assignment
-        console.log(`Sound is now ${isMuted ? "muted" : "unmuted"}`);
       });
-
       // Global collision counter listener
       Events.on(engine, 'collisionStart', function(event) {
         collisionCount += event.pairs.length;
       });
 
       function toggleColor(ball) {
-        // Stop toggling if ball is yellow
-       // if (!ball.custom) return;
-        // Log current status
-       // console.log(`Ball ID: ${ball.id}, Current Status: ${ball.custom.status}`);
         // Toggle the color
         if (ball.custom.status === "red") {
           ball.render.fillStyle = "#0000ff";  // turn blue
@@ -210,13 +209,10 @@ Summary:
         } else if (ball.custom.status === "blue") {
           ball.render.fillStyle = "#ff0000";  // turn red
           ball.custom.status = "red";
-        } else {  // 30% chance to turn red
-          
+        } else if (ball.custom.status === "yellow" && Math.random() < 0.3) {  // 30% chance to turn red
           ball.render.fillStyle = "#ff0000";  // turn red
           ball.custom.status = "red";
-          console.log(`Yellow Ball ID: ${ball.id} turned red`);
-        
-      }
+        }
         // Schedule next toggle after 5 seconds (5000ms)
         ball._toggleTimer = setTimeout(() => toggleColor(ball), 5000);
       }
@@ -242,20 +238,17 @@ Summary:
         updateBallCounter();
         // Play sound when a new ball is created
         if (!isMuted) {
-          console.log("Playing sound for new ball creation");
           const soundClone = collisionSound.cloneNode(); // clone audio element to allow overlapping plays
-          soundClone.play().catch(error => console.error("Sound play error:", error));
+          soundClone.play().catch(error => {});
         }
         return ball;
       }
-
       // Create initial balls (create the hero ball with red color)
       for (let i = 0; i < initialBallCount; i++) {
         let placed = false;
         while (!placed) {
           const x = containerX + (Math.random() - 0.5) * (containerRadius - ballRadius * 3);
           const y = containerY + (Math.random() - 0.5) * (containerRadius - ballRadius * 3);
-
           if (Math.hypot(x - containerX, y - containerY) < containerRadius - ballRadius * 3) {
             const angle = Math.random() * 2 * Math.PI;
             createBall(
@@ -322,9 +315,8 @@ Summary:
               World.add(world, childBall);
               updateBallCounter();
               if (!isMuted) {
-                console.log("Playing sound for new ball creation");
                 const soundClone = collisionSound.cloneNode(); // clone audio element to allow overlapping plays
-                soundClone.play().catch(error => console.error("Sound play error:", error));
+                soundClone.play().catch(error => {});
               }
             }
           }
@@ -393,8 +385,6 @@ Summary:
               ballB.render.fillStyle = "#ffff00";
               ballA.custom.status = "yellow";
               ballB.custom.status = "yellow";
-              //if (ballA._toggleTimer) { clearTimeout(ballA._toggleTimer); ballA._toggleTimer = null; }
-              //if (ballB._toggleTimer) { clearTimeout(ballB._toggleTimer); ballB._toggleTimer = null; }
             }
           }
         });
@@ -420,9 +410,7 @@ Summary:
             ball.position.x - containerX,
             ball.position.y - containerY
           );
-
           if (speed > 20 || distanceFromCenter > containerRadius - ballRadius) {
-            console.debug(`Removing ball at position (${ball.position.x}, ${ball.position.y}) with speed ${speed}`);
             World.remove(world, ball);
             balls.splice(i, 1);
           }
@@ -432,7 +420,6 @@ Summary:
 
       // New global countdown variable (in seconds)
       let countdown = 60;
-      
       // Update results display to include countdown
       function updateResults() {
         let countRed = 0, countBlue = 0, countYellow = 0;
@@ -443,27 +430,19 @@ Summary:
         });
         const resultsEl = document.getElementById("results");
         if (resultsEl) {
-          resultsEl.innerText = `Red: ${countRed}
-Blue: ${countBlue}
-Yellow: ${countYellow}
-Collisions: ${collisionCount}
-Next refresh in: ${countdown} seconds`;
+          resultsEl.innerText = `Red: ${countRed} Blue: ${countBlue} Yellow: ${countYellow}`;
         }
       }
-      
       // New function: Update simulation variables display
       function updateVariables() {
         const varsEl = document.getElementById("simulation-variables");
         if (varsEl) {
-          varsEl.innerText = `Canvas size: ${width} x ${height}
-INITIAL_SPEED: ${INITIAL_SPEED}
-CHILD_RED_MULTIPLIER: ${CHILD_RED_MULTIPLIER}
-CHILD_YELLOW_MULTIPLIER: ${CHILD_YELLOW_MULTIPLIER}
-REPEL_FORCE: ${REPEL_FORCE}`;
-        }
+//          varsEl.innerText = `Canvas size: ${width} x ${height} INITIAL_SPEED: ${INITIAL_SPEED}`;
+          varsEl.innerText = `Reset in : ${countdown} seconds
+          Like & Subscribe!`;
+}
       }
-      
-      // Remove previous 60-second setInterval and replace with a 1-second updater:
+      // Remove previous 60-second setInterval and replace with a 1-second updater
       setInterval(() => {
         countdown--;
         if (countdown <= 0) {
@@ -474,7 +453,6 @@ REPEL_FORCE: ${REPEL_FORCE}`;
         updateResults();
         updateVariables();
       }, 1000);
-
       function restartSimulation() {
         // Remove all ball bodies
         balls.forEach(ball => World.remove(world, ball));
@@ -505,7 +483,6 @@ REPEL_FORCE: ${REPEL_FORCE}`;
 
       // Run cleanup periodically
       setInterval(cleanup, 1000);
-
       // Start the simulation
       Render.run(render);
       const runner = Runner.create();
