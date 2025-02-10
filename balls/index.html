@@ -107,6 +107,18 @@ Summary:
       #mute-toggle .material-icons {
         pointer-events: none;
       }
+      .theme-dark {
+        background-color: #121212;
+      }
+      .theme-dusk {
+        background-color: #3b3b3b;
+      }
+      .theme-afternoon {
+        background-color: #87ceeb;
+      }
+      .theme-morning {
+        background-color: #ffebcd;
+      }
     </style>
   </head>
   <body>
@@ -144,6 +156,12 @@ Summary:
       const REPEL_FORCE = 0.002;
       const boundaryShapes = ["star", "circle"];
       let currentShapeIndex = Math.floor(Math.random() * boundaryShapes.length);
+      const themes = ["theme-dark", "theme-dusk", "theme-afternoon", "theme-morning"];
+      let currentThemeIndex = 0;
+
+      function applyTheme(theme) {
+        document.body.className = theme;
+      }
       // Create engine and world
       const engine = Engine.create();
       const world = engine.world;
@@ -491,6 +509,9 @@ Summary:
         // Update boundary shape
         currentShapeIndex = (currentShapeIndex + 1) % boundaryShapes.length;
         createBoundaryWalls(boundaryShapes[currentShapeIndex]);
+        // Update theme
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        applyTheme(themes[currentThemeIndex]);
         // Create a new initial hero ball
         let placed = false;
         while (!placed) {
@@ -508,6 +529,9 @@ Summary:
           }
         }
       }
+
+      // Initial theme application
+      applyTheme(themes[currentThemeIndex]);
 
       // Run cleanup periodically
       setInterval(cleanup, 1000);
