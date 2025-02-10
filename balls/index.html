@@ -77,7 +77,7 @@ Summary:
         font-family: 'Roboto', sans-serif;
         font-size: 20px;
         border-radius: 5px;
-        text-align: center;
+        text-align: left;
         animation: shine 2s linear infinite;
         text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
       }
@@ -96,6 +96,16 @@ Summary:
           text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
         }
       }
+      #mute-toggle {
+        background: none;
+        border: none;
+        color: #ffffff;
+        font-size: 24px;
+        cursor: pointer;
+      }
+      #mute-toggle i {
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
@@ -107,12 +117,13 @@ Summary:
    </div>
 
   <div id="info-panel">
-    <div id="sound-control"><button id="mute-toggle">Unmute</button></div>
+    <div id="sound-control"><button id="mute-toggle"><i class="fas fa-volume-mute"></i></button></div>
   </div>
   <div id="info-panel-right">
     <div id="simulation-variables">Variables will appear here...</div>
   </div>
     <audio id="collision-sound" src="collision.mp3" preload="auto"></audio>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
       // Matter.js module aliases
       const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
@@ -212,7 +223,7 @@ Summary:
       const muteToggle = document.getElementById("mute-toggle");
       muteToggle.addEventListener("click", () => {
         isMuted = !isMuted;
-        muteToggle.innerText = isMuted ? "Unmute" : "Mute";  // reversed text assignment
+        muteToggle.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
       });
       // Global collision counter listener
       Events.on(engine, 'collisionStart', function(event) {
@@ -456,8 +467,7 @@ Summary:
         const varsEl = document.getElementById("simulation-variables");
         if (varsEl) {
 //          varsEl.innerText = `Canvas size: ${width} x ${height} INITIAL_SPEED: ${INITIAL_SPEED}`;
-          varsEl.innerText = `Reset in : ${countdown}s
-          Like & Subscribe!`;
+          varsEl.innerText = `Reset in ${countdown}s`;
 }
       }
       // Remove previous 60-second setInterval and replace with a 1-second updater
