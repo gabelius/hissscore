@@ -39,7 +39,22 @@ Summary:
       #info-panel-right {
         position: fixed;
         bottom: 10px;
-        left: 70%;
+        left: 80%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: #ffffff;
+        padding: 10px;
+        font-family: 'Arial', sans-serif;
+        font-size: 20px;
+        border-radius: 5px;
+        text-align: center;
+        animation: shine 2s linear infinite;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      }
+      #info-panel{
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
         transform: translateX(-50%);
         background: rgba(0, 0, 0, 0.7);
         color: #ffffff;
@@ -54,7 +69,7 @@ Summary:
       #info-panel-left {
         position: fixed;
         bottom: 10px;
-        left: 10%;
+        left: 20%;
         transform: translateX(-50%);
         background: rgba(0, 0, 0, 0.7);
         color: #ffffff;
@@ -90,10 +105,13 @@ Summary:
       <div id="ball-counter">Balls: 0</div>
       <div id="results">Results will appear here...</div>
    </div>
-    <div id="info-panel-right">
-      <div id="simulation-variables">Variables will appear here...</div>
-      <div id="sound-control"><button id="mute-toggle">Unmute</button></div>
-    </div>
+
+  <div id="info-panel">
+    <div id="sound-control"><button id="mute-toggle">Unmute</button></div>
+  </div>
+  <div id="info-panel-right">
+    <div id="simulation-variables">Variables will appear here...</div>
+  </div>
     <audio id="collision-sound" src="collision.mp3" preload="auto"></audio>
     <script>
       // Matter.js module aliases
@@ -438,7 +456,7 @@ Summary:
         const varsEl = document.getElementById("simulation-variables");
         if (varsEl) {
 //          varsEl.innerText = `Canvas size: ${width} x ${height} INITIAL_SPEED: ${INITIAL_SPEED}`;
-          varsEl.innerText = `Reset in : ${countdown} seconds
+          varsEl.innerText = `Reset in : ${countdown}s
           Like & Subscribe!`;
 }
       }
