@@ -48,7 +48,7 @@
    <span class="header">HissScore.com</span>
         
     </div>
-    <audio id="collisionSound" src="sounds/collision.mp3"></audio>
+    <audio id="collisionSound" src="collision.mp3"></audio>
     <div id="gameOverOverlay"></div>
     <script type="module" src="js/engine.js"></script>
     <script>
@@ -65,7 +65,6 @@
 
             collisionSound.muted = isMuted;
 
-            // Assuming you have a function that handles the snake eating food
             function onSnakeEatFood() {
                 if (!isMuted) {
                     collisionSound.play();
@@ -74,8 +73,8 @@
             }
 
             // Attach onSnakeEatFood to the relevant event in your game logic
-            // For example:
-            // game.on('eatFood', onSnakeEatFood);
+            const game = /* get your game instance */;
+            game.on('eatFood', onSnakeEatFood);
         });
     </script>
 </body>
