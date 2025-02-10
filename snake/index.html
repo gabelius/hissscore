@@ -51,24 +51,14 @@
     <audio id="collisionSound" src="collision.mp3"></audio>
     <div id="gameOverOverlay"></div>
     <script type="module" src="js/engine.js"></script>
-    <script>
+    <script type="module">
+        import { setupSound } from './js/sound.js';
+
         document.addEventListener('DOMContentLoaded', () => {
-            const collisionSound = document.getElementById('collisionSound');
-            const muteBtn = document.getElementById('muteBtn');
-            let isMuted = true;
-
-            muteBtn.addEventListener('click', () => {
-                isMuted = !isMuted;
-                collisionSound.muted = isMuted;
-                muteBtn.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
-            });
-
-            collisionSound.muted = isMuted;
+            const playCollisionSound = setupSound();
 
             function onSnakeEatFood() {
-                if (!isMuted) {
-                    collisionSound.play();
-                }
+                playCollisionSound();
                 // ...existing code for handling snake eating food...
             }
 
