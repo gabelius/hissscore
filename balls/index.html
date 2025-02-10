@@ -21,6 +21,7 @@ Summary:
     <title>Matter.js Circle Simulation</title>
     <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
       html, body {
         margin: 0;
@@ -103,7 +104,7 @@ Summary:
         font-size: 24px;
         cursor: pointer;
       }
-      #mute-toggle i {
+      #mute-toggle .material-icons {
         pointer-events: none;
       }
     </style>
@@ -117,13 +118,12 @@ Summary:
    </div>
 
   <div id="info-panel">
-    <div id="sound-control"><button id="mute-toggle"><i class="fas fa-volume-mute"></i></button></div>
+    <div id="sound-control"><button id="mute-toggle">Unmute</button></div>
   </div>
   <div id="info-panel-right">
     <div id="simulation-variables">Variables will appear here...</div>
   </div>
     <audio id="collision-sound" src="collision.mp3" preload="auto"></audio>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
       // Matter.js module aliases
       const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
@@ -223,7 +223,7 @@ Summary:
       const muteToggle = document.getElementById("mute-toggle");
       muteToggle.addEventListener("click", () => {
         isMuted = !isMuted;
-        muteToggle.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+        muteToggle.innerText = isMuted ? "Unmute" : "Mute";
       });
       // Global collision counter listener
       Events.on(engine, 'collisionStart', function(event) {
