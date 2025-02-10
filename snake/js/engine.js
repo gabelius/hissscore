@@ -4,6 +4,7 @@ import { Level } from './level.js';
 import { UI } from './ui.js';
 import { Input } from './input.js';
 import { Renderer } from './renderer.js';
+import { setupSound } from './sound.js';
 
 class Engine {
     constructor() {
@@ -29,6 +30,8 @@ class Engine {
 
         this.setupEventListeners();
         this.startIdleTimer(); // start idle timer on load
+
+        this.playCollisionSound = setupSound(); // setup sound
     }
 
     setCanvasSize() {
@@ -187,6 +190,7 @@ class Engine {
             this.renderer.animateScoreSparkle(this.food.position, scoreIncrement);
             this.ui.updateScore(scoreIncrement);
             this.food.spawn(this.snake.segments);
+            this.playCollisionSound(); // play sound when food is collected
         }
     }
 
