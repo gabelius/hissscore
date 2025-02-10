@@ -6,7 +6,7 @@ export function setupSound() {
     muteBtn.addEventListener('click', () => {
         isMuted = !isMuted;
         collisionSound.muted = isMuted;
-        muteBtn.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+        muteBtn.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>'
     });
 
     collisionSound.muted = isMuted;
