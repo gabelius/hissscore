@@ -475,22 +475,27 @@ Events.on(render, 'afterRender', function() {
     // NEW: Define extra margin and mobile-adapted minimum gap.
     const extraMargin = currentStickWidth * 0.05;
     const minGap = (canvasWidth < 600) ? 5 : 10; // Lower gap on mobile
+    // Available width for letters between margins.
     const letterRegionWidth = currentStickWidth - 2 * extraMargin - (tileCount - 1) * minGap;
+    // Compute allocated width per tile.
     const effectiveTileWidth = letterRegionWidth / tileCount;
-    const tileSide = effectiveTileWidth; // Square tile
-    
-    // NEW: Starting X coordinate from left edge of the letter region.
-    let startX = -currentStickWidth / 2 + extraMargin;
+    // NEW: Increase tile size by a scale factor (e.g. 1.2) for extra padding.
+    const scale = 1.2;
+    const tileSide = effectiveTileWidth * scale;
+    // NEW: Compute total width occupied by enlarged tiles.
+    const tileTotalWidth = tileCount * tileSide + (tileCount - 1) * minGap;
+    // NEW: Recalculate starting X coordinate to center the enlarged tiles within the stick.
+    let startX = -tileTotalWidth / 2;
     
     for (let i = 0; i < tileCount; i++) {
         context.save();
-        // Center of current tile in stick-space
-        const tileX = startX + i * (effectiveTileWidth + minGap) + effectiveTileWidth / 2;
+        // NEW: Center each tile within the newly computed tile width.
+        const tileX = startX + i * (tileSide + minGap) + tileSide / 2;
         context.translate(tileX, 0);
-        // Undo stick rotation to keep tile vertical
+        // Undo stick rotation to keep tile vertical.
         context.rotate(-stick.angle);
         
-        // Draw rounded square tile
+        // Draw rounded square tile.
         context.fillStyle = "#FFF";
         context.strokeStyle = "#444";
         context.lineWidth = 2;
@@ -511,7 +516,7 @@ Events.on(render, 'afterRender', function() {
         context.fill();
         context.stroke();
         
-        // Center the letter with equal padding.
+        // Center the letter within the tile.
         const fontSize = Math.max(20, 16 * (canvasWidth / 800));
         context.fillStyle = "#222";
         context.font = "bold " + fontSize + "px Roboto";
