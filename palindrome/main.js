@@ -502,3 +502,8 @@ Render.run(render);
 function updateInteractionTime() {
     lastInteractionTime = Date.now();
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    adjustStickSize();
+    updateBackgroundPattern();
+});
