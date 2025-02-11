@@ -49,39 +49,146 @@ const mouse = Mouse.create(render.canvas);
 // Variables to control input rotation
 let isInteracting = false;
 
-document.addEventListener('mousedown', () => { isInteracting = true; });
+// Global variable for custom text with default value "AVID"
+let customText = "AVID";
+// Array of 20 semordnilap words
+const semordnilaps = ["stressed", "desserts", "diaper", "repaid", "drawer", "reward", "parts", "strap", "regal", "lager", "god", "dog", "evil", "live", "stop", "pots", "star", "rats", "loop", "pool"];
+
+// Last interaction timestamp
+let lastInteractionTime = Date.now();
+
+document.addEventListener('mousedown', () => { isInteracting = true; updateInteractionTime(); });
 // Update mouseup to stop rotation immediately
-document.addEventListener('mouseup', () => { isInteracting = false; Body.setAngularVelocity(stick, 0); });
-document.addEventListener('touchstart', () => { isInteracting = true; });
+document.addEventListener('mouseup', () => { 
+    isInteracting = false; 
+    Body.setAngularVelocity(stick, 0); // halt rotation before snapping
+    snapStick();
+    updateInteractionTime();
+});
+document.addEventListener('touchstart', () => { isInteracting = true; updateInteractionTime(); });
 // Update touchend to stop rotation immediately
-document.addEventListener('touchend', () => { isInteracting = false; Body.setAngularVelocity(stick, 0); });
+document.addEventListener('touchend', () => { 
+    isInteracting = false; 
+    Body.setAngularVelocity(stick, 0); // halt rotation before snapping
+    snapStick();
+    updateInteractionTime();
+});
+
+// Listen to changes in the input box to update customText
+document.getElementById('customText').addEventListener('input', function(e) {
+    customText = e.target.value || "AVID";
+});
 
 // Update stick rotation based on pointer position when interacting
 document.addEventListener('mousemove', updateStickRotation);
 document.addEventListener('touchmove', (e) => {
     e.preventDefault();
     updateStickRotation(e.touches[0]);
+    updateInteractionTime();
 }, { passive: false });
 
 function updateStickRotation(pointer) {
     if (!isInteracting) return;
+    
     const rect = canvas.getBoundingClientRect();
     const mouseX = pointer.clientX - rect.left;
     const mouseY = pointer.clientY - rect.top;
-    const targetAngle = Math.atan2(mouseY - pivot.y, mouseX - pivot.x);
-    const currentAngle = stick.angle;
-    // Compute clockwise difference: how much to rotate clockwise (i.e., decreasing angle)
-    let cwDiff = (currentAngle - targetAngle + 2 * Math.PI) % (2 * Math.PI);
-    // Only allow clockwise rotation if the clockwise difference is less than π;
-    // otherwise, the pointer would demand anticlockwise rotation which is disallowed.
-    if (cwDiff > Math.PI) { cwDiff = 0; }
-    Body.setAngularVelocity(stick, -cwDiff * 0.2);
+    let targetAngle = Math.atan2(mouseY - pivot.y, mouseX - pivot.x);
+    
+    // Normalize angles between -π and π
+    let currentAngle = stick.angle;
+    let diff = targetAngle - currentAngle;
+    if (diff > Math.PI) { diff -= 2 * Math.PI; }
+    else if (diff < -Math.PI) { diff += 2 * Math.PI; }
+    
+    // Apply angular velocity proportional to the difference (tweak factor for responsiveness)
+    const angularSpeedFactor = 0.2;
+    Body.setAngularVelocity(stick, diff * angularSpeedFactor);
 }
 
 // Lock the stick's position on every update, so only rotation is possible
 Events.on(engine, 'beforeUpdate', function() {
     Body.setPosition(stick, pivot);
 });
+
+// Helper function to slowly snap stick angle to nearest horizontal (0 or ±π)
+function snapStick() {
+    const duration = 1000; // animation duration in ms
+    const currentAngle = stick.angle;
+    // Normalize currentAngle to [-π, π)
+    let normalized = ((currentAngle + Math.PI) % (2 * Math.PI)) - Math.PI;
+    // Determine target normalized: if within ±π/2 snap to 0, else to π (or -π)
+    const targetNormalized = (Math.abs(normalized) <= Math.PI/2) ? 0 : (normalized > 0 ? Math.PI : -Math.PI);
+    // Compute candidate target in full angle space:
+    const base = currentAngle - normalized; 
+    const candidateTarget = base + targetNormalized; // difference is always < π/2
+    const startTime = performance.now();
+    // Simple ease-out function
+    function easeOut(t) { return t * (2 - t); }
+    
+    function animate(time) {
+        const t = Math.min((time - startTime) / duration, 1);
+        const easedT = easeOut(t);
+        const newAngle = currentAngle + (candidateTarget - currentAngle) * easedT;
+        Body.setAngularVelocity(stick, 0);
+        Body.setAngle(stick, newAngle);
+        if (t < 1) {
+            requestAnimationFrame(animate);
+        }
+    }
+    requestAnimationFrame(animate);
+}
+
+// New function to rotate the stick by 180° (clockwise)
+// Accepts an optional callback when animation completes.
+function rotateStick180(callback) {
+    const duration = 1000;
+    const currentAngle = stick.angle;
+    const targetAngle = currentAngle + Math.PI; // add 180 deg
+    const startTime = performance.now();
+    function easeOut(t) { return t * (2 - t); }
+    
+    function animate(time) {
+        const t = Math.min((time - startTime) / duration, 1);
+        const easedT = easeOut(t);
+        const newAngle = currentAngle + (targetAngle - currentAngle) * easedT;
+        Body.setAngularVelocity(stick, 0);
+        Body.setAngle(stick, newAngle);
+        if(t < 1) {
+            requestAnimationFrame(animate);
+        } else if(callback) {
+            callback();
+        }
+    }
+    requestAnimationFrame(animate);
+}
+
+// Button event listeners
+document.getElementById('rotateBtn').addEventListener('click', () => {
+    rotateStick180();
+});
+document.getElementById('randomBtn').addEventListener('click', () => {
+    const rand = Math.floor(Math.random() * semordnilaps.length);
+    customText = semordnilaps[rand];
+    document.getElementById('customText').value = customText;
+});
+
+// Add a flag to prevent overlapping auto rotations
+let autoRotating = false;
+
+function autoRotate() {
+    if (autoRotating) return;
+    if (Date.now() - lastInteractionTime >= 5000) {
+        autoRotating = true;
+        rotateStick180(() => {
+            setTimeout(() => {
+                lastInteractionTime = Date.now();
+                autoRotating = false;
+            }, 5000);
+        });
+    }
+}
+setInterval(autoRotate, 1000);
 
 // Replace the existing afterRender event with the following:
 Events.on(render, 'afterRender', function() {
@@ -99,8 +206,8 @@ Events.on(render, 'afterRender', function() {
     context.fill();
     context.restore();
     
-    // Define letters and calculate spacing
-    const letters = "SNAKE".split('');
+    // Use customText for letters; if empty, default to "AVID"
+    const letters = (customText || "AVID").split('');
     const tileSpacing = 200 / letters.length; // stick length divided by number of letters
     const startX = -((letters.length - 1) * tileSpacing) / 2;
     
@@ -125,3 +232,12 @@ Events.on(render, 'afterRender', function() {
 // Run the engine and renderer
 Engine.run(engine);
 Render.run(render);
+
+// Update lastInteractionTime on user interaction events
+function updateInteractionTime() {
+    lastInteractionTime = Date.now();
+}
+document.addEventListener('mousedown', updateInteractionTime);
+document.addEventListener('mousemove', updateInteractionTime);
+document.addEventListener('touchstart', updateInteractionTime);
+document.addEventListener('touchmove', updateInteractionTime);
