@@ -5,9 +5,10 @@ const { Engine, Render, World, Bodies, Body, Constraint, Events, Mouse, MouseCon
 const engine = Engine.create();
 const world = engine.world;
 
-// Compute dynamic canvas dimensions
+// Compute dynamic canvas dimensions based on viewport minus controls height
+const controlsHeight = document.querySelector('.controls').offsetHeight || 0;
 const canvasWidth = window.innerWidth;
-const canvasHeight = window.innerHeight;
+const canvasHeight = window.innerHeight - controlsHeight; // optimized height
 
 // Set up renderer using the existing canvas
 const canvas = document.getElementById("simulationCanvas");
@@ -199,6 +200,7 @@ document.getElementById('randomBtn').addEventListener('click', () => {
     customText = semordnilaps[rand];
     document.getElementById('customText').value = customText;
     adjustStickSize();
+    updateBackgroundPattern(); // NEW: change background pattern
 });
 
 // Add a flag to prevent overlapping auto rotations
@@ -213,13 +215,13 @@ function autoRotate() {
                 lastInteractionTime = Date.now();
                 autoRotating = false;
                 autoRotationCount++;
-                // After 2 auto rotations, switch to a random word and reset the counter
                 if (autoRotationCount >= 2) {
                     const rand = Math.floor(Math.random() * semordnilaps.length);
                     customText = semordnilaps[rand];
                     document.getElementById('customText').value = customText;
                     adjustStickSize();
                     autoRotationCount = 0;
+                    updateBackgroundPattern(); // NEW: update background pattern here as well.
                 }
             }, 5000);
         });
@@ -227,26 +229,78 @@ function autoRotate() {
 }
 setInterval(autoRotate, 1000);
 
-// Replace the existing afterRender event with the following:
+// NEW: Define several background pattern functions.
+function drawCheckerboard(ctx, width, height) {
+  const tileSize = 40;
+  for (let y = 0; y < height; y += tileSize) {
+    for (let x = 0; x < width; x += tileSize) {
+      const isEven = ((x / tileSize + y / tileSize) % 2 === 0);
+      ctx.fillStyle = isEven ? "#333" : "#444";
+      ctx.fillRect(x, y, tileSize, tileSize);
+    }
+  }
+}
+
+function drawStripes(ctx, width, height) {
+  const stripeWidth = 20;
+  for (let x = 0; x < width; x += stripeWidth) {
+    ctx.fillStyle = (Math.floor(x / stripeWidth) % 2 === 0) ? "#555" : "#666";
+    ctx.fillRect(x, 0, stripeWidth, height);
+  }
+}
+
+function drawDots(ctx, width, height) {
+  ctx.fillStyle = "#222";
+  ctx.fillRect(0, 0, width, height);
+  ctx.fillStyle = "#888";
+  const spacing = 30;
+  const radius = 3;
+  for (let y = spacing; y < height; y += spacing) {
+    for (let x = spacing; x < width; x += spacing) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  }
+}
+
+// NEW: Store patterns in an array.
+const backgroundPatterns = [drawCheckerboard, drawStripes, drawDots];
+// NEW: Global variable for current background pattern.
+let currentBackgroundPattern = backgroundPatterns[Math.floor(Math.random() * backgroundPatterns.length)];
+
+// Helper: update the background pattern on new word
+function updateBackgroundPattern() {
+  currentBackgroundPattern = backgroundPatterns[Math.floor(Math.random() * backgroundPatterns.length)];
+}
+
+// Replace the existing afterRender event:
 Events.on(render, 'afterRender', function() {
     const context = render.context;
+    // First, draw the current background pattern.
     context.save();
-    // Translate to stick's position and apply stick rotation
+    // Reset any transform before drawing background.
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    currentBackgroundPattern(context, canvasWidth, canvasHeight);
+    context.restore();
+    
+    context.save();
+    // Translate to stick's position and apply its rotation
     context.translate(stick.position.x, stick.position.y);
     context.rotate(stick.angle);
     
-    // Draw a wood-textured stick background
+    // Draw wood-textured stick background (unchanged)
     context.save();
     const halfWidth = currentStickWidth / 2;
     const gradient = context.createLinearGradient(-halfWidth, 0, halfWidth, 0);
-    gradient.addColorStop(0, "#8B4513");  // SaddleBrown
-    gradient.addColorStop(0.5, "#CD853F");  // Peru
+    gradient.addColorStop(0, "#8B4513");
+    gradient.addColorStop(0.5, "#CD853F");
     gradient.addColorStop(1, "#8B4513");
     context.fillStyle = gradient;
     context.fillRect(-halfWidth, -10, currentStickWidth, 20);
     context.restore();
     
-    // Draw pivot as a small blue circle
+    // Draw pivot as a small blue circle (unchanged)
     context.save();
     context.fillStyle = "blue";
     context.beginPath();
@@ -254,45 +308,46 @@ Events.on(render, 'afterRender', function() {
     context.fill();
     context.restore();
     
-    // Draw letter tiles so that they always remain vertical.
+    // Draw letter tiles as squares.
     const letters = (customText || "PALINDROMES").split('');
     const tileCount = letters.length;
-    // Reduce margin if tile count > 7 to make individual tiles wider
     const tileMargin = (tileCount > 7) ? 2 : 4;
+    // effectiveTileWidth is the available width divided evenly; use it for both dimensions.
     const effectiveTileWidth = (currentStickWidth - (tileCount + 1) * tileMargin) / tileCount;
-    const tileHeight = 20; // same as stick height
+    const tileSide = effectiveTileWidth; // Square tile
+    
     let startX = -currentStickWidth / 2 + tileMargin;
     
     for (let i = 0; i < tileCount; i++) {
         context.save();
-        // Compute center of current tile in stick-space
+        // Center of current tile in stick-space
         const tileX = startX + i * (effectiveTileWidth + tileMargin) + effectiveTileWidth / 2;
-        // Move to the tile's center then undo stick rotation so tile remains vertical
         context.translate(tileX, 0);
+        // Undo stick rotation to keep tile vertical
         context.rotate(-stick.angle);
         
-        // Draw a rounded rectangle for the tile
+        // Draw rounded square tile
         context.fillStyle = "#FFF";
         context.strokeStyle = "#444";
         context.lineWidth = 2;
         const radius = 4;
-        const tileX0 = -effectiveTileWidth / 2; // tile's top-left x relative to center
-        const tileY0 = -tileHeight / 2;           // tile's top-left y relative to center
+        const tileX0 = -tileSide / 2;
+        const tileY0 = -tileSide / 2;
         context.beginPath();
         context.moveTo(tileX0 + radius, tileY0);
-        context.lineTo(tileX0 + effectiveTileWidth - radius, tileY0);
-        context.quadraticCurveTo(tileX0 + effectiveTileWidth, tileY0, tileX0 + effectiveTileWidth, tileY0 + radius);
-        context.lineTo(tileX0 + effectiveTileWidth, tileY0 + tileHeight - radius);
-        context.quadraticCurveTo(tileX0 + effectiveTileWidth, tileY0 + tileHeight, tileX0 + effectiveTileWidth - radius, tileY0 + tileHeight);
-        context.lineTo(tileX0 + radius, tileY0 + tileHeight);
-        context.quadraticCurveTo(tileX0, tileY0 + tileHeight, tileX0, tileY0 + tileHeight - radius);
+        context.lineTo(tileX0 + tileSide - radius, tileY0);
+        context.quadraticCurveTo(tileX0 + tileSide, tileY0, tileX0 + tileSide, tileY0 + radius);
+        context.lineTo(tileX0 + tileSide, tileY0 + tileSide - radius);
+        context.quadraticCurveTo(tileX0 + tileSide, tileY0 + tileSide, tileX0 + tileSide - radius, tileY0 + tileSide);
+        context.lineTo(tileX0 + radius, tileY0 + tileSide);
+        context.quadraticCurveTo(tileX0, tileY0 + tileSide, tileX0, tileY0 + tileSide - radius);
         context.lineTo(tileX0, tileY0 + radius);
         context.quadraticCurveTo(tileX0, tileY0, tileX0 + radius, tileY0);
         context.closePath();
         context.fill();
         context.stroke();
         
-        // Scale text relative to canvas (baseline: 16px at 800px width)
+        // Center the letter with equal padding.
         const fontSize = 16 * (canvasWidth / 800);
         context.fillStyle = "#222";
         context.font = "bold " + fontSize + "px Roboto";
