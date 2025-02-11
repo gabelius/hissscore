@@ -409,8 +409,9 @@ function updateUITheme(theme) {
     document.getElementById('rotateBtn').style.background = theme.buttonBg;
     document.getElementById('randomBtn').style.background = theme.buttonBg;
     document.querySelector('.controls').style.background = theme.controlBg;
+    const contrastColor = getContrastingColor(theme.inputBg);
     document.querySelectorAll('.controls input, .controls button').forEach(el => {
-        el.style.color = theme.textColor;
+        el.style.color = contrastColor;
     });
 }
 
@@ -438,17 +439,71 @@ function createWoodPattern() {
 // NEW: Initialize global wood texture pattern.
 const woodTexture = createWoodPattern();
 
-// Replace the existing afterRender event with a simplified version:
+// NEW: Helper function to compute a contrasting colour based on hex luminance.
+function getContrastingColor(hex) {
+    // Remove leading '#' if present.
+    hex = hex.replace('#', '');
+    if(hex.length === 3) {
+        hex = hex.split('').map(c => c + c).join('');
+    }
+    const r = parseInt(hex.substr(0,2), 16);
+    const g = parseInt(hex.substr(2,2), 16);
+    const b = parseInt(hex.substr(4,2), 16);
+    // Calculate luminance.
+    const luminance = (0.299*r + 0.587*g + 0.114*b) / 255;
+    return (luminance > 0.7) ? "#000" : "#fff";
+}
+
+// NEW: Helper function to draw gear patterns on the stick.
+function drawGearPattern(ctx, width, height) {
+    const teethCount = 10;
+    const toothWidth = width / teethCount;
+    const toothHeight = height / 2;
+    ctx.fillStyle = "#999";
+    // Top gear teeth.
+    for (let i = 0; i < teethCount; i++) {
+        const x = -width / 2 + i * toothWidth;
+        ctx.beginPath();
+        ctx.moveTo(x, -height/2);
+        ctx.lineTo(x + toothWidth / 2, -height/2 - toothHeight);
+        ctx.lineTo(x + toothWidth, -height/2);
+        ctx.closePath();
+        ctx.fill();
+    }
+    // Bottom gear teeth.
+    for (let i = 0; i < teethCount; i++) {
+        const x = -width / 2 + i * toothWidth;
+        ctx.beginPath();
+        ctx.moveTo(x, height/2);
+        ctx.lineTo(x + toothWidth / 2, height/2 + toothHeight);
+        ctx.lineTo(x + toothWidth, height/2);
+        ctx.closePath();
+        ctx.fill();
+    }
+}
+
+// Modified afterRender event to reintroduce background and draw gear-patterned stick.
 Events.on(render, 'afterRender', function() {
     const ctx = render.context;
+    // --- Draw background ---
+    ctx.save();
+    ctx.setTransform(1,0,0,1,0,0);
+    if(currentBackgroundImage) {
+        ctx.drawImage(currentBackgroundImage, 0, 0, canvasWidth, canvasHeight);
+    }
+    ctx.restore();
+    
     ctx.save();
     // Translate to stick's position and apply its rotation.
     ctx.translate(stick.position.x, stick.position.y);
     ctx.rotate(stick.angle);
     
-    // Draw a plain stick.
-    ctx.fillStyle = "#555";
-    ctx.fillRect(-currentStickWidth / 2, -10, currentStickWidth, 20);
+    // --- Draw stick with wood texture ---
+    ctx.fillStyle = woodTexture ? woodTexture : "#555";
+    ctx.fillRect(-currentStickWidth/2, -10, currentStickWidth, 20);
+    
+    // --- Draw gear pattern overlay ---
+    drawGearPattern(ctx, currentStickWidth, 20);
     
     // Draw pivot as a small blue circle.
     ctx.fillStyle = "blue";
@@ -456,32 +511,26 @@ Events.on(render, 'afterRender', function() {
     ctx.arc(0, 0, 5, 0, Math.PI * 2);
     ctx.fill();
     
-    // Draw letter tiles.
+    // --- Draw letter tiles (unchanged) ---
     const letters = (customText || "PALINDROMES").split('');
     const tileCount = letters.length;
-    // Use 90% of the stick for tiles and 10% for total gaps.
     const totalGap = currentStickWidth * 0.1;
     const tileWidth = (currentStickWidth - totalGap) / tileCount;
     const gap = totalGap / (tileCount + 1);
-    // Starting X position.
     let startX = -currentStickWidth / 2 + gap;
     
     for (let i = 0; i < tileCount; i++) {
         ctx.save();
-        // Calculate center position for tile.
         const tileCenterX = startX + i * (tileWidth + gap) + tileWidth / 2;
         ctx.translate(tileCenterX, 0);
-        // Undo stick rotation to keep tile upright.
         ctx.rotate(-stick.angle);
         
-        // Draw a simple white square for the tile.
         ctx.fillStyle = "#FFF";
-        ctx.fillRect(-tileWidth / 2, -tileWidth / 2, tileWidth, tileWidth);
+        ctx.fillRect(-tileWidth/2, -tileWidth/2, tileWidth, tileWidth);
         ctx.strokeStyle = "#444";
         ctx.lineWidth = 2;
-        ctx.strokeRect(-tileWidth / 2, -tileWidth / 2, tileWidth, tileWidth);
+        ctx.strokeRect(-tileWidth/2, -tileWidth/2, tileWidth, tileWidth);
         
-        // Draw the letter.
         const fontSize = Math.floor(tileWidth / 2);
         ctx.fillStyle = "#222";
         ctx.textAlign = "center";
