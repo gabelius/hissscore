@@ -54,20 +54,10 @@ World.add(world, [stick, pivotConstraint]);
 
 // Move initialization here to ensure they are available beforehand
 function adjustStickSize() {
-    let computedWidth = 50 * customText.length;
-    if(customText.length > 7 && computedWidth < 300) {
-        computedWidth = 300;
-    }
-    // If more than 5 letters, force stick width to be at least 90% of the canvas width.
-    let newStickWidth;
-    if(customText.length > 5) {
-        newStickWidth = Math.max(computedWidth, canvas.width * 0.9);
-    } else {
-        newStickWidth = Math.min(computedWidth, canvas.width * 0.85);
-    }
-    const factor = newStickWidth / currentStickWidth;
+    let computedWidth = 50 * Math.max(customText.length, 3); // ensure minimum length for 3 letters
+    const factor = computedWidth / currentStickWidth;
     Body.scale(stick, factor, 1);
-    currentStickWidth = newStickWidth;
+    currentStickWidth = computedWidth;
 }
 
 // Remove these lines to disable dragging:
@@ -87,7 +77,7 @@ let isInteracting = false;
 // Global variable for custom text with default value "PALINDROMES"
 let customText = "avid";
 // Array of 20 semordnilap words (all capitalised)
-const semordnilaps = ["AIBOHPHOBIA", "RACECAR", "KAYAK", "PALINDROMES", "LEVELER", "STRESSED", "DESSERTS", "DIAPER", "REPAID", "DRAWER", "REWARD", "PARTS", "STRAP", "REGAL", "LAGER", "GOD", "DOG", "EVIL", "LIVE", "STOP", "POTS", "STAR", "RATS", "LOOP", "POOL"];
+const semordnilaps = ["aibohphobia", "racecar", "kayak", "palindromes", "leveler", "stressed", "desserts", "diaper", "repaid", "drawer", "reward", "parts", "strap", "regal", "lager", "god", "dog", "evil", "live", "stop", "pots", "star", "rats", "loop", "pool"];
 
 // Last interaction timestamp
 let lastInteractionTime = Date.now();
@@ -488,6 +478,14 @@ function drawGearPattern(ctx, width, height) {
     }
 }
 
+// Define text styles for uniformity
+const textStyle = {
+    font: "bold 20px Nunito",
+    fillStyle: "#ffeb3b", // bright pastel yellow
+    strokeStyle: "#000",
+    lineWidth: 2
+};
+
 // Modified afterRender event to reintroduce background and draw gear-patterned stick.
 Events.on(render, 'afterRender', function() {
     const ctx = render.context;
@@ -504,11 +502,7 @@ Events.on(render, 'afterRender', function() {
     ctx.translate(stick.position.x, stick.position.y);
     ctx.rotate(stick.angle);
     
-    // --- Draw stick with wood texture ---
-    ctx.fillStyle = woodTexture ? woodTexture : "#555";
-    ctx.fillRect(-currentStickWidth/2, -20, currentStickWidth, 40); // increased height from 20 to 40
-    
-    // --- Draw gear pattern overlay ---
+    // --- Draw stick with gear finish ---
     drawGearPattern(ctx, currentStickWidth, 40);
     
     // Draw pivot as a small blue circle.
@@ -525,24 +519,21 @@ Events.on(render, 'afterRender', function() {
     const gap = totalGap / (tileCount + 1);
     let startX = -currentStickWidth / 2 + gap;
     
-    const colors = ["#ffeb3b", "#ff5722", "#ff9800"]; // bright pastel colors
-    
     for (let i = 0; i < tileCount; i++) {
         ctx.save();
         const tileCenterX = startX + i * (tileWidth + gap) + tileWidth / 2;
         ctx.translate(tileCenterX, 0);
         ctx.rotate(-stick.angle);
         
-        const fontSize = Math.floor(tileWidth / 2);
-        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillStyle = textStyle.fillStyle;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = "bold " + fontSize + "px Nunito"; // changed font to Nunito
+        ctx.font = textStyle.font; // uniform font style
         ctx.fillText(letters[i], 0, 0);
         
         // Add stroke to the letters
-        ctx.strokeStyle = "#000";
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = textStyle.strokeStyle;
+        ctx.lineWidth = textStyle.lineWidth;
         ctx.strokeText(letters[i], 0, 0);
         
         ctx.restore();
