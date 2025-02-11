@@ -512,7 +512,7 @@ Events.on(render, 'afterRender', function() {
     ctx.fill();
     
     // --- Draw letter tiles (unchanged) ---
-    const letters = (customText || "PALINDROMES").split('');
+    const letters = (customText || "AVID").split('');
     const tileCount = letters.length;
     const totalGap = currentStickWidth * 0.1;
     const tileWidth = (currentStickWidth - totalGap) / tileCount;
