@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    background-color: #f4f4f4;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+}
+
+#word-input {
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.stick-container {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.stick {
+    position: relative;
+    width: 400px;
+    height: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: grab;
+}
+
+.letters {
+    display: flex;
+    font-size: 30px;
+    color: white;
+    transition: transform 0.1s ease-out;
+}
+
+.letter {
+    padding: 0 5px;
+}
