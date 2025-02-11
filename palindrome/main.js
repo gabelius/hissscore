@@ -479,17 +479,17 @@ Events.on(render, 'afterRender', function() {
     const letterRegionWidth = currentStickWidth - 2 * extraMargin - (tileCount - 1) * minGap;
     // Compute allocated width per tile.
     const effectiveTileWidth = letterRegionWidth / tileCount;
-    // NEW: Increase tile size by a scale factor (e.g. 1.2) for extra padding.
-    const scale = 1.2;
+    // NEW: Apply scale factor conditionally; if more than 5 letters, do not enlarge.
+    const scale = (tileCount > 5) ? 1 : 1.2;
     const tileSide = effectiveTileWidth * scale;
-    // NEW: Compute total width occupied by enlarged tiles.
+    // NEW: Compute total width occupied by tiles.
     const tileTotalWidth = tileCount * tileSide + (tileCount - 1) * minGap;
-    // NEW: Recalculate starting X coordinate to center the enlarged tiles within the stick.
+    // NEW: Recalculate starting X coordinate to center the tiles within the stick.
     let startX = -tileTotalWidth / 2;
     
     for (let i = 0; i < tileCount; i++) {
         context.save();
-        // NEW: Center each tile within the newly computed tile width.
+        // NEW: Center each tile based on the computed total tile width.
         const tileX = startX + i * (tileSide + minGap) + tileSide / 2;
         context.translate(tileX, 0);
         // Undo stick rotation to keep tile vertical.
@@ -526,7 +526,6 @@ Events.on(render, 'afterRender', function() {
         context.restore();
     }
     
-    context.restore();
 });
 
 // Run the engine and renderer
