@@ -274,6 +274,30 @@ function updateBackgroundPattern() {
   currentBackgroundPattern = backgroundPatterns[Math.floor(Math.random() * backgroundPatterns.length)];
 }
 
+// NEW: Helper function to create a wood texture pattern.
+function createWoodPattern() {
+  const patternCanvas = document.createElement('canvas');
+  patternCanvas.width = 100;
+  patternCanvas.height = 100;
+  const pctx = patternCanvas.getContext('2d');
+  // Base wood color
+  pctx.fillStyle = "#8B4513";
+  pctx.fillRect(0, 0, 100, 100);
+  // Draw wood-grain lines
+  pctx.strokeStyle = "#CD853F";
+  pctx.lineWidth = 2;
+  for (let i = 0; i < 20; i++) {
+    let x = Math.random() * 100;
+    pctx.beginPath();
+    pctx.moveTo(x, 0);
+    pctx.lineTo(x, 100);
+    pctx.stroke();
+  }
+  return render.context.createPattern(patternCanvas, 'repeat');
+}
+// NEW: Initialize global wood texture pattern.
+const woodTexture = createWoodPattern();
+
 // Replace the existing afterRender event:
 Events.on(render, 'afterRender', function() {
     const context = render.context;
@@ -289,14 +313,10 @@ Events.on(render, 'afterRender', function() {
     context.translate(stick.position.x, stick.position.y);
     context.rotate(stick.angle);
     
-    // Draw wood-textured stick background (unchanged)
+    // NEW: Draw wood-textured stick background using woodTexture pattern instead of gradient.
     context.save();
     const halfWidth = currentStickWidth / 2;
-    const gradient = context.createLinearGradient(-halfWidth, 0, halfWidth, 0);
-    gradient.addColorStop(0, "#8B4513");
-    gradient.addColorStop(0.5, "#CD853F");
-    gradient.addColorStop(1, "#8B4513");
-    context.fillStyle = gradient;
+    context.fillStyle = woodTexture;
     context.fillRect(-halfWidth, -10, currentStickWidth, 20);
     context.restore();
     
