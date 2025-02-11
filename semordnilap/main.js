@@ -31,7 +31,7 @@ const pivot = { x: canvasWidth / 2, y: canvasHeight / 2 };
 // Create the stick with initial width relative to viewport (e.g. 30% of canvas width)
 const initialStickWidth = Math.max(200, canvasWidth * 0.3);
 let currentStickWidth = initialStickWidth;
-const stick = Bodies.rectangle(pivot.x, pivot.y, initialStickWidth, 20, {
+const stick = Bodies.rectangle(pivot.x, pivot.y, initialStickWidth, 40, { // increased height from 20 to 40
     render: { fillStyle: 'blue' }
 });
 
@@ -81,7 +81,7 @@ let isInteracting = false;
 // Global variable for custom text with default value "PALINDROMES"
 let customText = "AVID";
 // Array of 20 semordnilap words (all capitalised)
-const semordnilaps = ["STRESSED", "DESSERTS", "DIAPER", "REPAID", "DRAWER", "REWARD", "PARTS", "STRAP", "REGAL", "LAGER", "GOD", "DOG", "EVIL", "LIVE", "STOP", "POTS", "STAR", "RATS", "LOOP", "POOL"];
+const semordnilaps = ["AIBOHPHOBIA", "RACECAR", "KAYAK", "PALINDROMES", "LEVELER", "STRESSED", "DESSERTS", "DIAPER", "REPAID", "DRAWER", "REWARD", "PARTS", "STRAP", "REGAL", "LAGER", "GOD", "DOG", "EVIL", "LIVE", "STOP", "POTS", "STAR", "RATS", "LOOP", "POOL"];
 
 // Last interaction timestamp
 let lastInteractionTime = Date.now();
@@ -500,10 +500,10 @@ Events.on(render, 'afterRender', function() {
     
     // --- Draw stick with wood texture ---
     ctx.fillStyle = woodTexture ? woodTexture : "#555";
-    ctx.fillRect(-currentStickWidth/2, -10, currentStickWidth, 20);
+    ctx.fillRect(-currentStickWidth/2, -20, currentStickWidth, 40); // increased height from 20 to 40
     
     // --- Draw gear pattern overlay ---
-    drawGearPattern(ctx, currentStickWidth, 20);
+    drawGearPattern(ctx, currentStickWidth, 40);
     
     // Draw pivot as a small blue circle.
     ctx.fillStyle = "blue";
@@ -535,7 +535,7 @@ Events.on(render, 'afterRender', function() {
         ctx.fillStyle = "#222";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = "bold " + fontSize + "px Roboto";
+        ctx.font = "bold " + fontSize + "px Poppins"; // changed font to Poppins Bold
         ctx.fillText(letters[i], 0, 0);
         ctx.restore();
     }
