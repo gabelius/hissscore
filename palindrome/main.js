@@ -264,14 +264,133 @@ function drawDots(ctx, width, height) {
   }
 }
 
+// NEW: Define new lively background pattern functions.
+function drawFlowers(ctx, width, height) {
+    // Fill with a bright gradient and draw simple flower shapes.
+    const grad = ctx.createLinearGradient(0, 0, width, height);
+    grad.addColorStop(0, "#ff9a9e");
+    grad.addColorStop(1, "#fad0c4");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height);
+    // Draw simple flowers.
+    for (let i = 0; i < 20; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        ctx.fillStyle = "#ff6363";
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillStyle = "#ffe66d";
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+}
+
+function drawAnimals(ctx, width, height) {
+    // Bright sky-blue background and playful animal shapes (circles as eyeballs)
+    ctx.fillStyle = "#a1c4fd";
+    ctx.fillRect(0, 0, width, height);
+    for (let i = 0; i < 15; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        ctx.fillStyle = "#ffc107";
+        ctx.beginPath();
+        ctx.arc(x, y, 15, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.fillStyle = "#6c757d";
+        ctx.beginPath();
+        ctx.arc(x - 5, y - 5, 3, 0, 2 * Math.PI);
+        ctx.arc(x + 5, y - 5, 3, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+}
+
+function drawForest(ctx, width, height) {
+    // Lively greens and browns.
+    ctx.fillStyle = "#dcedc8";
+    ctx.fillRect(0, 0, width, height);
+    for (let i = 0; i < 30; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        ctx.fillStyle = "#8bc34a";
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - 15, y + 30);
+        ctx.lineTo(x + 15, y + 30);
+        ctx.closePath();
+        ctx.fill();
+    }
+}
+
+function drawCity(ctx, width, height) {
+    // Vibrant cityscape with colorful rectangles.
+    ctx.fillStyle = "#ffcc80";
+    ctx.fillRect(0, 0, width, height);
+    for (let i = 0; i < 20; i++) {
+        const x = Math.random() * width;
+        const h = Math.random() * (height / 2) + 20;
+        ctx.fillStyle = ["#ef5350", "#ab47bc", "#42a5f5", "#66bb6a"][Math.floor(Math.random() * 4)];
+        ctx.fillRect(x, height - h, 30, h);
+    }
+}
+
+function drawNight(ctx, width, height) {
+    // Deep blues with a glowing moon.
+    ctx.fillStyle = "#283593";
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = "#fff176";
+    ctx.beginPath();
+    ctx.arc(width * 0.8, height * 0.2, 40, 0, 2 * Math.PI);
+    ctx.fill();
+}
+
 // NEW: Store patterns in an array.
 const backgroundPatterns = [drawCheckerboard, drawStripes, drawDots];
+// NEW: Create new background options, each with an associated UI theme.
+const backgroundOptions = [
+    { 
+        pattern: drawFlowers, 
+        theme: { inputBg: "#ffb3ba", buttonBg: "#ffdfba", controlBg: "#ffb347", textColor: "#222" } 
+    },
+    { 
+        pattern: drawAnimals, 
+        theme: { inputBg: "#bae1ff", buttonBg: "#baffc9", controlBg: "#ffffba", textColor: "#222" } 
+    },
+    { 
+        pattern: drawForest, 
+        theme: { inputBg: "#d4f4dd", buttonBg: "#a2d5c6", controlBg: "#70a1d7", textColor: "#fff" } 
+    },
+    { 
+        pattern: drawCity, 
+        theme: { inputBg: "#ffe6e6", buttonBg: "#ffadad", controlBg: "#ff6b6b", textColor: "#222" } 
+    },
+    { 
+        pattern: drawNight, 
+        theme: { inputBg: "#d1c4e9", buttonBg: "#b39ddb", controlBg: "#9575cd", textColor: "#fff" } 
+    }
+];
+let currentBackgroundOption = backgroundOptions[Math.floor(Math.random() * backgroundOptions.length)];
+
 // NEW: Global variable for current background pattern.
 let currentBackgroundPattern = backgroundPatterns[Math.floor(Math.random() * backgroundPatterns.length)];
 
 // Helper: update the background pattern on new word
 function updateBackgroundPattern() {
-  currentBackgroundPattern = backgroundPatterns[Math.floor(Math.random() * backgroundPatterns.length)];
+    const option = backgroundOptions[Math.floor(Math.random() * backgroundOptions.length)];
+    currentBackgroundOption = option;
+    updateUITheme(option.theme);
+}
+
+// NEW: Helper to update UI theme based on the selected background option.
+function updateUITheme(theme) {
+    document.getElementById('customText').style.background = theme.inputBg;
+    document.getElementById('rotateBtn').style.background = theme.buttonBg;
+    document.getElementById('randomBtn').style.background = theme.buttonBg;
+    document.querySelector('.controls').style.background = theme.controlBg;
+    document.querySelectorAll('.controls input, .controls button').forEach(el => {
+        el.style.color = theme.textColor;
+    });
 }
 
 // NEW: Helper function to create a wood texture pattern.
@@ -305,7 +424,7 @@ Events.on(render, 'afterRender', function() {
     context.save();
     // Reset any transform before drawing background.
     context.setTransform(1, 0, 0, 1, 0, 0);
-    currentBackgroundPattern(context, canvasWidth, canvasHeight);
+    currentBackgroundOption.pattern(context, canvasWidth, canvasHeight);
     context.restore();
     
     context.save();
