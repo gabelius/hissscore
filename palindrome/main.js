@@ -438,94 +438,59 @@ function createWoodPattern() {
 // NEW: Initialize global wood texture pattern.
 const woodTexture = createWoodPattern();
 
-// Replace the existing afterRender event:
+// Replace the existing afterRender event with a simplified version:
 Events.on(render, 'afterRender', function() {
-    const context = render.context;
-    // NEW: Draw the pre-rendered static background image.
-    context.save();
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    if (currentBackgroundImage) {
-        context.drawImage(currentBackgroundImage, 0, 0);
-    }
-    context.restore();
+    const ctx = render.context;
+    ctx.save();
+    // Translate to stick's position and apply its rotation.
+    ctx.translate(stick.position.x, stick.position.y);
+    ctx.rotate(stick.angle);
     
-    context.save();
-    // Translate to stick's position and apply its rotation
-    context.translate(stick.position.x, stick.position.y);
-    context.rotate(stick.angle);
+    // Draw a plain stick.
+    ctx.fillStyle = "#555";
+    ctx.fillRect(-currentStickWidth / 2, -10, currentStickWidth, 20);
     
-    // NEW: Draw wood-textured stick background using woodTexture pattern instead of gradient.
-    context.save();
-    const halfWidth = currentStickWidth / 2;
-    context.fillStyle = woodTexture;
-    context.fillRect(-halfWidth, -10, currentStickWidth, 20);
-    context.restore();
+    // Draw pivot as a small blue circle.
+    ctx.fillStyle = "blue";
+    ctx.beginPath();
+    ctx.arc(0, 0, 5, 0, Math.PI * 2);
+    ctx.fill();
     
-    // Draw pivot as a small blue circle (unchanged)
-    context.save();
-    context.fillStyle = "blue";
-    context.beginPath();
-    context.arc(0, 0, 5, 0, Math.PI * 2);
-    context.fill();
-    context.restore();
-    
-    // Draw letter tiles as squares.
+    // Draw letter tiles.
     const letters = (customText || "PALINDROMES").split('');
     const tileCount = letters.length;
-    // NEW: Define extra margin and mobile-adapted minimum gap.
-    const extraMargin = currentStickWidth * 0.05;
-    const minGap = (canvasWidth < 600) ? 5 : 10; // Lower gap on mobile
-    // Available width for letters between margins.
-    const letterRegionWidth = currentStickWidth - 2 * extraMargin - (tileCount - 1) * minGap;
-    // Compute allocated width per tile.
-    const effectiveTileWidth = letterRegionWidth / tileCount;
-    // NEW: Apply scale factor conditionally; if more than 5 letters, do not enlarge.
-    const scale = (tileCount > 5) ? 1 : 1.2;
-    const tileSide = effectiveTileWidth * scale;
-    // NEW: Compute total width occupied by tiles.
-    const tileTotalWidth = tileCount * tileSide + (tileCount - 1) * minGap;
-    // NEW: Recalculate starting X coordinate to center the tiles within the stick.
-    let startX = -tileTotalWidth / 2;
+    // Use 90% of the stick for tiles and 10% for total gaps.
+    const totalGap = currentStickWidth * 0.1;
+    const tileWidth = (currentStickWidth - totalGap) / tileCount;
+    const gap = totalGap / (tileCount + 1);
+    // Starting X position.
+    let startX = -currentStickWidth / 2 + gap;
     
     for (let i = 0; i < tileCount; i++) {
-        context.save();
-        // NEW: Center each tile based on the computed total tile width.
-        const tileX = startX + i * (tileSide + minGap) + tileSide / 2;
-        context.translate(tileX, 0);
-        // Undo stick rotation to keep tile vertical.
-        context.rotate(-stick.angle);
+        ctx.save();
+        // Calculate center position for tile.
+        const tileCenterX = startX + i * (tileWidth + gap) + tileWidth / 2;
+        ctx.translate(tileCenterX, 0);
+        // Undo stick rotation to keep tile upright.
+        ctx.rotate(-stick.angle);
         
-        // Draw rounded square tile.
-        context.fillStyle = "#FFF";
-        context.strokeStyle = "#444";
-        context.lineWidth = 2;
-        const radius = 4;
-        const tileX0 = -tileSide / 2;
-        const tileY0 = -tileSide / 2;
-        context.beginPath();
-        context.moveTo(tileX0 + radius, tileY0);
-        context.lineTo(tileX0 + tileSide - radius, tileY0);
-        context.quadraticCurveTo(tileX0 + tileSide, tileY0, tileX0 + tileSide, tileY0 + radius);
-        context.lineTo(tileX0 + tileSide, tileY0 + tileSide - radius);
-        context.quadraticCurveTo(tileX0 + tileSide, tileY0 + tileSide, tileX0 + tileSide - radius, tileY0 + tileSide);
-        context.lineTo(tileX0 + radius, tileY0 + tileSide);
-        context.quadraticCurveTo(tileX0, tileY0 + tileSide, tileX0, tileY0 + tileSide - radius);
-        context.lineTo(tileX0, tileY0 + radius);
-        context.quadraticCurveTo(tileX0, tileY0, tileX0 + radius, tileY0);
-        context.closePath();
-        context.fill();
-        context.stroke();
+        // Draw a simple white square for the tile.
+        ctx.fillStyle = "#FFF";
+        ctx.fillRect(-tileWidth / 2, -tileWidth / 2, tileWidth, tileWidth);
+        ctx.strokeStyle = "#444";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(-tileWidth / 2, -tileWidth / 2, tileWidth, tileWidth);
         
-        // Center the letter within the tile.
-        const fontSize = Math.max(20, 16 * (canvasWidth / 800));
-        context.fillStyle = "#222";
-        context.font = "bold " + fontSize + "px Roboto";
-        context.textAlign = "center";
-        context.textBaseline = "middle";
-        context.fillText(letters[i], 0, 0);
-        context.restore();
+        // Draw the letter.
+        const fontSize = Math.floor(tileWidth / 2);
+        ctx.fillStyle = "#222";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "bold " + fontSize + "px Roboto";
+        ctx.fillText(letters[i], 0, 0);
+        ctx.restore();
     }
-    
+    ctx.restore();
 });
 
 // Run the engine and renderer
