@@ -5,22 +5,32 @@ const { Engine, Render, World, Bodies, Body, Constraint, Events, Mouse, MouseCon
 const engine = Engine.create();
 const world = engine.world;
 
+// Compute dynamic canvas dimensions
+const canvasWidth = window.innerWidth;
+const canvasHeight = window.innerHeight;
+
 // Set up renderer using the existing canvas
 const canvas = document.getElementById("simulationCanvas");
+canvas.width = canvasWidth;
+canvas.height = canvasHeight;
 const render = Render.create({
     canvas: canvas,
     engine: engine,
     options: {
-        width: 800,
-        height: 600,
+        width: canvasWidth,
+        height: canvasHeight,
         wireframes: false,
         background: "#000"
     }
 });
 
-// Create the stick: a blue rectangle with pivot at its center
-const pivot = { x: 400, y: 300 };
-const stick = Bodies.rectangle(pivot.x, pivot.y, 200, 20, {
+// Update pivot to be center of canvas
+const pivot = { x: canvasWidth / 2, y: canvasHeight / 2 };
+
+// Create the stick with initial width relative to viewport (e.g. 30% of canvas width)
+const initialStickWidth = Math.max(200, canvasWidth * 0.3);
+let currentStickWidth = initialStickWidth;
+const stick = Bodies.rectangle(pivot.x, pivot.y, initialStickWidth, 20, {
     render: { fillStyle: 'blue' }
 });
 
@@ -34,6 +44,18 @@ const pivotConstraint = Constraint.create({
 });
 
 World.add(world, [stick, pivotConstraint]);
+
+// Move initialization here to ensure they are available beforehand
+function adjustStickSize() {
+    let computedWidth = 50 * customText.length;
+    if (customText.length > 7 && computedWidth < 300) {
+        computedWidth = 300;
+    }
+    const newStickWidth = Math.min(computedWidth, canvas.width * 0.85);
+    const factor = newStickWidth / currentStickWidth;
+    Body.scale(stick, factor, 1);
+    currentStickWidth = newStickWidth;
+}
 
 // Remove these lines to disable dragging:
 // const mouse = Mouse.create(render.canvas);
@@ -49,13 +71,16 @@ const mouse = Mouse.create(render.canvas);
 // Variables to control input rotation
 let isInteracting = false;
 
-// Global variable for custom text with default value "AVID"
-let customText = "AVID";
-// Array of 20 semordnilap words
-const semordnilaps = ["stressed", "desserts", "diaper", "repaid", "drawer", "reward", "parts", "strap", "regal", "lager", "god", "dog", "evil", "live", "stop", "pots", "star", "rats", "loop", "pool"];
+// Global variable for custom text with default value "PALINDROMES"
+let customText = "PALINDROMES";
+// Array of 20 semordnilap words (all capitalised)
+const semordnilaps = ["STRESSED", "DESSERTS", "DIAPER", "REPAID", "DRAWER", "REWARD", "PARTS", "STRAP", "REGAL", "LAGER", "GOD", "DOG", "EVIL", "LIVE", "STOP", "POTS", "STAR", "RATS", "LOOP", "POOL"];
 
 // Last interaction timestamp
 let lastInteractionTime = Date.now();
+
+// Add new global variable to count auto rotations
+let autoRotationCount = 0;
 
 document.addEventListener('mousedown', () => { isInteracting = true; updateInteractionTime(); });
 // Update mouseup to stop rotation immediately
@@ -74,9 +99,11 @@ document.addEventListener('touchend', () => {
     updateInteractionTime();
 });
 
-// Listen to changes in the input box to update customText
+// Listen to changes in the input box to update customText (convert to uppercase)
 document.getElementById('customText').addEventListener('input', function(e) {
-    customText = e.target.value || "AVID";
+    customText = (e.target.value || "PALINDROMES").toUpperCase();
+    e.target.value = customText;
+    adjustStickSize();
 });
 
 // Update stick rotation based on pointer position when interacting
@@ -113,7 +140,7 @@ Events.on(engine, 'beforeUpdate', function() {
 
 // Helper function to slowly snap stick angle to nearest horizontal (0 or ±π)
 function snapStick() {
-    const duration = 1000; // animation duration in ms
+    const duration = 1500; // changed from 1000ms to 1500ms for 50% slower animation
     const currentAngle = stick.angle;
     // Normalize currentAngle to [-π, π)
     let normalized = ((currentAngle + Math.PI) % (2 * Math.PI)) - Math.PI;
@@ -142,7 +169,7 @@ function snapStick() {
 // New function to rotate the stick by 180° (clockwise)
 // Accepts an optional callback when animation completes.
 function rotateStick180(callback) {
-    const duration = 1000;
+    const duration = 1500; // changed from 1000ms to 1500ms for 50% slower animation
     const currentAngle = stick.angle;
     const targetAngle = currentAngle + Math.PI; // add 180 deg
     const startTime = performance.now();
@@ -171,6 +198,7 @@ document.getElementById('randomBtn').addEventListener('click', () => {
     const rand = Math.floor(Math.random() * semordnilaps.length);
     customText = semordnilaps[rand];
     document.getElementById('customText').value = customText;
+    adjustStickSize();
 });
 
 // Add a flag to prevent overlapping auto rotations
@@ -184,6 +212,15 @@ function autoRotate() {
             setTimeout(() => {
                 lastInteractionTime = Date.now();
                 autoRotating = false;
+                autoRotationCount++;
+                // After 2 auto rotations, switch to a random word and reset the counter
+                if (autoRotationCount >= 2) {
+                    const rand = Math.floor(Math.random() * semordnilaps.length);
+                    customText = semordnilaps[rand];
+                    document.getElementById('customText').value = customText;
+                    adjustStickSize();
+                    autoRotationCount = 0;
+                }
             }, 5000);
         });
     }
@@ -194,50 +231,86 @@ setInterval(autoRotate, 1000);
 Events.on(render, 'afterRender', function() {
     const context = render.context;
     context.save();
-    // Translate to the stick's position and apply stick rotation
+    // Translate to stick's position and apply stick rotation
     context.translate(stick.position.x, stick.position.y);
     context.rotate(stick.angle);
     
-    // Draw pivot center as a small blue circle (drawn first so letters appear on top)
+    // Draw a wood-textured stick background
     context.save();
-    context.fillStyle = "blue"; // same as stick color
+    const halfWidth = currentStickWidth / 2;
+    const gradient = context.createLinearGradient(-halfWidth, 0, halfWidth, 0);
+    gradient.addColorStop(0, "#8B4513");  // SaddleBrown
+    gradient.addColorStop(0.5, "#CD853F");  // Peru
+    gradient.addColorStop(1, "#8B4513");
+    context.fillStyle = gradient;
+    context.fillRect(-halfWidth, -10, currentStickWidth, 20);
+    context.restore();
+    
+    // Draw pivot as a small blue circle
+    context.save();
+    context.fillStyle = "blue";
     context.beginPath();
     context.arc(0, 0, 5, 0, Math.PI * 2);
     context.fill();
     context.restore();
     
-    // Use customText for letters; if empty, default to "AVID"
-    const letters = (customText || "AVID").split('');
-    const tileSpacing = 200 / letters.length; // stick length divided by number of letters
-    const startX = -((letters.length - 1) * tileSpacing) / 2;
+    // Draw letter tiles so that they always remain vertical.
+    const letters = (customText || "PALINDROMES").split('');
+    const tileCount = letters.length;
+    // Reduce margin if tile count > 7 to make individual tiles wider
+    const tileMargin = (tileCount > 7) ? 2 : 4;
+    const effectiveTileWidth = (currentStickWidth - (tileCount + 1) * tileMargin) / tileCount;
+    const tileHeight = 20; // same as stick height
+    let startX = -currentStickWidth / 2 + tileMargin;
     
-    for (let i = 0; i < letters.length; i++) {
+    for (let i = 0; i < tileCount; i++) {
         context.save();
-        // Move to each letter's fixed position on the stick
-        const offsetX = startX + i * tileSpacing;
-        context.translate(offsetX, 0);
-        // Reverse rotation so tile is always upright
+        // Compute center of current tile in stick-space
+        const tileX = startX + i * (effectiveTileWidth + tileMargin) + effectiveTileWidth / 2;
+        // Move to the tile's center then undo stick rotation so tile remains vertical
+        context.translate(tileX, 0);
         context.rotate(-stick.angle);
-        // Draw the letter using white text for contrast
-        context.fillStyle = "white";
-        context.font = "20px sans-serif";
-        const text = letters[i];
-        const textWidth = context.measureText(text).width;
-        context.fillText(text, -textWidth/2, 7);
+        
+        // Draw a rounded rectangle for the tile
+        context.fillStyle = "#FFF";
+        context.strokeStyle = "#444";
+        context.lineWidth = 2;
+        const radius = 4;
+        const tileX0 = -effectiveTileWidth / 2; // tile's top-left x relative to center
+        const tileY0 = -tileHeight / 2;           // tile's top-left y relative to center
+        context.beginPath();
+        context.moveTo(tileX0 + radius, tileY0);
+        context.lineTo(tileX0 + effectiveTileWidth - radius, tileY0);
+        context.quadraticCurveTo(tileX0 + effectiveTileWidth, tileY0, tileX0 + effectiveTileWidth, tileY0 + radius);
+        context.lineTo(tileX0 + effectiveTileWidth, tileY0 + tileHeight - radius);
+        context.quadraticCurveTo(tileX0 + effectiveTileWidth, tileY0 + tileHeight, tileX0 + effectiveTileWidth - radius, tileY0 + tileHeight);
+        context.lineTo(tileX0 + radius, tileY0 + tileHeight);
+        context.quadraticCurveTo(tileX0, tileY0 + tileHeight, tileX0, tileY0 + tileHeight - radius);
+        context.lineTo(tileX0, tileY0 + radius);
+        context.quadraticCurveTo(tileX0, tileY0, tileX0 + radius, tileY0);
+        context.closePath();
+        context.fill();
+        context.stroke();
+        
+        // Scale text relative to canvas (baseline: 16px at 800px width)
+        const fontSize = 16 * (canvasWidth / 800);
+        context.fillStyle = "#222";
+        context.font = "bold " + fontSize + "px Roboto";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(letters[i], 0, 0);
         context.restore();
     }
+    
     context.restore();
 });
 
 // Run the engine and renderer
-Engine.run(engine);
+const runner = Matter.Runner.create();
+Matter.Runner.run(runner, engine);
 Render.run(render);
 
 // Update lastInteractionTime on user interaction events
 function updateInteractionTime() {
     lastInteractionTime = Date.now();
 }
-document.addEventListener('mousedown', updateInteractionTime);
-document.addEventListener('mousemove', updateInteractionTime);
-document.addEventListener('touchstart', updateInteractionTime);
-document.addEventListener('touchmove', updateInteractionTime);
