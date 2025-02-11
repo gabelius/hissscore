@@ -25,6 +25,12 @@ const render = Render.create({
     }
 });
 
+// Add this line to fetch the Nunito font
+const link = document.createElement('link');
+link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap';
+link.rel = 'stylesheet';
+document.head.appendChild(link);
+
 // Update pivot to be center of canvas
 const pivot = { x: canvasWidth / 2, y: canvasHeight / 2 };
 
@@ -79,7 +85,7 @@ const mouse = Mouse.create(render.canvas);
 let isInteracting = false;
 
 // Global variable for custom text with default value "PALINDROMES"
-let customText = "AVID";
+let customText = "avid";
 // Array of 20 semordnilap words (all capitalised)
 const semordnilaps = ["AIBOHPHOBIA", "RACECAR", "KAYAK", "PALINDROMES", "LEVELER", "STRESSED", "DESSERTS", "DIAPER", "REPAID", "DRAWER", "REWARD", "PARTS", "STRAP", "REGAL", "LAGER", "GOD", "DOG", "EVIL", "LIVE", "STOP", "POTS", "STAR", "RATS", "LOOP", "POOL"];
 
@@ -106,9 +112,9 @@ document.addEventListener('touchend', () => {
     updateInteractionTime();
 });
 
-// Listen to changes in the input box to update customText (convert to uppercase)
+// Listen to changes in the input box to update customText (convert to lowercase)
 document.getElementById('customText').addEventListener('input', function(e) {
-    customText = (e.target.value || "PALINDROMES").toUpperCase();
+    customText = (e.target.value || "palindromes").toLowerCase();
     e.target.value = customText;
     adjustStickSize();
 });
@@ -511,13 +517,15 @@ Events.on(render, 'afterRender', function() {
     ctx.arc(0, 0, 5, 0, Math.PI * 2);
     ctx.fill();
     
-    // --- Draw letter tiles (unchanged) ---
-    const letters = (customText || "AVID").split('');
+    // --- Draw letters directly on the stick ---
+    const letters = (customText || "avid").split('');
     const tileCount = letters.length;
     const totalGap = currentStickWidth * 0.1;
     const tileWidth = (currentStickWidth - totalGap) / tileCount;
     const gap = totalGap / (tileCount + 1);
     let startX = -currentStickWidth / 2 + gap;
+    
+    const colors = ["#ffeb3b", "#ff5722", "#ff9800"]; // bright pastel colors
     
     for (let i = 0; i < tileCount; i++) {
         ctx.save();
@@ -525,18 +533,18 @@ Events.on(render, 'afterRender', function() {
         ctx.translate(tileCenterX, 0);
         ctx.rotate(-stick.angle);
         
-        ctx.fillStyle = "#FFF";
-        ctx.fillRect(-tileWidth/2, -tileWidth/2, tileWidth, tileWidth);
-        ctx.strokeStyle = "#444";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(-tileWidth/2, -tileWidth/2, tileWidth, tileWidth);
-        
         const fontSize = Math.floor(tileWidth / 2);
-        ctx.fillStyle = "#222";
+        ctx.fillStyle = colors[i % colors.length];
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = "bold " + fontSize + "px Poppins"; // changed font to Poppins Bold
+        ctx.font = "bold " + fontSize + "px Nunito"; // changed font to Nunito
         ctx.fillText(letters[i], 0, 0);
+        
+        // Add stroke to the letters
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 2;
+        ctx.strokeText(letters[i], 0, 0);
+        
         ctx.restore();
     }
     ctx.restore();
