@@ -375,11 +375,26 @@ let currentBackgroundOption = backgroundOptions[Math.floor(Math.random() * backg
 // NEW: Global variable for current background pattern.
 let currentBackgroundPattern = backgroundPatterns[Math.floor(Math.random() * backgroundPatterns.length)];
 
+// NEW: Global variable for static background image.
+let currentBackgroundImage = null;
+
+// NEW: Helper function to create a static background image.
+function createStaticBackground(patternFn, width, height) {
+    const offScreen = document.createElement('canvas');
+    offScreen.width = width;
+    offScreen.height = height;
+    const ctx = offScreen.getContext('2d');
+    patternFn(ctx, width, height);
+    return offScreen;
+}
+
 // Helper: update the background pattern on new word
 function updateBackgroundPattern() {
     const option = backgroundOptions[Math.floor(Math.random() * backgroundOptions.length)];
     currentBackgroundOption = option;
     updateUITheme(option.theme);
+    // NEW: Generate static background image.
+    currentBackgroundImage = createStaticBackground(option.pattern, canvasWidth, canvasHeight);
 }
 
 // NEW: Helper to update UI theme based on the selected background option.
@@ -420,11 +435,12 @@ const woodTexture = createWoodPattern();
 // Replace the existing afterRender event:
 Events.on(render, 'afterRender', function() {
     const context = render.context;
-    // First, draw the current background pattern.
+    // NEW: Draw the pre-rendered static background image.
     context.save();
-    // Reset any transform before drawing background.
     context.setTransform(1, 0, 0, 1, 0, 0);
-    currentBackgroundOption.pattern(context, canvasWidth, canvasHeight);
+    if (currentBackgroundImage) {
+        context.drawImage(currentBackgroundImage, 0, 0);
+    }
     context.restore();
     
     context.save();
