@@ -331,17 +331,23 @@ Events.on(render, 'afterRender', function() {
     // Draw letter tiles as squares.
     const letters = (customText || "PALINDROMES").split('');
     const tileCount = letters.length;
-    const tileMargin = (tileCount > 7) ? 2 : 4;
-    // effectiveTileWidth is the available width divided evenly; use it for both dimensions.
-    const effectiveTileWidth = (currentStickWidth - (tileCount + 1) * tileMargin) / tileCount;
+    // NEW: Define extra margin (5% of stick width) to protrude on each side.
+    const extraMargin = currentStickWidth * 0.05;
+    // NEW: Define a minimum gap (in pixels) to be visible between tiles.
+    const minGap = 10;
+    // NEW: Calculate available width for letters by subtracting the two extra margins and the gaps between tiles.
+    const letterRegionWidth = currentStickWidth - 2 * extraMargin - (tileCount - 1) * minGap;
+    // NEW: Compute effective tile width based on the adjusted letter region.
+    const effectiveTileWidth = letterRegionWidth / tileCount;
     const tileSide = effectiveTileWidth; // Square tile
     
-    let startX = -currentStickWidth / 2 + tileMargin;
+    // NEW: Starting X coordinate from left edge of the letter region.
+    let startX = -currentStickWidth / 2 + extraMargin;
     
     for (let i = 0; i < tileCount; i++) {
         context.save();
         // Center of current tile in stick-space
-        const tileX = startX + i * (effectiveTileWidth + tileMargin) + effectiveTileWidth / 2;
+        const tileX = startX + i * (effectiveTileWidth + minGap) + effectiveTileWidth / 2;
         context.translate(tileX, 0);
         // Undo stick rotation to keep tile vertical
         context.rotate(-stick.angle);
