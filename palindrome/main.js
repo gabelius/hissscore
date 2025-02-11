@@ -49,10 +49,16 @@ World.add(world, [stick, pivotConstraint]);
 // Move initialization here to ensure they are available beforehand
 function adjustStickSize() {
     let computedWidth = 50 * customText.length;
-    if (customText.length > 7 && computedWidth < 300) {
+    if(customText.length > 7 && computedWidth < 300) {
         computedWidth = 300;
     }
-    const newStickWidth = Math.min(computedWidth, canvas.width * 0.85);
+    // If more than 5 letters, force stick width to be at least 90% of the canvas width.
+    let newStickWidth;
+    if(customText.length > 5) {
+        newStickWidth = Math.max(computedWidth, canvas.width * 0.9);
+    } else {
+        newStickWidth = Math.min(computedWidth, canvas.width * 0.85);
+    }
     const factor = newStickWidth / currentStickWidth;
     Body.scale(stick, factor, 1);
     currentStickWidth = newStickWidth;
@@ -466,13 +472,10 @@ Events.on(render, 'afterRender', function() {
     // Draw letter tiles as squares.
     const letters = (customText || "PALINDROMES").split('');
     const tileCount = letters.length;
-    // NEW: Define extra margin (5% of stick width) to protrude on each side.
+    // NEW: Define extra margin and mobile-adapted minimum gap.
     const extraMargin = currentStickWidth * 0.05;
-    // NEW: Define a minimum gap (in pixels) to be visible between tiles.
-    const minGap = 10;
-    // NEW: Calculate available width for letters by subtracting the two extra margins and the gaps between tiles.
+    const minGap = (canvasWidth < 600) ? 5 : 10; // Lower gap on mobile
     const letterRegionWidth = currentStickWidth - 2 * extraMargin - (tileCount - 1) * minGap;
-    // NEW: Compute effective tile width based on the adjusted letter region.
     const effectiveTileWidth = letterRegionWidth / tileCount;
     const tileSide = effectiveTileWidth; // Square tile
     
