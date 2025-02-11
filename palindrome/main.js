@@ -348,7 +348,7 @@ Events.on(render, 'afterRender', function() {
         context.stroke();
         
         // Center the letter with equal padding.
-        const fontSize = 16 * (canvasWidth / 800);
+        const fontSize = Math.max(20, 16 * (canvasWidth / 800));
         context.fillStyle = "#222";
         context.font = "bold " + fontSize + "px Roboto";
         context.textAlign = "center";
