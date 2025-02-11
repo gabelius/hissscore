@@ -79,7 +79,7 @@ const mouse = Mouse.create(render.canvas);
 let isInteracting = false;
 
 // Global variable for custom text with default value "PALINDROMES"
-let customText = "PALINDROMES";
+let customText = "AVID";
 // Array of 20 semordnilap words (all capitalised)
 const semordnilaps = ["STRESSED", "DESSERTS", "DIAPER", "REPAID", "DRAWER", "REWARD", "PARTS", "STRAP", "REGAL", "LAGER", "GOD", "DOG", "EVIL", "LIVE", "STOP", "POTS", "STAR", "RATS", "LOOP", "POOL"];
 
