@@ -63,7 +63,7 @@ function adjustStickSize() {
         computedWidth = Math.min(computedWidth, maxWidth);
         // Increase stick thickness and font size in landscape mode.
         currentStickHeight = 60; // increased thickness
-        textStyle.font = "bold 45px Nunito"; // increased font size
+        textStyle.font = "bold 55px Nunito"; // increased font height
     } else {
         computedWidth = Math.min(computedWidth, canvasWidth);
         currentStickHeight = 40;
