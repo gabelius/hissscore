@@ -200,7 +200,8 @@ function rotateStickFewDegrees(callback) {
     const currentAngle = stick.angle;
     const targetAngle = currentAngle + (Math.random() > 0.5 ? Math.PI / 6 : -Math.PI / 6); // rotate 30 degrees in random direction
     const startTime = performance.now();
-    function easeOut(t) { return t * (2 - t); }
+    snapStick(); // snap to rest after auto rotation
+    //function easeOut(t) { return t * (2 - t); }
     
     function animate(time) {
         const t = Math.min((time - startTime) / duration, 1);
