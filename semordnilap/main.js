@@ -233,33 +233,109 @@ document.getElementById('randomBtn').addEventListener('click', () => {
 // Add a flag to prevent overlapping auto rotations
 let autoRotating = false;
 
-// Update autoRotate function to pause auto mode during user interactions and resume after 5 seconds of inactivity.
-function autoRotate() {
-    // If the user is interacting or inactivity is less than 5 seconds, do nothing.
-    if (isInteracting || Date.now() - lastInteractionTime < 5000) return;
-    
-    if (Date.now() - lastInteractionTime >= 5000) {
-        autoRotating = true;
-        rotateStick180(() => {
-            setTimeout(() => {
-                lastInteractionTime = Date.now();
-                autoRotating = false;
-                autoRotationCount++;
-                if (autoRotationCount >= 2) {
-                    const rand = Math.floor(Math.random() * semordnilaps.length);
-                    customText = semordnilaps[rand];
-                    document.getElementById('customText').value = customText;
-                    adjustStickSize();
-                    autoRotationCount = 0;
-                    updateBackgroundPattern();
+// Remove previous autoRotate and its setInterval.
+// New helper functions for synchronized auto mode.
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function waitForNoInteraction() {
+    return new Promise(resolve => {
+        function check() {
+            if (Date.now() - lastInteractionTime >= 5000) {
+                resolve();
+            } else {
+                setTimeout(check, 100);
+            }
+        }
+        check();
+    });
+}
+
+function wiggleStick() {
+    return new Promise(resolve => {
+        const originalAngle = stick.angle;
+        const targetAngle = originalAngle + (Math.PI / 6); // 30 degrees
+        const duration = 1000; // 1 sec for each half
+        const startTime = performance.now();
+        function animateForward(time) {
+            const t = Math.min((time - startTime) / duration, 1);
+            const easedT = t * (2 - t); // ease-out
+            const newAngle = originalAngle + (targetAngle - originalAngle) * easedT;
+            Body.setAngle(stick, newAngle);
+            if (t < 1) {
+                requestAnimationFrame(animateForward);
+            } else {
+                const backStart = performance.now();
+                function animateBackward(timeBack) {
+                    const t2 = Math.min((timeBack - backStart) / duration, 1);
+                    const easedT2 = t2 * (2 - t2);
+                    const newAngle2 = targetAngle + (originalAngle - targetAngle) * easedT2;
+                    Body.setAngle(stick, newAngle2);
+                    if (t2 < 1) {
+                        requestAnimationFrame(animateBackward);
+                    } else {
+                        resolve();
+                    }
                 }
-            }, 2000);
-        });
-    } else { 
-        rotateStickFewDegrees(snapStick);
+                requestAnimationFrame(animateBackward);
+            }
+        }
+        requestAnimationFrame(animateForward);
+    });
+}
+
+function rotateStick180Auto() {
+    return new Promise(resolve => {
+        const duration = 5000; // 5 seconds
+        const currentAngle = stick.angle;
+        const targetAngle = currentAngle + Math.PI;
+        const startTime = performance.now();
+        function animate(time) {
+            const t = Math.min((time - startTime) / duration, 1);
+            const easedT = t * (2 - t);
+            const newAngle = currentAngle + (targetAngle - currentAngle) * easedT;
+            Body.setAngle(stick, newAngle);
+            if (t < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                resolve();
+            }
+        }
+        requestAnimationFrame(animate);
+    });
+}
+
+async function autoSequence() {
+    while (true) {
+        // Ensure 5 seconds of inactivity.
+        await waitForNoInteraction();
+        
+        // 1. Wiggle stick (30° forward and back over 2 sec).
+        await wiggleStick();
+        
+        // 2. Rotate 180° over 5 seconds.
+        await rotateStick180Auto();
+        
+        // 3. Wait 2 seconds.
+        await delay(2000);
+        
+        // 4. Rotate 180° over 5 seconds.
+        await rotateStick180Auto();
+        
+        // 5. Wait 2 seconds.
+        await delay(2000);
+        
+        // 6. Update to a new random word.
+        const rand = Math.floor(Math.random() * semordnilaps.length);
+        customText = semordnilaps[rand];
+        document.getElementById('customText').value = customText;
+        adjustStickSize();
+        updateBackgroundPattern();
     }
 }
-setInterval(autoRotate, 1000);
+autoSequence();
 
 // NEW: Define several background pattern functions.
 function drawCheckerboard(ctx, width, height) {
