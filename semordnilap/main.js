@@ -234,7 +234,7 @@ let autoRotating = false;
 
 function autoRotate() {
     if (autoRotating) return;
-    if (Date.now() - lastInteractionTime >= 5000) {
+    if (Date.now() - lastInteractionTime >= 2000) { // decreased pause to 2 seconds
         autoRotating = true;
         rotateStick180(() => {
             setTimeout(() => {
@@ -249,7 +249,7 @@ function autoRotate() {
                     autoRotationCount = 0;
                     updateBackgroundPattern(); // NEW: update background pattern here as well.
                 }
-            }, 5000);
+            }, 2000); // decreased pause to 2 seconds
         });
     } else {
         rotateStickFewDegrees(snapStick); // rotate a few degrees and come back to rest
