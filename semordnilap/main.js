@@ -194,6 +194,29 @@ function rotateStick180(callback) {
     requestAnimationFrame(animate);
 }
 
+// New function to rotate the stick a few degrees and come back to rest
+function rotateStickFewDegrees(callback) {
+    const duration = 1000; // 1 second for small rotations
+    const currentAngle = stick.angle;
+    const targetAngle = currentAngle + (Math.random() > 0.5 ? Math.PI / 6 : -Math.PI / 6); // rotate 30 degrees in random direction
+    const startTime = performance.now();
+    function easeOut(t) { return t * (2 - t); }
+    
+    function animate(time) {
+        const t = Math.min((time - startTime) / duration, 1);
+        const easedT = easeOut(t);
+        const newAngle = currentAngle + (targetAngle - currentAngle) * easedT;
+        Body.setAngularVelocity(stick, 0);
+        Body.setAngle(stick, newAngle);
+        if(t < 1) {
+            requestAnimationFrame(animate);
+        } else if(callback) {
+            callback();
+        }
+    }
+    requestAnimationFrame(animate);
+}
+
 // Button event listeners
 document.getElementById('rotateBtn').addEventListener('click', () => {
     rotateStick180();
@@ -228,6 +251,8 @@ function autoRotate() {
                 }
             }, 5000);
         });
+    } else {
+        rotateStickFewDegrees(snapStick); // rotate a few degrees and come back to rest
     }
 }
 setInterval(autoRotate, 1000);
