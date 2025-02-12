@@ -78,7 +78,7 @@ let isInteracting = false;
 // Global variable for custom text with default value "PALINDROMES"
 let customText = "avid";
 // Array of 20 semordnilap words (all capitalised)
-const semordnilaps = ["aibohphobia", "racecar", "dracula". "kayak", "palindromes", "leveler", "stressed", "desserts", "diaper", "repaid", "drawer", "reward", "parts", "strap", "regal", "lager", "god", "dog", "evil", "live", "stop", "pots", "star", "rats", "loop", "pool"];
+const semordnilaps = ["aibohphobia", "racecar", "dracula", "kayak", "palindromes", "leveler", "stressed", "desserts", "diaper", "repaid", "drawer", "reward", "parts", "strap", "regal", "lager", "god", "dog", "evil", "live", "stop", "pots", "star", "rats", "loop", "pool"];
 
 // Last interaction timestamp
 let lastInteractionTime = Date.now();
