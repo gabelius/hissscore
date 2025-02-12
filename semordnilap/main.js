@@ -54,8 +54,15 @@ World.add(world, [stick, pivotConstraint]);
 
 // Move initialization here to ensure they are available beforehand
 function adjustStickSize() {
-    let computedWidth = 50 * Math.max(customText.length, 3); // ensure minimum length for 3 letters
-    computedWidth = Math.min(computedWidth, canvasWidth); // ensure stick width does not exceed device width
+    let computedWidth = 50 * Math.max(customText.length, 3); // base computation
+    if (canvasWidth > canvasHeight) { // Landscape mode
+        const minWidth = canvasWidth * 0.6;
+        const maxWidth = canvasWidth * 0.8;
+        computedWidth = Math.max(computedWidth, minWidth);
+        computedWidth = Math.min(computedWidth, maxWidth);
+    } else {
+        computedWidth = Math.min(computedWidth, canvasWidth);
+    }
     const factor = computedWidth / currentStickWidth;
     Body.scale(stick, factor, 1);
     currentStickWidth = computedWidth;
