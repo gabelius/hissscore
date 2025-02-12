@@ -78,7 +78,7 @@ let isInteracting = false;
 // Global variable for custom text with default value "PALINDROMES"
 let customText = "avid";
 // Array of 20 semordnilap words (all capitalised)
-const semordnilaps = ["aibohphobia", "racecar", "kayak", "palindromes", "leveler", "stressed", "desserts", "diaper", "repaid", "drawer", "reward", "parts", "strap", "regal", "lager", "god", "dog", "evil", "live", "stop", "pots", "star", "rats", "loop", "pool"];
+const semordnilaps = ["aibohphobia", "racecar", "dracula". "kayak", "palindromes", "leveler", "stressed", "desserts", "diaper", "repaid", "drawer", "reward", "parts", "strap", "regal", "lager", "god", "dog", "evil", "live", "stop", "pots", "star", "rats", "loop", "pool"];
 
 // Last interaction timestamp
 let lastInteractionTime = Date.now();
@@ -260,6 +260,7 @@ function wiggleStick() {
         const duration = 1000; // 1 sec for each half
         const startTime = performance.now();
         function animateForward(time) {
+            if (isInteracting) { resolve(); return; } // Cancel auto mode on user interaction
             const t = Math.min((time - startTime) / duration, 1);
             const easedT = t * (2 - t); // ease-out
             const newAngle = originalAngle + (targetAngle - originalAngle) * easedT;
@@ -269,6 +270,7 @@ function wiggleStick() {
             } else {
                 const backStart = performance.now();
                 function animateBackward(timeBack) {
+                    if (isInteracting) { resolve(); return; } // Cancel if interrupted
                     const t2 = Math.min((timeBack - backStart) / duration, 1);
                     const easedT2 = t2 * (2 - t2);
                     const newAngle2 = targetAngle + (originalAngle - targetAngle) * easedT2;
@@ -293,6 +295,7 @@ function rotateStick180Auto() {
         const targetAngle = currentAngle + Math.PI;
         const startTime = performance.now();
         function animate(time) {
+            if (isInteracting) { resolve(); return; } // Cancel auto mode on user interaction
             const t = Math.min((time - startTime) / duration, 1);
             const easedT = t * (2 - t);
             const newAngle = currentAngle + (targetAngle - currentAngle) * easedT;
