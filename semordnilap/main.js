@@ -170,6 +170,16 @@ function snapStick() {
     requestAnimationFrame(animate);
 }
 
+// NEW: Helper function to immediately snap stick to nearest horizontal position.
+function snapStickImmediate() {
+    const currentAngle = stick.angle;
+    let normalized = ((currentAngle + Math.PI) % (2 * Math.PI)) - Math.PI;
+    const targetNormalized = (Math.abs(normalized) <= Math.PI / 2) ? 0 : (normalized > 0 ? Math.PI : -Math.PI);
+    const base = currentAngle - normalized;
+    Body.setAngularVelocity(stick, 0);
+    Body.setAngle(stick, base + targetNormalized);
+}
+
 // New function to rotate the stick by 180° (clockwise)
 // Accepts an optional callback when animation completes.
 function rotateStick180(callback) {
@@ -260,7 +270,7 @@ function wiggleStick() {
         const duration = 1000; // 1 sec for each half
         const startTime = performance.now();
         function animateForward(time) {
-            if (isInteracting) { resolve(); return; } // Cancel auto mode on user interaction
+            if (isInteracting) { snapStickImmediate(); resolve(); return; } // modified for immediate snap
             const t = Math.min((time - startTime) / duration, 1);
             const easedT = t * (2 - t); // ease-out
             const newAngle = originalAngle + (targetAngle - originalAngle) * easedT;
@@ -270,7 +280,7 @@ function wiggleStick() {
             } else {
                 const backStart = performance.now();
                 function animateBackward(timeBack) {
-                    if (isInteracting) { resolve(); return; } // Cancel if interrupted
+                    if (isInteracting) { snapStickImmediate(); resolve(); return; } // modified for immediate snap
                     const t2 = Math.min((timeBack - backStart) / duration, 1);
                     const easedT2 = t2 * (2 - t2);
                     const newAngle2 = targetAngle + (originalAngle - targetAngle) * easedT2;
@@ -295,7 +305,7 @@ function rotateStick180Auto() {
         const targetAngle = currentAngle + Math.PI;
         const startTime = performance.now();
         function animate(time) {
-            if (isInteracting) { resolve(); return; } // Cancel auto mode on user interaction
+            if (isInteracting) { snapStickImmediate(); resolve(); return; } // modified for immediate snap
             const t = Math.min((time - startTime) / duration, 1);
             const easedT = t * (2 - t);
             const newAngle = currentAngle + (targetAngle - currentAngle) * easedT;
