@@ -55,6 +55,7 @@ World.add(world, [stick, pivotConstraint]);
 // Move initialization here to ensure they are available beforehand
 function adjustStickSize() {
     let computedWidth = 50 * Math.max(customText.length, 3); // ensure minimum length for 3 letters
+    computedWidth = Math.min(computedWidth, canvasWidth); // ensure stick width does not exceed device width
     const factor = computedWidth / currentStickWidth;
     Body.scale(stick, factor, 1);
     currentStickWidth = computedWidth;
@@ -143,7 +144,7 @@ Events.on(engine, 'beforeUpdate', function() {
 
 // Helper function to slowly snap stick angle to nearest horizontal (0 or ±π)
 function snapStick() {
-    const duration = 1500; // changed from 1000ms to 1500ms for 50% slower animation
+    const duration = 3000; // changed from 1500ms to 3000ms for slower animation
     const currentAngle = stick.angle;
     // Normalize currentAngle to [-π, π)
     let normalized = ((currentAngle + Math.PI) % (2 * Math.PI)) - Math.PI;
@@ -478,9 +479,9 @@ function drawGearPattern(ctx, width, height) {
     }
 }
 
-// Define text styles for uniformity
+// Define text styles for uniformity with a bigger font size
 const textStyle = {
-    font: "bold 20px Nunito",
+    font: "bold 30px Nunito", // increased font size from 20px to 30px
     fillStyle: "#ffeb3b", // bright pastel yellow
     strokeStyle: "#000",
     lineWidth: 2
@@ -505,8 +506,8 @@ Events.on(render, 'afterRender', function() {
     // --- Draw stick with gear finish ---
     drawGearPattern(ctx, currentStickWidth, 40);
     
-    // Draw pivot as a small blue circle.
-    ctx.fillStyle = "blue";
+    // Draw pivot as a small transparent circle.
+    ctx.fillStyle = "rgba(0, 0, 255, 0)"; // transparent color
     ctx.beginPath();
     ctx.arc(0, 0, 5, 0, Math.PI * 2);
     ctx.fill();
@@ -554,4 +555,7 @@ function updateInteractionTime() {
 window.addEventListener('DOMContentLoaded', () => {
     adjustStickSize();
     updateBackgroundPattern();
+    // Rotate the stick a few degrees before coming to rest
+    Body.setAngle(stick, Math.PI / 6); // rotate 30 degrees
+    snapStick();
 });
