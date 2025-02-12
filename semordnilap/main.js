@@ -37,6 +37,7 @@ const pivot = { x: canvasWidth / 2, y: canvasHeight / 2 };
 // Create the stick with initial width relative to viewport (e.g. 30% of canvas width)
 const initialStickWidth = Math.max(200, canvasWidth * 0.3);
 let currentStickWidth = initialStickWidth;
+let currentStickHeight = 40; // NEW: Global variable for stick height (thickness)
 const stick = Bodies.rectangle(pivot.x, pivot.y, initialStickWidth, 40, { // increased height from 20 to 40
     render: { fillStyle: 'blue' }
 });
@@ -60,8 +61,13 @@ function adjustStickSize() {
         const maxWidth = canvasWidth * 0.8;
         computedWidth = Math.max(computedWidth, minWidth);
         computedWidth = Math.min(computedWidth, maxWidth);
+        // Increase stick thickness and font size in landscape mode.
+        currentStickHeight = 60; // increased thickness
+        textStyle.font = "bold 45px Nunito"; // increased font size
     } else {
         computedWidth = Math.min(computedWidth, canvasWidth);
+        currentStickHeight = 40;
+        textStyle.font = "bold 30px Nunito";
     }
     const factor = computedWidth / currentStickWidth;
     Body.scale(stick, factor, 1);
@@ -627,8 +633,8 @@ Events.on(render, 'afterRender', function() {
     ctx.translate(stick.position.x, stick.position.y);
     ctx.rotate(stick.angle);
     
-    // --- Draw stick with gear finish ---
-    drawGearPattern(ctx, currentStickWidth, 40);
+    // --- Draw stick with gear finish using currentStickHeight ---
+    drawGearPattern(ctx, currentStickWidth, currentStickHeight);
     
     // Draw pivot as a small transparent circle.
     ctx.fillStyle = "rgba(0, 0, 255, 0)"; // transparent color
@@ -653,7 +659,7 @@ Events.on(render, 'afterRender', function() {
         ctx.fillStyle = textStyle.fillStyle;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = textStyle.font; // uniform font style
+        ctx.font = textStyle.font; // now dynamic font style
         
         // Draw 3D effect
         ctx.fillText(letters[i], 2, 2); // shadow offset
