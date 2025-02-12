@@ -479,11 +479,10 @@ function drawGearPattern(ctx, width, height) {
     }
 }
 
-// Define text styles for uniformity with a bigger font size
+// Define text styles for uniformity with a bigger font size and bold style
 const textStyle = {
     font: "bold 30px Nunito", // increased font size from 20px to 30px
     fillStyle: "#ffeb3b", // bright pastel yellow
-    strokeStyle: "#000",
     lineWidth: 2
 };
 
@@ -530,12 +529,11 @@ Events.on(render, 'afterRender', function() {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.font = textStyle.font; // uniform font style
-        ctx.fillText(letters[i], 0, 0);
         
-        // Add stroke to the letters
-        ctx.strokeStyle = textStyle.strokeStyle;
-        ctx.lineWidth = textStyle.lineWidth;
-        ctx.strokeText(letters[i], 0, 0);
+        // Draw 3D effect
+        ctx.fillText(letters[i], 2, 2); // shadow offset
+        ctx.fillStyle = "#000"; // shadow color
+        ctx.fillText(letters[i], 0, 0); // main text
         
         ctx.restore();
     }
