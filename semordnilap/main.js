@@ -233,9 +233,12 @@ document.getElementById('randomBtn').addEventListener('click', () => {
 // Add a flag to prevent overlapping auto rotations
 let autoRotating = false;
 
+// Update autoRotate function to pause auto mode during user interactions and resume after 5 seconds of inactivity.
 function autoRotate() {
-    if (autoRotating) return;
-    if (Date.now() - lastInteractionTime >= 2000) { // decreased pause to 2 seconds
+    // If the user is interacting or inactivity is less than 5 seconds, do nothing.
+    if (isInteracting || Date.now() - lastInteractionTime < 5000) return;
+    
+    if (Date.now() - lastInteractionTime >= 5000) {
         autoRotating = true;
         rotateStick180(() => {
             setTimeout(() => {
@@ -248,12 +251,12 @@ function autoRotate() {
                     document.getElementById('customText').value = customText;
                     adjustStickSize();
                     autoRotationCount = 0;
-                    updateBackgroundPattern(); // NEW: update background pattern here as well.
+                    updateBackgroundPattern();
                 }
-            }, 2000); // decreased pause to 2 seconds
+            }, 2000);
         });
-    } else {
-        rotateStickFewDegrees(snapStick); // rotate a few degrees and come back to rest
+    } else { 
+        rotateStickFewDegrees(snapStick);
     }
 }
 setInterval(autoRotate, 1000);
