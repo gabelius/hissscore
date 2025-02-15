@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>3D Snake Game</title>
+  <title>3D Snake Garden</title>
   <style>
-    /* Basic reset and styling */
+    /* Reset and basic styling */
     html, body {
       margin: 0;
       padding: 0;
@@ -12,7 +12,7 @@
       background-color: #222;
       font-family: Arial, sans-serif;
       color: #fff;
-      touch-action: none; /* Prevent default touch behaviors */
+      touch-action: none; /* Disable default touch actions */
     }
     #gameOverlay {
       position: absolute;
@@ -22,6 +22,7 @@
       background: rgba(0, 0, 0, 0.5);
       padding: 10px;
       border-radius: 5px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -32,26 +33,28 @@
     <div>Snake Length: <span id="snakeLength">1</span></div>
     <div>Status: <span id="gameStatus">Running</span></div>
     <div style="font-size: 12px; margin-top: 5px;">
-      Controls: Use arrow keys or WASD for horizontal movement, Q/E for vertical movement.<br>
-      On mobile, swipe horizontally to change direction and swipe vertically to change floors.
+      Controls:<br>
+      Keyboard: Use arrow keys or WASD to move, Q/E for vertical moves.<br>
+      Touch: Swipe horizontally to change direction and vertically to move between levels.
     </div>
   </div>
 
-  <!-- Load PixiJS from CDN -->
+  <!-- Load PixiJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.5.2/browser/pixi.min.js"></script>
   <script>
-    /***********************************************
-     * 3D Snake Game Implementation using PixiJS  *
-     ***********************************************/
+    /*********************************************
+     * 3D Snake Garden Game - Cylindrical Snake  *
+     *********************************************/
 
-    // Game configuration constants
+    // Game configuration
     const GRID_SIZE = 20;
     const GAME_WIDTH = 600;
     const GAME_HEIGHT = 600;
-    const FLOOR_COUNT = 3;
-    // Projection offsets per floor level (simulate 30° top-down view)
-    const FLOOR_OFFSET_X = 20; // horizontal shift per floor
-    const FLOOR_OFFSET_Y = 10; // vertical shift per floor
+    const FLOOR_COUNT = 3; // 0: ground, 1: elevated, 2: highest
+
+    // Offsets to simulate a 30° top-down projection effect
+    const FLOOR_OFFSET_X = 20;
+    const FLOOR_OFFSET_Y = 10;
 
     // Create the PixiJS application
     const app = new PIXI.Application({
@@ -61,108 +64,189 @@
     });
     document.body.appendChild(app.view);
 
-    // Main container for game objects
+    // Main container for all game elements
     const gameContainer = new PIXI.Container();
     app.stage.addChild(gameContainer);
 
-    /********************
-     * Helper Functions *
-     ********************/
-
-    // Simple oblique projection for (x, y, z) -> screen coordinate.
+    // Projection function: maps (x,y,z) to screen coordinates.
     function project3D(x, y, z) {
-      const screenX = x + z * FLOOR_OFFSET_X;
-      const screenY = y - z * FLOOR_OFFSET_Y;
-      return { x: screenX, y: screenY };
+      return {
+        x: x + z * FLOOR_OFFSET_X,
+        y: y - z * FLOOR_OFFSET_Y
+      };
     }
 
-    /********************
-     * Draw the Floors  *
-     ********************/
-    function createFloor(z, color) {
-      const floor = new PIXI.Graphics();
-      floor.beginFill(color);
-      floor.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-      floor.endFill();
-      // Position floor based on its z-level projection
-      const pos = project3D(0, 0, z);
-      floor.x = pos.x;
-      floor.y = pos.y;
-      // Use transparency so game objects above remain visible
-      floor.alpha = 0.1;
-      return floor;
-    }
-    const floorColors = [0x555555, 0x666666, 0x777777];
-    for (let z = 0; z < FLOOR_COUNT; z++) {
-      const floor = createFloor(z, floorColors[z]);
-      // Add floors at the bottom of the display list so they appear behind snake and food
-      gameContainer.addChildAt(floor, 0);
-    }
+    /***********************
+     * Garden Environment  *
+     ***********************/
+    // Ground Floor (floor 0): the main garden background with shrubs.
+    const groundContainer = new PIXI.Container();
+    const groundBG = new PIXI.Graphics();
+    groundBG.beginFill(0x88cc88); // grass-green color
+    groundBG.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+    groundBG.endFill();
+    groundContainer.addChild(groundBG);
 
-    /********************
-     * Game State Setup *
-     ********************/
-    // Snake object: starts at the center of the game area on floor 0.
+    // Function to draw a shrub (a simple filled circle)
+    function drawShrub(x, y, radius) {
+      const shrub = new PIXI.Graphics();
+      shrub.beginFill(0x558855);
+      shrub.drawCircle(0, 0, radius);
+      shrub.endFill();
+      shrub.x = x;
+      shrub.y = y;
+      groundContainer.addChild(shrub);
+    }
+    // Add a few shrubs at fixed positions
+    drawShrub(100, 150, 10);
+    drawShrub(300, 400, 12);
+    drawShrub(500, 200, 8);
+    drawShrub(250, 100, 10);
+    drawShrub(450, 500, 12);
+
+    // Position groundContainer using projection (z=0)
+    const groundPos = project3D(0, 0, 0);
+    groundContainer.x = groundPos.x;
+    groundContainer.y = groundPos.y;
+    gameContainer.addChild(groundContainer);
+
+    // Elevated Area for Floor 1: a raised garden patch with a ladder.
+    const elevated1Container = new PIXI.Container();
+    const platform1 = new PIXI.Graphics();
+    platform1.beginFill(0x77aa77);
+    platform1.drawRect(100, 100, 200, 200);
+    platform1.endFill();
+    elevated1Container.addChild(platform1);
+    // Draw a ladder at the left edge of platform1.
+    const ladder1 = new PIXI.Graphics();
+    ladder1.lineStyle(2, 0x654321);
+    const ladderX = 100;
+    const ladderY = 150;
+    ladder1.moveTo(ladderX, ladderY);
+    ladder1.lineTo(ladderX, ladderY + 100);
+    for (let i = 0; i <= 4; i++) {
+      ladder1.moveTo(ladderX, ladderY + i * 25);
+      ladder1.lineTo(ladderX + 15, ladderY + i * 25);
+    }
+    elevated1Container.addChild(ladder1);
+    // Position elevated1Container using projection (z=1)
+    const elevated1Pos = project3D(0, 0, 1);
+    elevated1Container.x = elevated1Pos.x;
+    elevated1Container.y = elevated1Pos.y;
+    gameContainer.addChild(elevated1Container);
+
+    // Elevated Area for Floor 2: a higher patch with its ladder.
+    const elevated2Container = new PIXI.Container();
+    const platform2 = new PIXI.Graphics();
+    platform2.beginFill(0x669966);
+    platform2.drawRect(350, 350, 150, 150);
+    platform2.endFill();
+    elevated2Container.addChild(platform2);
+    // Ladder for elevated2 at the right edge of the platform.
+    const ladder2 = new PIXI.Graphics();
+    ladder2.lineStyle(2, 0x654321);
+    const ladder2X = 350 + 150;
+    const ladder2Y = 370;
+    ladder2.moveTo(ladder2X, ladder2Y);
+    ladder2.lineTo(ladder2X, ladder2Y + 80);
+    for (let i = 0; i <= 3; i++) {
+      ladder2.moveTo(ladder2X, ladder2Y + i * 20);
+      ladder2.lineTo(ladder2X - 15, ladder2Y + i * 20);
+    }
+    elevated2Container.addChild(ladder2);
+    // Position elevated2Container using projection (z=2)
+    const elevated2Pos = project3D(0, 0, 2);
+    elevated2Container.x = elevated2Pos.x;
+    elevated2Container.y = elevated2Pos.y;
+    gameContainer.addChild(elevated2Container);
+
+    /**********************
+     * Game State & Snake *
+     **********************/
+    // The snake starts at the center of the play area on the ground floor.
     let snake = {
-      segments: [
-        {
-          x: Math.floor(GAME_WIDTH / 2 / GRID_SIZE) * GRID_SIZE,
-          y: Math.floor(GAME_HEIGHT / 2 / GRID_SIZE) * GRID_SIZE,
-          z: 0
-        }
-      ],
-      // Initial movement: moving right by GRID_SIZE pixels every move.
+      segments: [{
+        x: Math.floor(GAME_WIDTH / 2 / GRID_SIZE) * GRID_SIZE,
+        y: Math.floor(GAME_HEIGHT / 2 / GRID_SIZE) * GRID_SIZE,
+        z: 0
+      }],
       direction: { x: GRID_SIZE, y: 0, z: 0 },
-      pendingDirection: null, // buffer input changes to apply on next move
-      speed: 200, // movement interval in milliseconds
+      pendingDirection: null,
+      speed: 200, // milliseconds per move
       lastMoveTime: 0,
     };
 
-    // Array to hold Pixi Graphics for each snake segment.
+    // Array to store PIXI.Graphics objects for snake segments (head at index 0).
     let snakeSprites = [];
-    function createSnakeSegmentSprite(segment) {
-      const sprite = new PIXI.Graphics();
-      sprite.beginFill(0x00ff00);
-      sprite.drawRect(0, 0, GRID_SIZE, GRID_SIZE);
-      sprite.endFill();
-      gameContainer.addChild(sprite);
-      return sprite;
+
+    // Create the snake head sprite (cylindrical body with a hood)
+    function createSnakeHeadSprite() {
+      const gfx = new PIXI.Graphics();
+      // Draw the cylindrical head (circle)
+      gfx.beginFill(0x00aa00);
+      gfx.drawCircle(0, 0, GRID_SIZE / 2);
+      gfx.endFill();
+      // Draw a hood as a triangle on top of the head.
+      gfx.beginFill(0x007700);
+      gfx.drawPolygon([
+        -GRID_SIZE / 4, -GRID_SIZE / 2,
+         GRID_SIZE / 4, -GRID_SIZE / 2,
+         0, -GRID_SIZE
+      ]);
+      gfx.endFill();
+      return gfx;
     }
+
+    // Create a snake body segment sprite (simple cylindrical shape)
+    function createSnakeBodySprite() {
+      const gfx = new PIXI.Graphics();
+      gfx.beginFill(0x00cc00);
+      gfx.drawCircle(0, 0, (GRID_SIZE / 2) * 0.9);
+      gfx.endFill();
+      return gfx;
+    }
+
+    // Update snake sprites to match current snake segments.
     function updateSnakeSprites() {
-      // Ensure there is one sprite per snake segment.
-      while (snakeSprites.length < snake.segments.length) {
-        const sprite = createSnakeSegmentSprite(snake.segments[snakeSprites.length]);
-        snakeSprites.push(sprite);
-      }
-      // Update sprite positions according to projected coordinates.
-      snake.segments.forEach((seg, i) => {
+      for (let i = 0; i < snake.segments.length; i++) {
+        let sprite = snakeSprites[i];
+        if (!sprite) {
+          sprite = (i === 0) ? createSnakeHeadSprite() : createSnakeBodySprite();
+          gameContainer.addChild(sprite);
+          snakeSprites[i] = sprite;
+        }
+        const seg = snake.segments[i];
         const pos = project3D(seg.x, seg.y, seg.z);
-        snakeSprites[i].x = pos.x;
-        snakeSprites[i].y = pos.y;
-      });
-      // Update UI snake length
+        // Center the sprite within the grid cell.
+        sprite.x = pos.x + GRID_SIZE / 2;
+        sprite.y = pos.y + GRID_SIZE / 2;
+      }
+      // Remove any extra sprites.
+      while (snakeSprites.length > snake.segments.length) {
+        const extra = snakeSprites.pop();
+        gameContainer.removeChild(extra);
+      }
       document.getElementById('snakeLength').textContent = snake.segments.length;
     }
 
-    // Food object: will be spawned randomly.
+    /********************
+     * Food Setup       *
+     ********************/
     let food = { x: 0, y: 0, z: 0 };
     let foodSprite = new PIXI.Graphics();
     function spawnFood() {
       // Randomly choose one of the three floors.
       const z = Math.floor(Math.random() * FLOOR_COUNT);
-      // Random x and y on the grid.
       const cols = GAME_WIDTH / GRID_SIZE;
       const rows = GAME_HEIGHT / GRID_SIZE;
       const x = Math.floor(Math.random() * cols) * GRID_SIZE;
       const y = Math.floor(Math.random() * rows) * GRID_SIZE;
       food = { x, y, z };
-      // Draw the food as a red circle.
       foodSprite.clear();
       foodSprite.beginFill(0xff0000);
       foodSprite.drawCircle(0, 0, GRID_SIZE / 2);
       foodSprite.endFill();
       const pos = project3D(food.x, food.y, food.z);
-      // Center the circle in the grid cell.
       foodSprite.x = pos.x + GRID_SIZE / 2;
       foodSprite.y = pos.y + GRID_SIZE / 2;
       if (!gameContainer.children.includes(foodSprite)) {
@@ -171,49 +255,42 @@
     }
     spawnFood();
 
-    // Score tracking
     let score = 0;
-    const scoreDisplay = document.getElementById('score');
-    const gameStatusDisplay = document.getElementById('gameStatus');
+    document.getElementById('score').textContent = score;
 
     /********************
      * Input Handling   *
      ********************/
-
-    // Keyboard Controls
     window.addEventListener('keydown', (e) => {
       e.preventDefault(); // Prevent scrolling
-      let newDirection = null;
-      // Horizontal movement: arrow keys or WASD.
+      let newDir = null;
       if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-        newDirection = { x: 0, y: -GRID_SIZE, z: 0 };
+        newDir = { x: 0, y: -GRID_SIZE, z: 0 };
       } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-        newDirection = { x: 0, y: GRID_SIZE, z: 0 };
+        newDir = { x: 0, y: GRID_SIZE, z: 0 };
       } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-        newDirection = { x: -GRID_SIZE, y: 0, z: 0 };
+        newDir = { x: -GRID_SIZE, y: 0, z: 0 };
       } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-        newDirection = { x: GRID_SIZE, y: 0, z: 0 };
-      }
-      // Vertical movement: Q to go down a floor, E to go up a floor.
-      else if (e.key === 'q' || e.key === 'Q') {
-        newDirection = { x: 0, y: 0, z: -1 };
+        newDir = { x: GRID_SIZE, y: 0, z: 0 };
+      } else if (e.key === 'q' || e.key === 'Q') {
+        newDir = { x: 0, y: 0, z: -1 };
       } else if (e.key === 'e' || e.key === 'E') {
-        newDirection = { x: 0, y: 0, z: 1 };
+        newDir = { x: 0, y: 0, z: 1 };
       }
-      if (newDirection) {
-        // For vertical movement, ensure we remain within floor bounds.
-        if (newDirection.z !== 0) {
-          const newFloor = snake.segments[0].z + newDirection.z;
+      if (newDir) {
+        // For vertical moves, ensure we remain within bounds.
+        if (newDir.z !== 0) {
+          const newFloor = snake.segments[0].z + newDir.z;
           if (newFloor >= 0 && newFloor < FLOOR_COUNT) {
-            snake.pendingDirection = newDirection;
+            snake.pendingDirection = newDir;
           }
         } else {
-          snake.pendingDirection = newDirection;
+          snake.pendingDirection = newDir;
         }
       }
     });
 
-    // Touch Controls for Mobile: simple swipe detection.
+    // Touch Controls: detect swipe gestures.
     let touchStartX = null, touchStartY = null;
     window.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
@@ -222,7 +299,6 @@
       }
     });
     window.addEventListener('touchmove', (e) => {
-      // Prevent page scrolling on touch
       e.preventDefault();
     }, { passive: false });
     window.addEventListener('touchend', (e) => {
@@ -231,21 +307,12 @@
       const touchEndY = e.changedTouches[0].clientY;
       const diffX = touchEndX - touchStartX;
       const diffY = touchEndY - touchStartY;
-      // Determine swipe direction
       if (Math.abs(diffX) > Math.abs(diffY)) {
-        // Horizontal swipe
-        if (diffX > 0) {
-          snake.pendingDirection = { x: GRID_SIZE, y: 0, z: 0 };
-        } else {
-          snake.pendingDirection = { x: -GRID_SIZE, y: 0, z: 0 };
-        }
+        // Horizontal swipe.
+        snake.pendingDirection = diffX > 0 ? { x: GRID_SIZE, y: 0, z: 0 } : { x: -GRID_SIZE, y: 0, z: 0 };
       } else {
-        // Vertical swipe: up swipe to go up a floor, down swipe to go down.
-        if (diffY < 0) {
-          snake.pendingDirection = { x: 0, y: 0, z: 1 };
-        } else {
-          snake.pendingDirection = { x: 0, y: 0, z: -1 };
-        }
+        // Vertical swipe.
+        snake.pendingDirection = diffY < 0 ? { x: 0, y: -GRID_SIZE, z: 0 } : { x: 0, y: GRID_SIZE, z: 0 };
       }
       touchStartX = null;
       touchStartY = null;
@@ -254,9 +321,7 @@
     /********************
      * Game Loop        *
      ********************/
-
-    // Main game ticker
-    app.ticker.add((delta) => {
+    app.ticker.add(() => {
       const now = Date.now();
       if (now - snake.lastMoveTime > snake.speed) {
         moveSnake();
@@ -264,75 +329,58 @@
       }
     });
 
-    // Move the snake based on its current direction.
     function moveSnake() {
-      // Update direction if a pending input exists.
+      // Update direction if there is a pending input.
       if (snake.pendingDirection) {
-        // For horizontal moves, optionally add logic to prevent direct reversal.
-        if (snake.pendingDirection.z === 0) {
+        if (snake.pendingDirection.z !== 0) {
+          const newFloor = snake.segments[0].z + snake.pendingDirection.z;
+          if (newFloor >= 0 && newFloor < FLOOR_COUNT) {
+            snake.direction = snake.pendingDirection;
+          }
+        } else {
           if (snake.segments.length > 1) {
             const nextPos = {
               x: snake.segments[0].x + snake.pendingDirection.x,
               y: snake.segments[0].y + snake.pendingDirection.y,
               z: snake.segments[0].z
             };
-            // If nextPos equals the second segment, ignore reversal.
+            // Prevent direct reversal on horizontal moves.
             if (!(nextPos.x === snake.segments[1].x && nextPos.y === snake.segments[1].y)) {
               snake.direction = snake.pendingDirection;
             }
           } else {
             snake.direction = snake.pendingDirection;
           }
-        } else {
-          // For vertical movement, verify floor bounds.
-          const newFloor = snake.segments[0].z + snake.pendingDirection.z;
-          if (newFloor >= 0 && newFloor < FLOOR_COUNT) {
-            snake.direction = snake.pendingDirection;
-          }
         }
         snake.pendingDirection = null;
       }
 
-      // Create a new head based on current direction.
-      let newHead = {
-        x: snake.segments[0].x,
-        y: snake.segments[0].y,
-        z: snake.segments[0].z
-      };
+      let newHead = { ...snake.segments[0] };
       if (snake.direction.z !== 0) {
-        // Vertical move: adjust floor only.
         newHead.z += snake.direction.z;
       } else {
         newHead.x += snake.direction.x;
         newHead.y += snake.direction.y;
       }
-
       // Wrap around horizontally.
       if (newHead.x < 0) newHead.x = GAME_WIDTH - GRID_SIZE;
       if (newHead.x >= GAME_WIDTH) newHead.x = 0;
       if (newHead.y < 0) newHead.y = GAME_HEIGHT - GRID_SIZE;
       if (newHead.y >= GAME_HEIGHT) newHead.y = 0;
 
-      // Self-collision is allowed (the snake slides over itself) so we do not end the game.
-      // In a more advanced version, collisions beyond a certain tolerance might trigger game over.
-
-      // Add the new head at the front of the snake.
       snake.segments.unshift(newHead);
-
-      // Check for food collision: if the snake's head is at the same grid and floor.
+      // Food collision: if the head lands on the food.
       if (newHead.x === food.x && newHead.y === food.y && newHead.z === food.z) {
         score += 10;
         document.getElementById('score').textContent = score;
         spawnFood();
       } else {
-        // Remove the tail segment if no food is eaten.
         snake.segments.pop();
       }
-
       updateSnakeSprites();
     }
 
-    // Initial sprite update
+    // Initial sprite update.
     updateSnakeSprites();
 
   </script>
